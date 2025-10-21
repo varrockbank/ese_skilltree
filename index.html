@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            min-height: 100vh;
+            align-items: flex-start;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+        }
+
+        #mynetwork {
+            width: 100%;
+            height: 100vh;
+            background-color: white;
+            position: relative;
+        }
+
+        .sidenav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background-color: white;
+            border-right: 1px solid #ddd;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .legend-item {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+
+        .stage-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .specialization-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .radio-option {
+            margin: 10px 0;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+        }
+
+        .course-node {
+            cursor: pointer;
+        }
+
+        .course-node:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidenav">
+        <div class="specialization-section">
+            <div class="stage-label">Specialization:</div>
+            <div class="radio-option">
+                <input type="radio" id="spec-qf" name="specialization" value="qf" checked>
+                <label for="spec-qf">Quant Finance</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="spec-or" name="specialization" value="or">
+                <label for="spec-or">Operations Research</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="spec-econ" name="specialization" value="econ">
+                <label for="spec-econ">Econometrics</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="spec-marketing" name="specialization" value="marketing">
+                <label for="spec-marketing">Business Analytics</label>
+            </div>
+        </div>
+
+        <div class="stage-label">Course Type:</div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #90ee90;"></span>
+            <span>Core</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #ADD8E6;"></span>
+            <span>Specialization dependent</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #fffacd;"></span>
+            <span>Optional</span>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
+        <div class="stage-label">Specializations:</div>
+        <div class="legend-item">
+            <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #8b008b; margin-right: 5px; vertical-align: middle;"></span>
+            <span>Quant Finance</span>
+        </div>
+        <div class="legend-item">
+            <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #ff0000; margin-right: 5px; vertical-align: middle;"></span>
+            <span>Operations Research</span>
+        </div>
+        <div class="legend-item">
+            <span style="display: inline-block; width: 20px; height: 20px; border-left: 4px solid #228b22; margin-right: 5px; vertical-align: middle;"></span>
+            <span>Econometrics</span>
+        </div>
+        <div class="legend-item">
+            <span style="display: inline-block; width: 20px; height: 20px; border-bottom: 4px solid #ff8c00; margin-right: 5px; vertical-align: middle;"></span>
+            <span>Business Analytics</span>
+        </div>
+    </div>
+
+    <div class="content-wrapper" id="contentWrapper">
+        <div id="mynetwork"></div>
+    </div>
+
+    <script type="text/javascript">
+        // Parse CSV
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',');
+            console.log('CSV Headers:', headers);
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header.trim()] = values[index];
+                });
+                data.push(row);
+            }
+
+            console.log('First parsed row:', data[0]);
+            return data;
+        }
+
+        // Get tier label
+        function getTierLabel(blockNum) {
+            if (blockNum === -1) return 'Uncategorized';
+            if (blockNum === 6) return 'Optional';
+            return `Block ${blockNum}`;
+        }
+
+        // Store courses globally for re-rendering
+        let allCoursesData = [];
+        // Track which courses have been moved to extracurricular (for non-extracurricular courses)
+        let movedToExtracurricular = new Set(['13']);
+        // Track which extracurricular courses have been added back to their regular position
+        let extracurricularAddedToRegular = new Set();
+
+        // Main function to load and visualize data
+        async function loadAndVisualize() {
+            try {
+                // Fetch the CSV file
+                const response = await fetch('course.csv');
+                if (!response.ok) {
+                    throw new Error('Failed to load course.csv');
+                }
+                const csvData = await response.text();
+
+                // Parse data
+                allCoursesData = parseCSV(csvData);
+
+                // Build the visualization
+                buildVisualization(allCoursesData);
+
+                // Add event listeners to radio buttons
+                const qfRadio = document.getElementById('spec-qf');
+                const orRadio = document.getElementById('spec-or');
+                const econRadio = document.getElementById('spec-econ');
+                const marketingRadio = document.getElementById('spec-marketing');
+
+                if (qfRadio) {
+                    qfRadio.addEventListener('change', function() {
+                        console.log('Quant Finance radio selected');
+                        buildVisualization(allCoursesData);
+                    });
+                }
+
+                if (orRadio) {
+                    orRadio.addEventListener('change', function() {
+                        console.log('Operations Research radio selected');
+                        buildVisualization(allCoursesData);
+                    });
+                }
+
+                if (econRadio) {
+                    econRadio.addEventListener('change', function() {
+                        console.log('Econometrics radio selected');
+                        buildVisualization(allCoursesData);
+                    });
+                }
+
+                if (marketingRadio) {
+                    marketingRadio.addEventListener('change', function() {
+                        console.log('Marketing radio selected');
+                        buildVisualization(allCoursesData);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                document.getElementById('mynetwork').innerHTML =
+                    '<div style="padding: 20px; color: red;">Error loading course.csv. Make sure the file exists in the same directory as this HTML file.</div>';
+            }
+        }
+
+        // Build the visualization using D3.js
+        function buildVisualization(allCourses) {
+            // Filter courses based on specialization selection
+            const qfRadio = document.getElementById('spec-qf');
+            const orRadio = document.getElementById('spec-or');
+            const econRadio = document.getElementById('spec-econ');
+            const marketingRadio = document.getElementById('spec-marketing');
+
+            let selectedSpec = 'qf'; // default
+            if (qfRadio && qfRadio.checked) {
+                selectedSpec = 'qf';
+            } else if (orRadio && orRadio.checked) {
+                selectedSpec = 'or';
+            } else if (econRadio && econRadio.checked) {
+                selectedSpec = 'econ';
+            } else if (marketingRadio && marketingRadio.checked) {
+                selectedSpec = 'marketing';
+            }
+
+            // Debug: check specialization values
+            console.log('All courses specialization values:', allCourses.map(c => ({
+                course: c.course,
+                qf: c.qf,
+                or: c.or,
+                econ: c.econ,
+                marketing: c.marketing,
+                core: c.core
+            })));
+
+            let courses;
+            if (selectedSpec === 'qf') {
+                // Show QF courses + core courses
+                courses = allCourses.filter(course =>
+                    course.qf === 'true' || course.core === 'true'
+                );
+            } else if (selectedSpec === 'or') {
+                // Show OR courses + core courses
+                courses = allCourses.filter(course =>
+                    course.or === 'true' || course.core === 'true'
+                );
+            } else if (selectedSpec === 'econ') {
+                // Show Econ courses + core courses
+                courses = allCourses.filter(course =>
+                    course.econ === 'true' || course.core === 'true'
+                );
+            } else if (selectedSpec === 'marketing') {
+                // Show Marketing courses + core courses
+                courses = allCourses.filter(course =>
+                    course.marketing === 'true' || course.core === 'true'
+                );
+            } else {
+                // Show all courses
+                courses = allCourses;
+            }
+
+            console.log('Filtering - Specialization:', selectedSpec, 'Total courses shown:', courses.length);
+            console.log('Filtered courses:', courses.map(c => c.course));
+
+            // No separate filtering needed - we'll handle rendering logic below
+
+            // Get all unique block numbers from courses
+            const allBlocks = new Set();
+            courses.forEach(course => {
+                const start = parseInt(course.block_start);
+                const end = parseInt(course.block_end);
+                for (let i = start; i <= end; i++) {
+                    allBlocks.add(i);
+                }
+            });
+
+            // Always add extracurricular block (block 6)
+            allBlocks.add(6);
+
+            // Define tier order: uncategorized (-1) first, then 1, 2, 3, etc.
+            const tierOrder = Array.from(allBlocks).sort((a, b) => {
+                if (a === -1) return -1;
+                if (b === -1) return 1;
+                return a - b;
+            });
+
+            // Position constants
+            const ySpacing = 150;  // Vertical spacing between tiers
+            const xSpacing = 250;  // Horizontal spacing between nodes
+            const labelXOffset = -600;  // Position for tier labels on left
+            const creditXOffset = 800;   // Position for credit info on right
+            const nodeHeight = 120; // Height of a single-block node
+            const nodeWidth = 200;  // Fixed width for all course nodes
+
+            // Create map of block number to y position
+            const blockToY = {};
+            tierOrder.forEach((blockNum, tierIndex) => {
+                blockToY[blockNum] = tierIndex * ySpacing + 100; // +100 for top padding
+            });
+
+            // Calculate credits per block and cumulative
+            const creditsPerBlock = {};
+            const cumulativeCredits = {};
+
+            // Initialize
+            tierOrder.forEach(blockNum => {
+                creditsPerBlock[blockNum] = 0;
+            });
+
+            // Count credits for each block (excluding moved courses and extracurricular courses not added to regular)
+            courses.forEach(course => {
+                // Skip courses moved to extracurricular
+                if (movedToExtracurricular.has(course.id)) return;
+
+                // Skip extracurricular courses unless they've been added to regular
+                if (course.extracurricular === 'true' && !extracurricularAddedToRegular.has(course.id)) return;
+
+                const credits = parseInt(course.credits);
+                const start = parseInt(course.block_start);
+
+                // Add credits to the starting block
+                creditsPerBlock[start] = (creditsPerBlock[start] || 0) + credits;
+            });
+
+            // Calculate cumulative
+            let cumulative = 0;
+            tierOrder.forEach(blockNum => {
+                cumulative += creditsPerBlock[blockNum] || 0;
+                cumulativeCredits[blockNum] = cumulative;
+            });
+
+            // Helper function to check if courses overlap vertically
+            function coursesOverlap(course1, course2) {
+                const start1 = parseInt(course1.block_start);
+                const end1 = parseInt(course1.block_end);
+                const start2 = parseInt(course2.block_start);
+                const end2 = parseInt(course2.block_end);
+
+                return !(end1 < start2 || end2 < start1);
+            }
+
+            // Build dependency graph for topological ordering
+            const dependencyMap = {};
+            const hasDependents = new Set();
+
+            courses.forEach(course => {
+                dependencyMap[course.id] = [];
+                if (course.dependencies && course.dependencies.trim() !== '') {
+                    const deps = course.dependencies.split(',').map(d => d.trim());
+                    deps.forEach(depId => {
+                        hasDependents.add(depId);
+                    });
+                }
+            });
+
+            // Create a list that includes courses in multiple places when needed
+            const coursesToRender = [];
+            courses.forEach(course => {
+                if (course.extracurricular !== 'true') {
+                    // Regular course - always render in original position
+                    // Show as placeholder if moved to extracurricular
+                    coursesToRender.push({ ...course, _isPlaceholder: movedToExtracurricular.has(course.id) });
+
+                    // If moved to extracurricular, also render in extracurricular area
+                    if (movedToExtracurricular.has(course.id)) {
+                        coursesToRender.push({
+                            ...course,
+                            block_start: '6',
+                            block_end: '6',
+                            _inExtracurricular: true,
+                            _isPlaceholder: false
+                        });
+                    }
+                } else {
+                    // Extracurricular course with a designated block
+                    // Always render placeholder in regular position
+                    coursesToRender.push({
+                        ...course,
+                        _isPlaceholder: !extracurricularAddedToRegular.has(course.id),
+                        _isExtracurricularPlaceholder: true
+                    });
+
+                    // Render in extracurricular area only if NOT added to regular
+                    if (!extracurricularAddedToRegular.has(course.id)) {
+                        coursesToRender.push({
+                            ...course,
+                            block_start: '6',
+                            block_end: '6',
+                            _inExtracurricular: true,
+                            _isPlaceholder: false
+                        });
+                    }
+                }
+            });
+
+            // Smart column assignment considering dependencies
+            // Strategy: Within each tier, core courses on left, specialization courses on right
+            const sortedCourses = [...coursesToRender].sort((a, b) => {
+                // Extracurricular courses go to block 6
+                const blockA = a._inExtracurricular ? 6 : parseInt(a.block_start);
+                const blockB = b._inExtracurricular ? 6 : parseInt(b.block_start);
+                if (blockA !== blockB) return blockA - blockB;
+
+                // Within same block, prioritize core courses first
+                const aIsCore = a.core === 'true';
+                const bIsCore = b.core === 'true';
+
+                // Core courses come before specialization courses
+                if (aIsCore && !bIsCore) return -1;
+                if (!aIsCore && bIsCore) return 1;
+
+                // Within same category (both core or both specialization), order by dependencies
+                const aIsSource = hasDependents.has(a.id);
+                const bIsSource = hasDependents.has(b.id);
+                const aHasDeps = a.dependencies && a.dependencies.trim() !== '';
+                const bHasDeps = b.dependencies && b.dependencies.trim() !== '';
+
+                // Standalone courses (no dependencies in either direction) come first
+                const aIsStandalone = !aIsSource && !aHasDeps;
+                const bIsStandalone = !bIsSource && !bHasDeps;
+
+                if (aIsStandalone && !bIsStandalone) return -1;
+                if (!aIsStandalone && bIsStandalone) return 1;
+
+                // Then sources (courses that are prerequisites)
+                if (aIsSource && !bIsSource) return -1;
+                if (!aIsSource && bIsSource) return 1;
+
+                // Finally targets (courses with dependencies)
+                if (!aHasDeps && bHasDeps) return -1;
+                if (aHasDeps && !bHasDeps) return 1;
+
+                // Otherwise maintain original order
+                return 0;
+            });
+
+            // Create mapping from original index to sorted index
+            const indexMap = {};
+            coursesToRender.forEach((course, originalIndex) => {
+                const sortedIndex = sortedCourses.findIndex(c =>
+                    c.id === course.id &&
+                    c._inExtracurricular === course._inExtracurricular &&
+                    c._isPlaceholder === course._isPlaceholder
+                );
+                indexMap[originalIndex] = sortedIndex;
+            });
+
+            // Assign columns using greedy algorithm on sorted courses
+            const courseColumns = [];
+            sortedCourses.forEach((course, sortedIndex) => {
+                // Find all courses this one overlaps with
+                const overlappingCourses = sortedCourses
+                    .map((c, i) => ({ course: c, index: i }))
+                    .filter((item, i) => i < sortedIndex && coursesOverlap(course, item.course));
+
+                // Find columns used by overlapping courses
+                const usedColumns = new Set(
+                    overlappingCourses.map(item => courseColumns[item.index])
+                );
+
+                // Assign first available column
+                let column = 0;
+                while (usedColumns.has(column)) {
+                    column++;
+                }
+                courseColumns[sortedIndex] = column;
+            });
+
+            // Map columns back to original course order
+            const originalCourseColumns = [];
+            coursesToRender.forEach((course, originalIndex) => {
+                const sortedIndex = indexMap[originalIndex];
+                originalCourseColumns[originalIndex] = courseColumns[sortedIndex];
+            });
+
+            // Find total number of columns needed
+            const numColumns = Math.max(...originalCourseColumns, 0) + 1;
+
+            // Clear previous content
+            d3.select("#mynetwork").selectAll("*").remove();
+
+            // Create SVG
+            const svg = d3.select("#mynetwork")
+                .append("svg")
+                .attr("width", "100%")
+                .attr("height", "100vh")
+                .attr("viewBox", "-800 0 2000 " + (tierOrder.length * ySpacing + 200));
+
+            // Define arrowhead marker
+            svg.append("defs").append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 9)
+                .attr("refY", 5)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                .attr("fill", "#666");
+
+            // Add separator lines between tiers
+            for (let i = 0; i < tierOrder.length - 1; i++) {
+                const y1 = blockToY[tierOrder[i]];
+                const y2 = blockToY[tierOrder[i + 1]];
+                const y = (y1 + y2) / 2;
+
+                svg.append("line")
+                    .attr("x1", -1000)
+                    .attr("x2", 1000)
+                    .attr("y1", y)
+                    .attr("y2", y)
+                    .attr("stroke", "#ccc")
+                    .attr("stroke-width", 2);
+            }
+
+            // Add header labels on the right side
+            const headerY = 30;
+            svg.append("text")
+                .attr("x", creditXOffset)
+                .attr("y", headerY)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
+                .attr("font-weight", "bold")
+                .text("Total Credits");
+
+            svg.append("text")
+                .attr("x", creditXOffset + 200)
+                .attr("y", headerY)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
+                .attr("font-weight", "bold")
+                .text("Cumulative Credits");
+
+            // Add tier labels and credits
+            tierOrder.forEach((blockNum) => {
+                const y = blockToY[blockNum];
+                const blockCredits = creditsPerBlock[blockNum] || 0;
+                const cumCredits = cumulativeCredits[blockNum] || 0;
+
+                // Left side label
+                svg.append("text")
+                    .attr("x", labelXOffset)
+                    .attr("y", y)
+                    .attr("text-anchor", "start")
+                    .attr("font-size", "24px")
+                    .attr("font-weight", "bold")
+                    .attr("dominant-baseline", "middle")
+                    .text(`${getTierLabel(blockNum)}:`);
+
+                // Right side - Total credits
+                svg.append("text")
+                    .attr("x", creditXOffset)
+                    .attr("y", y)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "24px")
+                    .attr("dominant-baseline", "middle")
+                    .text(blockCredits.toString());
+
+                // Right side - Cumulative credits
+                svg.append("text")
+                    .attr("x", creditXOffset + 200)
+                    .attr("y", y)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "24px")
+                    .attr("dominant-baseline", "middle")
+                    .text(cumCredits.toString());
+            });
+
+            // Add course nodes and track positions by ID
+            const coursePositions = {}; // Map of course ID to {x, y, width, height}
+
+            coursesToRender.forEach((course, index) => {
+                // Use the flags we set earlier
+                const isPlaceholder = course._isPlaceholder;
+                const isInExtracurricular = course._inExtracurricular;
+
+                const blockStart = isInExtracurricular ? 6 : parseInt(course.block_start);
+                const blockEnd = isInExtracurricular ? 6 : parseInt(course.block_end);
+
+                // Calculate position
+                const yStart = blockToY[blockStart];
+                const yEnd = blockToY[blockEnd];
+
+                if (yStart === undefined || yEnd === undefined) {
+                    console.error('Missing blockToY mapping for course:', course.course);
+                    return;
+                }
+
+                const y = (yStart + yEnd) / 2; // Center vertically
+
+                // Calculate height based on block span
+                const blockSpan = blockEnd - blockStart + 1;
+                const height = (blockSpan * nodeHeight) + ((blockSpan - 1) * (ySpacing - nodeHeight));
+
+                // Position based on column assignment
+                const column = originalCourseColumns[index];
+                const totalWidth = (numColumns - 1) * xSpacing;
+                const x = (column * xSpacing) - (totalWidth / 2);
+
+                // Store position by ID for dependency drawing
+                coursePositions[course.id] = { x, y, width: nodeWidth, height };
+
+                // Check course properties
+                const isQF = course.qf === 'true';
+                const isOR = course.or === 'true';
+                const isEcon = course.econ === 'true';
+                const isMarketing = course.marketing === 'true';
+                const isCore = course.core === 'true';
+                const isExtracurricular = course.extracurricular === 'true';
+
+                // Background color: green for core, blue for non-core, light yellow for extracurricular
+                let bgColor, strokeColor, strokeWidth, fillOpacity;
+                if (isPlaceholder) {
+                    // Grey outline for placeholder
+                    bgColor = '#ffffff'; // White background
+                    strokeColor = '#999'; // Grey border
+                    strokeWidth = 2;
+                    fillOpacity = 0; // Transparent fill
+                } else if (isInExtracurricular) {
+                    bgColor = '#fffacd'; // Light yellow for extracurricular
+                    strokeColor = '#333';
+                    strokeWidth = 1;
+                    fillOpacity = 1;
+                } else if (isCore) {
+                    bgColor = '#90ee90'; // Green for core
+                    strokeColor = '#333';
+                    strokeWidth = 1;
+                    fillOpacity = 1;
+                } else {
+                    bgColor = '#ADD8E6'; // Blue for specialization
+                    strokeColor = '#333';
+                    strokeWidth = 1;
+                    fillOpacity = 1;
+                }
+
+                // Create group for the course node
+                const nodeGroup = svg.append("g")
+                    .attr("class", "course-node")
+                    .attr("transform", `translate(${x}, ${y})`);
+
+                // Add main rectangle
+                nodeGroup.append("rect")
+                    .attr("x", -nodeWidth / 2)
+                    .attr("y", -height / 2)
+                    .attr("width", nodeWidth)
+                    .attr("height", height)
+                    .attr("fill", bgColor)
+                    .attr("fill-opacity", fillOpacity)
+                    .attr("stroke", strokeColor)
+                    .attr("stroke-width", strokeWidth);
+
+                // Add purple right border if QF (not for placeholders)
+                if (isQF && !isPlaceholder) {
+                    nodeGroup.append("line")
+                        .attr("x1", nodeWidth / 2)
+                        .attr("x2", nodeWidth / 2)
+                        .attr("y1", -height / 2)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "#8b008b")
+                        .attr("stroke-width", 6)
+                        .attr("stroke-linecap", "square");
+                }
+
+                // Add red top border if OR (not for placeholders)
+                if (isOR && !isPlaceholder) {
+                    nodeGroup.append("line")
+                        .attr("x1", -nodeWidth / 2)
+                        .attr("x2", nodeWidth / 2)
+                        .attr("y1", -height / 2)
+                        .attr("y2", -height / 2)
+                        .attr("stroke", "#ff0000")
+                        .attr("stroke-width", 6)
+                        .attr("stroke-linecap", "square");
+                }
+
+                // Add green left border if Econ (not for placeholders)
+                if (isEcon && !isPlaceholder) {
+                    nodeGroup.append("line")
+                        .attr("x1", -nodeWidth / 2)
+                        .attr("x2", -nodeWidth / 2)
+                        .attr("y1", -height / 2)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "#228b22")
+                        .attr("stroke-width", 6)
+                        .attr("stroke-linecap", "square");
+                }
+
+                // Add orange bottom border if Marketing (not for placeholders)
+                if (isMarketing && !isPlaceholder) {
+                    nodeGroup.append("line")
+                        .attr("x1", -nodeWidth / 2)
+                        .attr("x2", nodeWidth / 2)
+                        .attr("y1", height / 2)
+                        .attr("y2", height / 2)
+                        .attr("stroke", "#ff8c00")
+                        .attr("stroke-width", 6)
+                        .attr("stroke-linecap", "square");
+                }
+
+                // Add circular +/- buttons based on course state
+                const buttonRadius = 12;
+                const buttonX = -nodeWidth / 2 + buttonRadius + 5;
+                const buttonY = -height / 2 + buttonRadius + 5;
+
+                if (isPlaceholder && course._isExtracurricularPlaceholder) {
+                    // Placeholder for extracurricular course (like SPOC) - show + button
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            extracurricularAddedToRegular.add(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (isPlaceholder && !course._isExtracurricularPlaceholder) {
+                    // Placeholder for regular course that was moved to extracurricular - show + button
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            movedToExtracurricular.delete(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (isInExtracurricular && isExtracurricular) {
+                    // Extracurricular course in extracurricular area - show + button
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            extracurricularAddedToRegular.add(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (isInExtracurricular && movedToExtracurricular.has(course.id)) {
+                    // Regular course moved to extracurricular - show + button
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            movedToExtracurricular.delete(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (!isInExtracurricular && !isPlaceholder && isExtracurricular && extracurricularAddedToRegular.has(course.id)) {
+                    // Extracurricular course that has been added to regular position - show - button
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            extracurricularAddedToRegular.delete(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#f44336")
+                        .attr("stroke", "#d32f2f")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("−");
+                } else if (!isInExtracurricular && !isPlaceholder && course.alternative && course.alternative.trim() !== '') {
+                    // This course has an alternative, check if both are present
+                    const altId = course.alternative.trim();
+                    const altCourse = coursesToRender.find(c => c.id === altId && !c._inExtracurricular);
+                    // Only show "remove course" if alternative is also NOT in extracurricular
+                    if (altCourse && !movedToExtracurricular.has(altId)) {
+                        // Add - button to top left corner (clickable)
+                        const btnGroup = nodeGroup.append("g")
+                            .attr("cursor", "pointer")
+                            .on("click", function(event) {
+                                event.stopPropagation();
+                                movedToExtracurricular.add(course.id);
+                                buildVisualization(allCoursesData);
+                            });
+
+                        btnGroup.append("circle")
+                            .attr("cx", buttonX)
+                            .attr("cy", buttonY)
+                            .attr("r", buttonRadius)
+                            .attr("fill", "#f44336")
+                            .attr("stroke", "#d32f2f")
+                            .attr("stroke-width", 1);
+
+                        btnGroup.append("text")
+                            .attr("x", buttonX)
+                            .attr("y", buttonY)
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("font-size", "18px")
+                            .attr("font-weight", "bold")
+                            .attr("fill", "white")
+                            .text("−");
+                    }
+                }
+
+                // Add text label (greyed out for placeholders)
+                nodeGroup.append("text")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("text-anchor", "middle")
+                    .attr("dominant-baseline", "middle")
+                    .attr("font-size", "21px")
+                    .attr("fill", isPlaceholder ? "#999" : "#000")
+                    .attr("opacity", isPlaceholder ? 0.5 : 1)
+                    .text(course.course)
+                    .call(wrap, nodeWidth - 20); // Wrap text if too long
+
+                // Add tooltip on hover
+                nodeGroup.append("title")
+                    .text(`${course.course}\nCredits: ${course.credits}\nBlocks: ${course.block_start}-${course.block_end}\nPremaster: ${course.premaster}\nCore: ${course.core}\nQF: ${course.qf}\nOR: ${course.or}\nEcon: ${course.econ}\nMarketing: ${course.marketing}`);
+            });
+
+            // Helper function to check if a line segment intersects a rectangle
+            function lineIntersectsRect(x1, y1, x2, y2, rect) {
+                // Expand rect slightly for padding
+                const padding = 10;
+                const rx = rect.x - rect.width / 2 - padding;
+                const ry = rect.y - rect.height / 2 - padding;
+                const rw = rect.width + padding * 2;
+                const rh = rect.height + padding * 2;
+
+                // Check if line segment intersects rectangle
+                // Simple bounding box check
+                const minX = Math.min(x1, x2);
+                const maxX = Math.max(x1, x2);
+                const minY = Math.min(y1, y2);
+                const maxY = Math.max(y1, y2);
+
+                return !(maxX < rx || minX > rx + rw || maxY < ry || minY > ry + rh);
+            }
+
+            // Draw dependency edges - direct lines from top-right to bottom-right
+            // HIDDEN FOR NOW
+            // courses.forEach((course) => {
+            //     if (course.dependencies && course.dependencies.trim() !== '') {
+            //         const deps = course.dependencies.split(',').map(d => d.trim());
+
+            //         deps.forEach(depId => {
+            //             if (!coursePositions[depId] || !coursePositions[course.id]) {
+            //                 console.warn('Missing position for dependency:', depId, 'or course:', course.id);
+            //                 return;
+            //             }
+
+            //             const from = coursePositions[depId];
+            //             const to = coursePositions[course.id];
+
+            //             // Start from top-right corner of source
+            //             const startX = from.x + from.width / 2;
+            //             const startY = from.y - from.height / 2;
+
+            //             // End at bottom-right corner of target
+            //             const endX = to.x + to.width / 2;
+            //             const endY = to.y + to.height / 2;
+
+            //             // Draw direct line
+            //             const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+
+            //             svg.append("path")
+            //                 .attr("d", path)
+            //                 .attr("fill", "none")
+            //                 .attr("stroke", "#666")
+            //                 .attr("stroke-width", 2)
+            //                 .attr("marker-end", "url(#arrowhead)");
+            //         });
+            //     }
+            // });
+
+            // Draw alternative edges - undirected lines between alternative courses
+            // HIDDEN FOR NOW
+            // const drawnAlternatives = new Set(); // Track which pairs we've already drawn
+            // courses.forEach((course) => {
+            //     if (course.alternative && course.alternative.trim() !== '') {
+            //         const altId = course.alternative.trim();
+
+            //         // Create a unique key for this pair (sorted to ensure uniqueness)
+            //         const pairKey = [course.id, altId].sort().join('-');
+
+            //         // Skip if we've already drawn this pair
+            //         if (drawnAlternatives.has(pairKey)) {
+            //             return;
+            //         }
+
+            //         if (!coursePositions[altId] || !coursePositions[course.id]) {
+            //             console.warn('Missing position for alternative:', altId, 'or course:', course.id);
+            //             return;
+            //         }
+
+            //         const from = coursePositions[course.id];
+            //         const to = coursePositions[altId];
+
+            //         // Draw from center to center
+            //         const startX = from.x;
+            //         const startY = from.y;
+            //         const endX = to.x;
+            //         const endY = to.y;
+
+            //         // Draw dashed line (no arrowhead - it's bidirectional)
+            //         const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+
+            //         svg.append("path")
+            //             .attr("d", path)
+            //             .attr("fill", "none")
+            //             .attr("stroke", "#0066cc")
+            //             .attr("stroke-width", 2)
+            //             .attr("stroke-dasharray", "5,5");
+
+            //         // Mark this pair as drawn
+            //         drawnAlternatives.add(pairKey);
+            //     }
+            // });
+
+            console.log('D3 visualization complete');
+        }
+
+        // Text wrapping function
+        function wrap(text, width) {
+            text.each(function() {
+                const text = d3.select(this);
+                const words = text.text().split(/\s+/).reverse();
+                let word;
+                let line = [];
+                let lineNumber = 0;
+                const lineHeight = 1.1; // ems
+                const y = text.attr("y");
+                const dy = 0;
+                let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    }
+                }
+
+                // Center the text block vertically
+                const numLines = lineNumber + 1;
+                const offset = -(numLines - 1) * lineHeight / 2;
+                text.selectAll("tspan").attr("dy", function(d, i) {
+                    return (i * lineHeight + offset) + "em";
+                });
+            });
+        }
+
+        // Load data when page loads
+        loadAndVisualize();
+    </script>
+</body>
+</html>

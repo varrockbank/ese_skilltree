@@ -1,0 +1,18 @@
+id,course,credits,block_start,block_end,premaster,core,qf,or,econ,marketing,dependencies,alternative,extracurricular
+1,Probability,4,1,1,true,true,false,false,false,false,,,false
+2,Programming,4,1,1,true,true,false,false,false,false,,,false
+3,Statistics,4,1,1,true,true,false,false,false,false,1,,false
+4,Non-Linear Optimization,4,2,2,false,true,false,false,false,false,,,false
+5,Markov Processes,4,2,2,false,true,false,false,false,false,,,false
+6,Econometrics 1,4,3,3,false,true,false,false,false,false,10,,false
+7,Linear Optimization,4,5,5,false,true,false,false,false,false,,,false
+8,Seminar,4,4,5,true,true,false,false,false,false,,,false
+9,Time Series,4,5,5,false,true,false,false,false,false,,,false
+10,Multivariable Stats,4,1,1,false,false,true,false,true,true,3,,false
+11,Simulation,4,3,3,false,false,true,true,true,false,,,false
+12,Econometrics 2,4,4,4,false,false,true,false,true,true,6,,false
+13,Finance,4,3,3,false,false,true,true,false,false,,14,false
+14,Microeconomics,6,2,2,false,false,true,true,true,true,,13,false
+15,Marketing,4,3,3,false,false,false,false,false,true,,,false
+16,Combinatorial Optimization,4,1,1,false,false,false,true,false,false,,,false
+17,SPOC,4,4,4,false,false,true,true,true,true,,,true
