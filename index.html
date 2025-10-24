@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Graph Visualization</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
@@ -17,10 +18,38 @@
             color: #72D69F;
         }
 
+        /* Yellow scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+            border: 1px solid #333;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #FEA800, #FFFF00);
+            border-radius: 2px;
+            border: 1px solid #FEA800;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFFF00;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #FEA800 #000000;
+        }
+
         .content-wrapper {
             flex: 1;
             margin-left: 280px;
-            margin-right: 150px;
+            margin-right: 200px;
             padding: 0;
             position: relative;
         }
@@ -30,7 +59,7 @@
             position: fixed;
             right: 0;
             top: 50px;
-            width: 150px;
+            width: 200px;
             height: calc(100vh - 50px);
             background-color: #000000;
             display: flex;
@@ -43,12 +72,41 @@
             width: 100%;
             height: 100%;
             position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
         }
 
         .spirograph-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
+        }
+
+        .at-gif {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .sigmoid-gif {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .video-embed {
+            width: 100%;
+            height: auto;
+            border: none;
+            z-index: 3;
+            opacity: 0.8;
+            mix-blend-mode: screen;
         }
 
         #mynetwork {
@@ -72,7 +130,17 @@
             box-shadow: 2px 0 20px rgba(255, 102, 0, 0.3);
             z-index: 1000;
             overflow-y: auto;
-            padding: 20px;
+            padding: 20px 10px 20px 0;
+        }
+
+        .sidenav-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .sidenav::after {
@@ -89,10 +157,38 @@
                 #00FF00 100%);
         }
 
+        .legend-container {
+            position: relative;
+            padding: 20px 15px 25px 35px;
+            margin-top: 20px;
+            margin-bottom: 100px;
+            margin-left: 10px;
+            z-index: 1;
+            opacity: 0.8;
+
+            /* Augmented-ui properties */
+            --aug-tl: 20px;
+            --aug-tr: 25px;
+            --aug-bl: 30px;
+            --aug-br: 25px;
+            --aug-tr-inset2: 35%;
+            --aug-bl-inset2: 40%;
+            --aug-br-inset2: 35%;
+            --aug-border-all: 4px;
+            --aug-border-bg: #51D153;
+            --aug-inlay-all: 4px;
+            --aug-inlay-bg: #9846D8;
+
+            background: linear-gradient(to bottom, #A020F0, #000000);
+            border: 4px solid #A020F0;
+            color: #FFFFFF;
+            box-shadow: 0 0 20px rgba(81, 209, 83, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
         .legend-item {
             display: block;
             margin-bottom: 8px;
-            color: #72D69F;
+            color: #FFFFFF;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
@@ -108,7 +204,8 @@
         .stage-label {
             font-weight: bold;
             margin-bottom: 5px;
-            color: #72D69F;
+            margin-left: 20px;
+            color: #FFFFFF;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -117,11 +214,18 @@
 
         .specialization-section {
             margin-bottom: 20px;
+            margin-left: 10px;
+            transform: translateY(-10px);
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
         /* Radar box styling */
         .radar {
             position: relative;
+            z-index: 1;
             border: 1px solid #000;
             background: rgb(2, 137, 68);
             padding: 0.2rem 0 0.4rem;
@@ -174,6 +278,7 @@
             font-weight: 900;
             letter-spacing: 2px;
             margin: 0;
+            opacity: 0.7;
         }
 
         .radar h2::after {
@@ -429,11 +534,12 @@
         }
 
         .radio-option {
-            margin: 12px 0;
+            margin: 0 auto;
             color: #00FF00;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             display: flex;
             align-items: center;
+            justify-content: center;
             padding: 0;
             background: transparent;
             border: none;
@@ -482,7 +588,7 @@
 
         .radio-option label {
             cursor: pointer;
-            color: #00FF00;
+            color: #E4541E;
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -528,66 +634,67 @@
             transform: translate(-50%, -50%);
         }
 
-        /* Toggle Switch Styling */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .toggle-switch input[type="checkbox"] {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #000000;
-            border: 2px solid #A020F0;
-            transition: 0.3s;
-            clip-path: polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%);
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 2px;
-            background-color: #A020F0;
-            transition: 0.3s;
-            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
-        }
-
-        input[type="checkbox"]:checked + .toggle-slider {
-            background-color: #72D69F;
-            border-color: #72D69F;
-            box-shadow: 0 0 10px rgba(114, 214, 159, 0.6);
-        }
-
-        input[type="checkbox"]:checked + .toggle-slider:before {
-            transform: translateX(26px);
-            background-color: #000000;
-        }
-
-        .toggle-slider:hover {
-            box-shadow: 0 0 10px rgba(160, 32, 240, 0.6);
-        }
-
         label {
             cursor: pointer;
             color: #72D69F;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-weight: 500;
+        }
+
+        /* Rectangular Toggle */
+        .rect-toggle {
+            position: relative;
+            display: inline-block;
+            width: 52px !important;
+            min-width: 52px !important;
+            max-width: 52px !important;
+            height: 30px;
+            margin-right: 10px;
+            padding: 0 !important;
+            overflow: hidden;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        .rect-toggle input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .rect-slider {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            width: 52px;
+            height: 30px;
+            background-color: #000000;
+            border: 2px solid #E4541E;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        .rect-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            top: 2px;
+            background-color: #E4541E;
+            transition: 0.3s;
+        }
+
+        input:checked + .rect-slider {
+            background-color: #E4541E;
+            border-color: #E4541E;
+        }
+
+        input:checked + .rect-slider:before {
+            transform: translateX(24px);
+            background-color: #000000;
         }
 
         .course-node {
@@ -604,7 +711,7 @@
             justify-content: center;
             background-color: #000000;
             padding: 0;
-            margin: 0;
+            margin: 0 0 5px 0;
             list-style: none;
             position: fixed;
             top: 0;
@@ -624,9 +731,9 @@
 
         .wave-container {
             position: fixed;
-            left: 20px;
+            left: 0;
             top: 0;
-            width: 260px;
+            width: 280px;
             height: 90px;
             z-index: 2001;
             pointer-events: none;
@@ -698,14 +805,25 @@
             bottom: -5px;
             left: -15px;
             right: 0;
-            height: 8px;
-            background: repeating-linear-gradient(
-                45deg,
-                #FEA800,
-                #FEA800 15px,
-                #000000 15px,
-                #000000 30px
-            );
+            height: 16px;
+            background-image:
+                repeating-linear-gradient(
+                    -45deg,
+                    #E4541E,
+                    #E4541E 15px,
+                    #000000 15px,
+                    #000000 30px
+                ),
+                repeating-linear-gradient(
+                    45deg,
+                    #E4541E,
+                    #E4541E 15px,
+                    #000000 15px,
+                    #000000 30px
+                );
+            background-size: 50% 100%, 50% 100%;
+            background-position: left center, right center;
+            background-repeat: no-repeat;
         }
 
         .tab-nav li {
@@ -714,19 +832,19 @@
 
         .tab-nav button {
             padding: 0 30px;
-            margin: 10px 10px 0 10px;
+            margin: 0 10px 0 10px;
             border: none;
             background: #000000;
             cursor: pointer;
             font-size: 16px;
             font-weight: 900;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #5BEB9D;
+            color: #E4541E;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
             letter-spacing: 3px;
             text-transform: uppercase;
-            height: calc(100% - 10px);
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -734,8 +852,8 @@
         }
 
         .tab-nav button:hover {
-            background-color: rgba(91, 235, 157, 0.2);
-            color: #5BEB9D;
+            background-color: rgba(233, 165, 41, 0.2);
+            color: #E4541E;
             animation: glitch 0.3s infinite;
         }
 
@@ -808,7 +926,10 @@
 
         .tab-nav button.active {
             color: #000000;
-            background-color: #5BEB9D;
+            background-color: #E4541E;
+            padding: 0;
+            border-top: 1px solid #000000;
+            border-bottom: 1px solid #000000;
         }
 
         .tab-content {
@@ -1066,7 +1187,7 @@
                     <animate attributeName="seed" values="1;3;5;1" dur="0.2s" repeatCount="indefinite" />
                 </feTurbulence>
             </filter>
-            <pattern id="hexagonPattern" x="0" y="0" width="87" height="100" patternUnits="userSpaceOnUse">
+            <pattern id="hexagonPattern" x="0" y="0" width="137" height="100" patternUnits="userSpaceOnUse">
                 <!-- First row hexagons -->
                 <polygon points="30,0 60,0 75,25 60,50 30,50 15,25" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
                 <!-- Second row hexagons (offset) -->
@@ -1078,7 +1199,7 @@
 
     <!-- Sine Wave Container -->
     <div class="wave-container">
-        <svg class="wave-svg" id="wave-svg" viewBox="0 0 260 90"></svg>
+        <svg class="wave-svg" id="wave-svg" viewBox="0 0 280 90"></svg>
     </div>
 
     <!-- Tab Navigation -->
@@ -1141,6 +1262,7 @@
     <!-- Course Page Tab -->
     <div id="course-page" class="tab-content active">
         <div class="sidenav">
+        <canvas id="sidenav-canvas" class="sidenav-canvas"></canvas>
         <div class="specialization-section">
             <div class="radar jamming">
                 <span class="bg-overlay"></span>
@@ -1181,42 +1303,45 @@
 
         <div class="specialization-section">
             <div class="radio-option">
-                <label class="toggle-switch">
+                <label class="rect-toggle">
                     <input type="checkbox" id="show-graph" name="show-graph" checked>
-                    <span class="toggle-slider"></span>
+                    <span class="rect-slider"></span>
                 </label>
                 <label for="show-graph">Show dependencies</label>
             </div>
         </div>
 
-        <div class="stage-label">Legend:</div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #000000; border: 2px solid #FFFFFF;"></span>
-            <span>Core</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #A020F0; border: 2px solid #FFFFFF;"></span>
-            <span>Specialization</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #202810; border: 2px solid #83D802;"></span>
-            <span>Optional</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Quant Finance</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #A020F0; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Operations Research</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-left: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Econometrics</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-bottom: 4px solid #00FFFF; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Business Analytics</span>
+        <div class="legend-container" data-augmented-ui="tl-clip tr-clip bl-clip br-clip border inlay">
+            <div class="stage-label">Legend:</div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #000000; border: 2px solid #FFFFFF;"></span>
+                <span>Core</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #A020F0; border: 2px solid #FFFFFF;"></span>
+                <span>Specialization</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #202810; border: 2px solid #83D802;"></span>
+                <span>Optional</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Quant Finance</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #A020F0; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Operations Research</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-left: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Econometrics</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-bottom: 4px solid #00FFFF; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Business Analytics</span>
+            </div>
+            <div style="height: 10px;"></div>
         </div>
     </div>
 
@@ -1224,10 +1349,15 @@
             <div id="mynetwork"></div>
         </div>
 
-        <!-- Right Panel with Spirograph -->
+        <!-- Right Panel with Video and GIFs -->
         <div class="right-panel">
             <div class="spirograph-container">
-                <canvas id="spirograph-canvas" class="spirograph-canvas"></canvas>
+                <img src="assets/at.gif" class="at-gif" alt="At animation">
+                <img src="assets/sigmoid.gif" class="sigmoid-gif" alt="Sigmoid animation">
+                <video class="video-embed" autoplay muted loop playsinline>
+                    <source src="assets/spear.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
     </div>
@@ -1398,7 +1528,7 @@
 
             // Initialize animated sine wave
             const waveSvg = d3.select("#wave-svg");
-            const waveWidth = 240;
+            const waveWidth = 280;
             const waveAmplitude = 30;
             const waveFrequency = 3;
             const numWaves = 5;
@@ -1409,7 +1539,7 @@
                 const points = [];
                 for (let x = 0; x <= waveWidth; x += 2) {
                     const y = yOffset + waveAmplitude * Math.sin((x / waveWidth) * Math.PI * 2 * waveFrequency + phase);
-                    points.push([x + 20, y + 45]);
+                    points.push([x, y + 45]);
                 }
                 return d3.line()
                     .x(d => d[0])
@@ -2121,7 +2251,7 @@
             // Position constants
             const ySpacing = 150;  // Vertical spacing between tiers
             const xSpacing = 310;  // Horizontal spacing between nodes (increased for wider nodes)
-            const labelXOffset = -700;  // Position for tier labels on left
+            const labelXOffset = -720;  // Position for tier labels on left (moved 20px left for spacing)
             // creditXOffset is now calculated dynamically - see dynamicCreditXOffset below
             const nodeHeight = 120; // Height of a single-block node
             const nodeWidth = 260;  // Fixed width for all course nodes (30% wider: 200 * 1.3)
@@ -2511,8 +2641,8 @@
 
             // Calculate total viewBox width needed
             const creditColumnSpacing = 150; // Space between the two credit columns
-            const rightPadding = 200; // Padding after the last credit column (increased by 100 for ruler)
-            const viewBoxWidth = dynamicCreditXOffset + creditColumnSpacing + rightPadding + 900; // +900 to account for starting from -900
+            const rightPadding = 210; // Padding after the last credit column (10px more padding on right)
+            const viewBoxWidth = dynamicCreditXOffset + creditColumnSpacing + rightPadding + 800; // +800 to account for starting from -800
 
             // Store positions of existing nodes before clearing
             d3.selectAll(".course-node").each(function() {
@@ -2541,7 +2671,7 @@
                 .append("svg")
                 .attr("width", "100%")
                 .attr("height", "calc(100vh - 50px)")
-                .attr("viewBox", `-900 0 ${viewBoxWidth} ${totalHeight}`);
+                .attr("viewBox", `-800 0 ${viewBoxWidth} ${totalHeight}`);
 
             // Create groups for proper layering in correct order
             const backgroundGroup = svg.append("g").attr("class", "background");
@@ -2672,7 +2802,7 @@
             // Add header labels on the right side
             const headerY = 60;
             backgroundGroup.append("text")
-                .attr("x", dynamicCreditXOffset)
+                .attr("x", dynamicCreditXOffset + 60)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
                 .attr("font-size", "29px")
@@ -2680,6 +2810,64 @@
                 .attr("font-family", "'Consolas', 'Monaco', 'Lucida Console', monospace")
                 .attr("fill", "#72D69F")
                 .text("SYSTEM CREDITS");
+
+            // Calculate ruler position for horizontal lines
+            const rulerX = viewBoxWidth - 800 - 60;
+
+            // Draw vertical orange dashed line through hexagon centers (behind hexagons)
+            backgroundGroup.append("line")
+                .attr("class", "hexagon-vertical-line")
+                .attr("x1", labelXOffset + 90)
+                .attr("x2", labelXOffset + 90)
+                .attr("y1", 0)
+                .attr("y2", totalHeight)
+                .attr("stroke", "#E4541E")
+                .attr("stroke-width", 3)
+                .attr("opacity", 0.6)
+                .attr("stroke-dasharray", "10,5");
+
+            // Add scrolling hexadecimal values along the vertical line
+            const hexScrollGroup = backgroundGroup.append("g").attr("class", "hex-scroll");
+            const numHexValues = 100;
+            const hexSpacing = 15; // Tight spacing between hex values
+            const scrollSpeed = 0.5; // Half speed, scrolling upward
+
+            function generateRandomHex() {
+                return Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0');
+            }
+
+            // Create hex values
+            const hexValues = [];
+            for (let i = 0; i < numHexValues; i++) {
+                const hexText = hexScrollGroup.append("text")
+                    .attr("x", labelXOffset + 90)
+                    .attr("y", i * hexSpacing)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .attr("font-family", "'Courier New', monospace")
+                    .attr("fill", "#E4541E")
+                    .attr("opacity", 0.7)
+                    .text(generateRandomHex());
+                hexValues.push(hexText);
+            }
+
+            // Animate scrolling upward
+            function scrollHexValues() {
+                hexValues.forEach((textEl, index) => {
+                    let currentY = parseFloat(textEl.attr("y"));
+                    currentY -= scrollSpeed; // Scroll upward
+
+                    // Reset to bottom when it goes above the top
+                    if (currentY < -hexSpacing) {
+                        currentY = totalHeight + hexSpacing;
+                        textEl.text(generateRandomHex());
+                    }
+
+                    textEl.attr("y", currentY);
+                });
+                requestAnimationFrame(scrollHexValues);
+            }
+            scrollHexValues();
 
             // Add tier labels and credits
             tierOrder.forEach((blockNum) => {
@@ -2738,9 +2926,9 @@
                     // Outer triangle outline (20px away - double the space)
                     const outerTriangleSize = triangleSize + 40;
                     const outerTrianglePoints = [
-                        [dynamicCreditXOffset, y - outerTriangleSize/2],
-                        [dynamicCreditXOffset - outerTriangleSize/2, y + outerTriangleSize/2],
-                        [dynamicCreditXOffset + outerTriangleSize/2, y + outerTriangleSize/2]
+                        [dynamicCreditXOffset + 60, y - outerTriangleSize/2],
+                        [dynamicCreditXOffset + 60 - outerTriangleSize/2, y + outerTriangleSize/2],
+                        [dynamicCreditXOffset + 60 + outerTriangleSize/2, y + outerTriangleSize/2]
                     ].map(p => p.join(',')).join(' ');
 
                     backgroundGroup.append("polygon")
@@ -2751,9 +2939,9 @@
 
                     // Inner solid triangle for total credits (pointing up)
                     const trianglePoints1 = [
-                        [dynamicCreditXOffset, y - triangleSize/2],
-                        [dynamicCreditXOffset - triangleSize/2, y + triangleSize/2],
-                        [dynamicCreditXOffset + triangleSize/2, y + triangleSize/2]
+                        [dynamicCreditXOffset + 60, y - triangleSize/2],
+                        [dynamicCreditXOffset + 60 - triangleSize/2, y + triangleSize/2],
+                        [dynamicCreditXOffset + 60 + triangleSize/2, y + triangleSize/2]
                     ].map(p => p.join(',')).join(' ');
 
                     backgroundGroup.append("polygon")
@@ -2763,7 +2951,7 @@
                         .attr("stroke-width", 2);
 
                     const totalCreditsText = backgroundGroup.append("text")
-                        .attr("x", dynamicCreditXOffset)
+                        .attr("x", dynamicCreditXOffset + 60)
                         .attr("y", y + 8)
                         .attr("text-anchor", "middle")
                         .attr("font-size", "32px")
@@ -3500,7 +3688,7 @@
 
             // Draw ruler on the right side with cumulative credits
             const rulerGroup = svg.append("g").attr("class", "ruler");
-            const rulerX = viewBoxWidth - 900 - 60; // Position on the right side with some padding
+            // rulerX already defined above for horizontal lines
 
             // Main vertical line
             rulerGroup.append("line")
@@ -3852,6 +4040,57 @@
                 .attr("letter-spacing", "1px")
                 .text(generateHex());
 
+            // Matrix-style falling Japanese characters
+            const japaneseChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
+            const matrixGroup = backgroundGroup.append("g").attr("class", "matrix-effect");
+
+            // Align with purple grid background (100px spacing - every other grid line)
+            const gridSpacing = 100;
+            const viewBoxStart = -800;
+            const viewBoxEnd = viewBoxWidth - 800;
+            const startColumn = Math.ceil(viewBoxStart / gridSpacing);
+            const endColumn = Math.floor(viewBoxEnd / gridSpacing);
+            const matrixColumns = endColumn - startColumn + 1;
+
+            // Create columns of falling characters aligned with purple grid lines
+            for (let col = 0; col < matrixColumns; col++) {
+                const xPos = (startColumn + col) * gridSpacing; // Align with 100px spacing
+                const numChars = Math.floor(Math.random() * 10) + 5; // 5-15 characters per column
+                const startY = Math.random() * totalHeight;
+                const speed = Math.random() * 2 + 1; // Random speed
+
+                for (let i = 0; i < numChars; i++) {
+                    const char = japaneseChars[Math.floor(Math.random() * japaneseChars.length)];
+                    const opacity = (numChars - i) / numChars; // Fade out as we go up
+
+                    const text = matrixGroup.append("text")
+                        .attr("x", xPos)
+                        .attr("y", startY - (i * 20))
+                        .attr("font-size", "14px")
+                        .attr("font-family", "'Courier New', monospace")
+                        .attr("fill", "#00FF00")
+                        .attr("opacity", opacity * 0.4)
+                        .text(char);
+
+                    // Animate falling
+                    (function(textEl, column, speed) {
+                        function fall() {
+                            let currentY = parseFloat(textEl.attr("y"));
+                            currentY += speed;
+
+                            if (currentY > totalHeight) {
+                                currentY = -20;
+                                textEl.text(japaneseChars[Math.floor(Math.random() * japaneseChars.length)]);
+                            }
+
+                            textEl.attr("y", currentY);
+                            requestAnimationFrame(fall);
+                        }
+                        fall();
+                    })(text, col, speed);
+                }
+            }
+
             console.log('D3 visualization complete');
         }
 
@@ -3891,10 +4130,10 @@
         // Load data when page loads
         loadAndVisualize();
 
-        // Conway's Game of Life
-        const canvas = document.getElementById('spirograph-canvas');
+        // Conway's Game of Life (in left sidenav)
+        const canvas = document.getElementById('sidenav-canvas');
         if (canvas) {
-            const container = canvas.parentElement;
+            const container = document.querySelector('.sidenav');
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
 
