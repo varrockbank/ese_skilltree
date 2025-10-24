@@ -1,0 +1,14 @@
+{
+  "id": "FEB22002X",
+  "name": "Combinatorial Optimisation",
+  "credits": 4,
+  "blockStart": "BLOK1",
+  "blockEnd": "BLOK1",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22002X&collegejaar=2025",
+  "dependencies": [
+    "FEB21009X",
+    "FEB21010X",
+    "FEB21011X"
+  ],
+  "premaster": false
+}

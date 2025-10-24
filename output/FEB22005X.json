@@ -1,0 +1,12 @@
+{
+  "id": "FEB22005X",
+  "name": "Econometrics 2",
+  "credits": 4,
+  "blockStart": "BLOK4",
+  "blockEnd": "BLOK4",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22005X&collegejaar=2025",
+  "dependencies": [
+    "FEB22004X"
+  ],
+  "premaster": false
+}

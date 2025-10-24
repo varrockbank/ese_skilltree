@@ -18,23 +18,23 @@
 
         .content-wrapper {
             flex: 1;
-            margin-left: 280px;
+            margin-left: 200px;
             padding: 0;
         }
 
         #mynetwork {
             width: 100%;
-            height: 100vh;
+            height: calc(100vh - 50px);
             background-color: white;
             position: relative;
         }
 
         .sidenav {
             position: fixed;
-            top: 0;
+            top: 50px;
             left: 0;
-            height: 100vh;
-            width: 280px;
+            height: calc(100vh - 50px);
+            width: 200px;
             background-color: white;
             border-right: 1px solid #ddd;
             box-shadow: 2px 0 8px rgba(0,0,0,0.1);
@@ -87,10 +87,267 @@
         .course-node:hover {
             opacity: 0.8;
         }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background-color: white;
+            border-bottom: 2px solid #ddd;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            height: 50px;
+        }
+
+        .tab-nav li {
+            margin: 0;
+        }
+
+        .tab-nav button {
+            padding: 15px 30px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-nav button:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .tab-nav button.active {
+            color: #333;
+            border-bottom-color: #4CAF50;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 50px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Course Data Tab - Full Width */
+        #course-data {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+        }
+
+        /* Programme Data Tab - Full Width */
+        #programme-data {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+        }
+
+        /* Course Data Page Styles */
+        .course-data-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .course-data-sidebar {
+            width: 300px;
+            background-color: white;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .course-data-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .course-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .course-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .course-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .course-item.active {
+            background-color: #e8f5e9;
+            border-left-color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .course-item-number {
+            color: #999;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .course-data-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #fafafa;
+        }
+
+        .course-data-toolbar {
+            padding: 15px 20px;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .course-data-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .content-sub-tabs {
+            display: flex;
+            gap: 5px;
+        }
+
+        .content-sub-tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .content-sub-tab:hover {
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .content-sub-tab.active {
+            color: #4CAF50;
+            border-bottom-color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .course-data-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            position: relative;
+        }
+
+        .sub-content {
+            display: none;
+            height: 100%;
+        }
+
+        .sub-content.active {
+            display: block;
+        }
+
+        .json-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: calc(100vh - 200px);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            resize: none;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+            margin-top: 100px;
+        }
+
+        /* Program Data Table Styles */
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .csv-table th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .csv-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .csv-table td.dependencies-column {
+            max-width: 200px;
+            white-space: normal;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .csv-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .csv-table tr:nth-child(even) {
+            background-color: #fafafa;
+        }
     </style>
 </head>
 <body>
-    <div class="sidenav">
+    <!-- Tab Navigation -->
+    <ul class="tab-nav">
+        <li><button class="tab-button active" data-tab="course-page">Schedule</button></li>
+        <li><button class="tab-button" data-tab="course-data">Course Data</button></li>
+        <li><button class="tab-button" data-tab="programme-data">Programme Data</button></li>
+        <li><button class="tab-button" data-tab="program-data">Collated Data</button></li>
+    </ul>
+
+    <!-- Course Page Tab -->
+    <div id="course-page" class="tab-content active">
+        <div class="sidenav">
         <div class="specialization-section">
             <div class="stage-label">Specialization:</div>
             <div class="radio-option">
@@ -145,11 +402,507 @@
         </div>
     </div>
 
-    <div class="content-wrapper" id="contentWrapper">
-        <div id="mynetwork"></div>
+        <div class="content-wrapper" id="contentWrapper">
+            <div id="mynetwork"></div>
+        </div>
+    </div>
+
+    <!-- Course Data Tab -->
+    <div id="course-data" class="tab-content">
+        <div class="course-data-container">
+            <!-- Left Sidebar: Course List -->
+            <div class="course-data-sidebar">
+                <ul id="course-list" class="course-list">
+                    <!-- Course list will be loaded here dynamically -->
+                </ul>
+            </div>
+
+            <!-- Right Panel: JSON Display -->
+            <div class="course-data-main">
+                <div class="course-data-toolbar">
+                    <div class="content-sub-tabs">
+                        <button class="content-sub-tab active" data-sub-tab="raw-json">Raw Data</button>
+                        <button class="content-sub-tab" data-sub-tab="transformed-json">Processed Data</button>
+                    </div>
+                </div>
+                <div class="course-data-content">
+                    <div id="raw-json" class="sub-content active">
+                        <textarea id="raw-json-display" class="json-textarea" readonly placeholder="Click a course on the left to view its JSON data..."></textarea>
+                    </div>
+                    <div id="transformed-json" class="sub-content">
+                        <textarea id="transformed-json-display" class="json-textarea" readonly placeholder="Click a course on the left to view transformed JSON data..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Program Data Tab -->
+    <div id="program-data" class="tab-content">
+        <div style="padding: 20px; height: calc(100vh - 50px); overflow: auto;">
+            <div id="csv-table-container">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programme Data Tab -->
+    <div id="programme-data" class="tab-content">
+        <div class="course-data-container">
+            <!-- Left Sidebar: Category Files List -->
+            <div class="course-data-sidebar">
+                <ul id="category-list" class="course-list">
+                    <!-- Category files will be loaded here -->
+                </ul>
+            </div>
+
+            <!-- Right Panel: JSON Display -->
+            <div class="course-data-main">
+                <div class="course-data-content">
+                    <textarea id="category-json-display" class="json-textarea" readonly placeholder="Click a category on the left to view its JSON data..."></textarea>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Sub-tab switching functionality (for content area)
+        document.querySelectorAll('.content-sub-tab').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all sub-tab buttons and content
+                document.querySelectorAll('.content-sub-tab').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.sub-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const subTabId = button.getAttribute('data-sub-tab');
+                document.getElementById(subTabId).classList.add('active');
+            });
+        });
+
+        // List of course files (based on courses.txt)
+        const courseFiles = [
+            'FEB22002X', 'FEB22004X', 'FEB22005X', 'FEB22017X', 'FEB63016X',
+            'FEB22003X', 'FEB21011S', 'FEB22009S', 'FEB21009X', 'FEB22018X',
+            'FEB22008X', 'FEB21010X', 'FEB21020X', 'FEB22006X', 'FEB21005S',
+            'FEB61003', 'FEB22013X', 'FEB21007S', 'FEB63019X', 'FEB23001X'
+        ];
+
+        // Extract course ID (cursus) from raw JSON
+        function extractCourseId(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find cursus field
+                const idField = rubriekKop.velden.find(field => field.veld === 'cursus');
+                if (!idField) {
+                    return null;
+                }
+
+                return idField.waarde;
+            } catch (error) {
+                console.error('Error extracting course ID:', error);
+                return null;
+            }
+        }
+
+        // Extract cursus_korte_naam from raw JSON
+        function extractCourseName(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find cursus_korte_naam field
+                const nameField = rubriekKop.velden.find(field => field.veld === 'cursus_korte_naam');
+                if (!nameField) {
+                    return null;
+                }
+
+                return nameField.waarde;
+            } catch (error) {
+                console.error('Error extracting course name:', error);
+                return null;
+            }
+        }
+
+        // Extract URL from raw JSON
+        function extractUrl(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find deeplink_detailscherm_extern field
+                const urlField = rubriekKop.velden.find(field => field.veld === 'deeplink_detailscherm_extern');
+                if (!urlField) {
+                    return null;
+                }
+
+                return urlField.waarde;
+            } catch (error) {
+                console.error('Error extracting URL:', error);
+                return null;
+            }
+        }
+
+        // Extract study credits from raw JSON
+        function extractStudyCredits(rawJson) {
+            try {
+                // Find rubriek-zoek item
+                const rubriekZoek = rawJson.items.find(item => item.rubriek === 'rubriek-zoek');
+                if (!rubriekZoek || !rubriekZoek.velden) {
+                    return null;
+                }
+
+                // Find Study points field by titel
+                const creditsField = rubriekZoek.velden.find(field => field.titel === 'Study points');
+                if (!creditsField) {
+                    return null;
+                }
+
+                // Parse the value (e.g., "4 EC" -> 4)
+                const match = creditsField.waarde.match(/(\d+)/);
+                if (match) {
+                    return parseInt(match[1], 10);
+                }
+
+                return null;
+            } catch (error) {
+                console.error('Error extracting study credits:', error);
+                return null;
+            }
+        }
+
+        // Extract dependencies (prerequisites) from raw JSON
+        function extractDependencies(rawJson) {
+            try {
+                // Find rubriek-inhoud item
+                const rubriekInhoud = rawJson.items.find(item => item.rubriek === 'rubriek-inhoud');
+                if (!rubriekInhoud || !rubriekInhoud.velden) {
+                    return [];
+                }
+
+                // Find content field (item-inhoud-1)
+                const contentField = rubriekInhoud.velden.find(field => field.veld === 'item-inhoud-1');
+                if (!contentField || !contentField.waarde) {
+                    return [];
+                }
+
+                const content = contentField.waarde;
+
+                // Remove HTML tags
+                const textContent = content.replace(/<[^>]*>/g, ' ');
+
+                // Look for prerequisite patterns
+                // Pattern 1: "uses knowledge of [courses]"
+                // Pattern 2: "required: [courses]"
+                // Pattern 3: Any course mentions before "and is required for" or "is required for"
+
+                const dependencies = [];
+
+                // Split by common separators that indicate "downstream" courses
+                const prerequisiteSection = textContent.split(/and is required for|is required for/i)[0];
+
+                // Extract all course codes in the prerequisite section
+                // Match patterns like: FEB21005X, FEB21005S, FEB22013X, etc.
+                const courseCodePattern = /FEB\d{5}[A-Z\d]/g;
+                const matches = prerequisiteSection.match(courseCodePattern);
+
+                if (matches) {
+                    // Remove duplicates
+                    const uniqueCodes = [...new Set(matches)];
+                    dependencies.push(...uniqueCodes);
+                }
+
+                return dependencies;
+            } catch (error) {
+                console.error('Error extracting dependencies:', error);
+                return [];
+            }
+        }
+
+        // Extract block information from raw JSON
+        function extractBlock(rawJson) {
+            try {
+                // Find rubriek-inschrijven item
+                const rubriekInschrijven = rawJson.items.find(item => item.rubriek === 'rubriek-inschrijven');
+                if (!rubriekInschrijven || !rubriekInschrijven.velden) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                // Find enrollment periods table
+                const enrollmentTable = rubriekInschrijven.velden.find(field => field.veld === 'tabel-inschrijfperiodes');
+                if (!enrollmentTable || !enrollmentTable.waarde || !Array.isArray(enrollmentTable.waarde)) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                // Get the first enrollment period
+                const firstPeriod = enrollmentTable.waarde[0];
+                if (!firstPeriod || !firstPeriod.omschrijving) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                const omschrijving = firstPeriod.omschrijving;
+
+                // Check if it's a range (e.g., "Block BLOK4 until Block BLOK5")
+                const rangeMatch = omschrijving.match(/Block\s+(\S+)\s+until\s+Block\s+(\S+)/);
+                if (rangeMatch) {
+                    return {
+                        blockStart: rangeMatch[1],
+                        blockEnd: rangeMatch[2]
+                    };
+                }
+
+                // Check if it's a single block (e.g., "Block BLOK2")
+                const singleMatch = omschrijving.match(/Block\s+(\S+)/);
+                if (singleMatch) {
+                    return {
+                        blockStart: singleMatch[1],
+                        blockEnd: singleMatch[1]
+                    };
+                }
+
+                return { blockStart: null, blockEnd: null };
+            } catch (error) {
+                console.error('Error extracting block:', error);
+                return { blockStart: null, blockEnd: null };
+            }
+        }
+
+        // Load and display a specific course JSON
+        async function loadCourseJSON(courseCode) {
+            const rawJsonDisplay = document.getElementById('raw-json-display');
+            const transformedJsonDisplay = document.getElementById('transformed-json-display');
+
+            // Show loading state
+            rawJsonDisplay.value = 'Loading...';
+            transformedJsonDisplay.value = 'Loading...';
+
+            try {
+                // Load raw data from input directory
+                const rawResponse = await fetch(`input/${courseCode}.json`);
+                if (!rawResponse.ok) {
+                    throw new Error(`HTTP error! status: ${rawResponse.status}`);
+                }
+                const rawJson = await rawResponse.json();
+
+                // Display raw JSON
+                rawJsonDisplay.value = JSON.stringify(rawJson, null, 2);
+
+                // Load processed data from output directory
+                const processedResponse = await fetch(`output/${courseCode}.json`);
+                if (!processedResponse.ok) {
+                    throw new Error(`HTTP error! status: ${processedResponse.status}`);
+                }
+                const processedJson = await processedResponse.json();
+
+                // Display processed JSON
+                transformedJsonDisplay.value = JSON.stringify(processedJson, null, 2);
+
+            } catch (error) {
+                const errorMsg = `Error loading ${courseCode}.json: ${error.message}`;
+                rawJsonDisplay.value = errorMsg;
+                transformedJsonDisplay.value = errorMsg;
+            }
+        }
+
+        // Initialize course list in sidebar
+        function initializeCourseList() {
+            const courseList = document.getElementById('course-list');
+            courseList.innerHTML = '';
+
+            courseFiles.forEach((courseCode, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'course-item';
+                listItem.dataset.courseCode = courseCode;
+                listItem.innerHTML = `
+                    <span class="course-item-number">${index + 1}.</span>
+                    <span>${courseCode}</span>
+                `;
+
+                // Add click handler
+                listItem.addEventListener('click', () => {
+                    // Remove active class from all items
+                    document.querySelectorAll('.course-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    // Add active class to clicked item
+                    listItem.classList.add('active');
+
+                    // Load the course JSON
+                    loadCourseJSON(courseCode);
+                });
+
+                courseList.appendChild(listItem);
+            });
+
+            console.log(`Initialized ${courseFiles.length} course items`);
+
+            // Auto-select first course
+            if (courseFiles.length > 0) {
+                const firstItem = courseList.querySelector('.course-item');
+                if (firstItem) {
+                    firstItem.classList.add('active');
+                    loadCourseJSON(courseFiles[0]);
+                }
+            }
+        }
+
+        // Initialize course list when page loads
+        initializeCourseList();
+
+        // Load and display CSV as table
+        async function loadProgramData() {
+            const container = document.getElementById('csv-table-container');
+
+            try {
+                const response = await fetch('course.csv');
+                if (!response.ok) {
+                    throw new Error('Failed to load course.csv');
+                }
+                const csvText = await response.text();
+
+                // Parse CSV
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+
+                // Find dependencies column index
+                const dependenciesIndex = headers.indexOf('dependencies');
+
+                // Create table
+                let tableHtml = '<table class="csv-table"><thead><tr>';
+
+                // Add headers
+                headers.forEach(header => {
+                    tableHtml += `<th>${header}</th>`;
+                });
+                tableHtml += '</tr></thead><tbody>';
+
+                // Add rows
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',');
+                    tableHtml += '<tr>';
+                    values.forEach((value, index) => {
+                        const className = index === dependenciesIndex ? ' class="dependencies-column"' : '';
+                        tableHtml += `<td${className}>${value || ''}</td>`;
+                    });
+                    tableHtml += '</tr>';
+                }
+
+                tableHtml += '</tbody></table>';
+                container.innerHTML = tableHtml;
+
+                console.log(`Loaded ${lines.length - 1} courses from course.csv`);
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                container.innerHTML = `<p style="color: red;">Error loading course.csv: ${error.message}</p>`;
+            }
+        }
+
+        // Load program data when page loads
+        loadProgramData();
+
+        // Category files list
+        const categoryFiles = [
+            { name: 'Core', filename: 'programme/core.json' },
+            { name: 'Quantitative Finance', filename: 'programme/qf.json' },
+            { name: 'Operations Research', filename: 'programme/or.json' },
+            { name: 'Econometrics', filename: 'programme/econ.json' },
+            { name: 'Marketing', filename: 'programme/marketing.json' },
+            { name: 'Extracurricular', filename: 'programme/extracurricular.json' }
+        ];
+
+        // Load and display a specific category JSON
+        async function loadCategoryJSON(filename, displayName) {
+            const jsonDisplay = document.getElementById('category-json-display');
+
+            // Show loading state
+            jsonDisplay.value = 'Loading...';
+
+            try {
+                const response = await fetch(filename);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const json = await response.json();
+
+                // Just show raw JSON
+                jsonDisplay.value = JSON.stringify(json, null, 2);
+            } catch (error) {
+                jsonDisplay.value = `Error loading ${filename}: ${error.message}`;
+            }
+        }
+
+        // Initialize category list in sidebar
+        function initializeCategoryList() {
+            const categoryList = document.getElementById('category-list');
+            categoryList.innerHTML = '';
+
+            categoryFiles.forEach((category, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'course-item';
+                listItem.dataset.filename = category.filename;
+                listItem.innerHTML = `
+                    <span class="course-item-number">${index + 1}.</span>
+                    <span>${category.name}</span>
+                `;
+
+                // Add click handler
+                listItem.addEventListener('click', () => {
+                    // Remove active class from all items
+                    document.querySelectorAll('#category-list .course-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    // Add active class to clicked item
+                    listItem.classList.add('active');
+
+                    // Load the category JSON
+                    loadCategoryJSON(category.filename, category.name);
+                });
+
+                categoryList.appendChild(listItem);
+            });
+
+            console.log(`Initialized ${categoryFiles.length} category items`);
+
+            // Auto-select first category
+            if (categoryFiles.length > 0) {
+                const firstItem = categoryList.querySelector('.course-item');
+                if (firstItem) {
+                    firstItem.classList.add('active');
+                    loadCategoryJSON(categoryFiles[0].filename, categoryFiles[0].name);
+                }
+            }
+        }
+
+        // Initialize category list when page loads
+        initializeCategoryList();
+
         // Parse CSV
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
@@ -177,12 +930,42 @@
             return `Block ${blockNum}`;
         }
 
+        // Animate number from start to end
+        function animateNumber(element, start, end, duration = 500) {
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth animation
+                const easeProgress = progress < 0.5
+                    ? 2 * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+                const current = Math.round(start + (end - start) * easeProgress);
+                element.text(current.toString());
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
         // Store courses globally for re-rendering
         let allCoursesData = [];
         // Track which courses have been moved to extracurricular (for non-extracurricular courses)
         let movedToExtracurricular = new Set(['13']);
         // Track which extracurricular courses have been added back to their regular position
         let extracurricularAddedToRegular = new Set();
+        // Track which alternatives are added (can have 0, 1, or 2)
+        let qfAddedCourses = new Set();
+        let orAddedCourses = new Set();
+        // Store previous credit values for animation
+        let previousCreditsPerBlock = {};
+        let previousCumulativeCredits = {};
 
         // Main function to load and visualize data
         async function loadAndVisualize() {
@@ -242,6 +1025,22 @@
 
         // Build the visualization using D3.js
         function buildVisualization(allCourses) {
+            // Initialize added courses if not already set
+            if (qfAddedCourses.size === 0) {
+                // Find QF alternatives and add the first one by default
+                const qfCourseWithAlt = allCourses.find(c => c.qf_alternative && c.qf_alternative.trim() !== '');
+                if (qfCourseWithAlt) {
+                    qfAddedCourses.add(qfCourseWithAlt.id);
+                }
+            }
+            if (orAddedCourses.size === 0) {
+                // Find OR alternatives and add the first one by default
+                const orCourseWithAlt = allCourses.find(c => c.or_alternative && c.or_alternative.trim() !== '');
+                if (orCourseWithAlt) {
+                    orAddedCourses.add(orCourseWithAlt.id);
+                }
+            }
+
             // Filter courses based on specialization selection
             const qfRadio = document.getElementById('spec-qf');
             const orRadio = document.getElementById('spec-or');
@@ -271,24 +1070,24 @@
 
             let courses;
             if (selectedSpec === 'qf') {
-                // Show QF courses + core courses
+                // Show QF courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.qf === 'true' || course.core === 'true'
+                    course.qf === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'or') {
-                // Show OR courses + core courses
+                // Show OR courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.or === 'true' || course.core === 'true'
+                    course.or === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'econ') {
-                // Show Econ courses + core courses
+                // Show Econ courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.econ === 'true' || course.core === 'true'
+                    course.econ === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'marketing') {
-                // Show Marketing courses + core courses
+                // Show Marketing courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.marketing === 'true' || course.core === 'true'
+                    course.marketing === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else {
                 // Show all courses
@@ -300,11 +1099,19 @@
 
             // No separate filtering needed - we'll handle rendering logic below
 
+            // Helper function to extract block number from "BLOK1", "BLOK2", etc.
+            function parseBlockNumber(blockString) {
+                if (typeof blockString === 'number') return blockString;
+                if (!blockString) return NaN;
+                const match = blockString.match(/\d+/);
+                return match ? parseInt(match[0]) : NaN;
+            }
+
             // Get all unique block numbers from courses
             const allBlocks = new Set();
             courses.forEach(course => {
-                const start = parseInt(course.block_start);
-                const end = parseInt(course.block_end);
+                const start = parseBlockNumber(course.block_start);
+                const end = parseBlockNumber(course.block_end);
                 for (let i = start; i <= end; i++) {
                     allBlocks.add(i);
                 }
@@ -322,16 +1129,31 @@
 
             // Position constants
             const ySpacing = 150;  // Vertical spacing between tiers
-            const xSpacing = 250;  // Horizontal spacing between nodes
-            const labelXOffset = -600;  // Position for tier labels on left
-            const creditXOffset = 800;   // Position for credit info on right
+            const xSpacing = 240;  // Horizontal spacing between nodes
+            const labelXOffset = -700;  // Position for tier labels on left
+            const creditXOffset = 900;   // Position for credit info on right
             const nodeHeight = 120; // Height of a single-block node
             const nodeWidth = 200;  // Fixed width for all course nodes
 
-            // Create map of block number to y position
+            // Pre-calculate row assignments to determine block heights
+            // We need to do this early so we can calculate proper y positions
+            const blockRows = {}; // Maps block number to number of rows needed
+            tierOrder.forEach(blockNum => {
+                blockRows[blockNum] = 1; // Default to 1 row per block
+            });
+
+            // Create map of block number to y position (accounting for multi-row blocks)
             const blockToY = {};
-            tierOrder.forEach((blockNum, tierIndex) => {
-                blockToY[blockNum] = tierIndex * ySpacing + 100; // +100 for top padding
+            const blockHeights = {}; // Store height of each block
+            let cumulativeY = 80; // Start with top padding
+
+            tierOrder.forEach((blockNum) => {
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = numRows * ySpacing;
+
+                blockToY[blockNum] = cumulativeY;
+                blockHeights[blockNum] = blockHeight;
+                cumulativeY += blockHeight;
             });
 
             // Calculate credits per block and cumulative
@@ -343,7 +1165,7 @@
                 creditsPerBlock[blockNum] = 0;
             });
 
-            // Count credits for each block (excluding moved courses and extracurricular courses not added to regular)
+            // Count credits for each block (excluding moved courses, extracurricular courses not added to regular, and alternatives not added)
             courses.forEach(course => {
                 // Skip courses moved to extracurricular
                 if (movedToExtracurricular.has(course.id)) return;
@@ -351,8 +1173,21 @@
                 // Skip extracurricular courses unless they've been added to regular
                 if (course.extracurricular === 'true' && !extracurricularAddedToRegular.has(course.id)) return;
 
+                // Check if this is an alternative for the current specialization
+                const isQfAlternative = course.qf_alternative && course.qf_alternative.trim() !== '';
+                const isOrAlternative = course.or_alternative && course.or_alternative.trim() !== '';
+                const isAlternative = (selectedSpec === 'qf' && isQfAlternative) || (selectedSpec === 'or' && isOrAlternative);
+
+                // Skip alternatives that are not added
+                if (isAlternative) {
+                    const isQfAdded = qfAddedCourses.has(course.id);
+                    const isOrAdded = orAddedCourses.has(course.id);
+                    const isAdded = (selectedSpec === 'qf' && isQfAdded) || (selectedSpec === 'or' && isOrAdded);
+                    if (!isAdded) return;
+                }
+
                 const credits = parseInt(course.credits);
-                const start = parseInt(course.block_start);
+                const start = parseBlockNumber(course.block_start);
 
                 // Add credits to the starting block
                 creditsPerBlock[start] = (creditsPerBlock[start] || 0) + credits;
@@ -367,10 +1202,10 @@
 
             // Helper function to check if courses overlap vertically
             function coursesOverlap(course1, course2) {
-                const start1 = parseInt(course1.block_start);
-                const end1 = parseInt(course1.block_end);
-                const start2 = parseInt(course2.block_start);
-                const end2 = parseInt(course2.block_end);
+                const start1 = parseBlockNumber(course1.block_start);
+                const end1 = parseBlockNumber(course1.block_end);
+                const start2 = parseBlockNumber(course2.block_start);
+                const end2 = parseBlockNumber(course2.block_end);
 
                 return !(end1 < start2 || end2 < start1);
             }
@@ -391,21 +1226,56 @@
 
             // Create a list that includes courses in multiple places when needed
             const coursesToRender = [];
-            courses.forEach(course => {
-                if (course.extracurricular !== 'true') {
-                    // Regular course - always render in original position
-                    // Show as placeholder if moved to extracurricular
-                    coursesToRender.push({ ...course, _isPlaceholder: movedToExtracurricular.has(course.id) });
 
-                    // If moved to extracurricular, also render in extracurricular area
-                    if (movedToExtracurricular.has(course.id)) {
+            courses.forEach(course => {
+                // Check if this course is a QF or OR alternative
+                const isQfAlternative = course.qf_alternative && course.qf_alternative.trim() !== '';
+                const isOrAlternative = course.or_alternative && course.or_alternative.trim() !== '';
+
+                // Check if this course is added (in the Sets)
+                const isQfAdded = qfAddedCourses.has(course.id);
+                const isOrAdded = orAddedCourses.has(course.id);
+
+                // Determine if it's an alternative for the current specialization
+                const isAlternative = (selectedSpec === 'qf' && isQfAlternative) || (selectedSpec === 'or' && isOrAlternative);
+                const isAdded = (selectedSpec === 'qf' && isQfAdded) || (selectedSpec === 'or' && isOrAdded);
+
+                if (course.extracurricular !== 'true') {
+                    // Regular course
+                    if (isAlternative) {
+                        // Alternative course - always show placeholder in original position
                         coursesToRender.push({
                             ...course,
-                            block_start: '6',
-                            block_end: '6',
-                            _inExtracurricular: true,
-                            _isPlaceholder: false
+                            _isPlaceholder: !isAdded,
+                            _isAlternative: true
                         });
+
+                        // If NOT added, also show in optional row (block 6)
+                        if (!isAdded) {
+                            coursesToRender.push({
+                                ...course,
+                                block_start: '6',
+                                block_end: '6',
+                                _inExtracurricular: true,
+                                _isPlaceholder: false,
+                                _isAlternative: true
+                            });
+                        }
+                    } else {
+                        // Regular rendering
+                        // Show as placeholder if moved to extracurricular
+                        coursesToRender.push({ ...course, _isPlaceholder: movedToExtracurricular.has(course.id) });
+
+                        // If moved to extracurricular, also render in extracurricular area
+                        if (movedToExtracurricular.has(course.id)) {
+                            coursesToRender.push({
+                                ...course,
+                                block_start: '6',
+                                block_end: '6',
+                                _inExtracurricular: true,
+                                _isPlaceholder: false
+                            });
+                        }
                     }
                 } else {
                     // Extracurricular course with a designated block
@@ -433,9 +1303,15 @@
             // Strategy: Within each tier, core courses on left, specialization courses on right
             const sortedCourses = [...coursesToRender].sort((a, b) => {
                 // Extracurricular courses go to block 6
-                const blockA = a._inExtracurricular ? 6 : parseInt(a.block_start);
-                const blockB = b._inExtracurricular ? 6 : parseInt(b.block_start);
+                const blockA = a._inExtracurricular ? 6 : parseBlockNumber(a.block_start);
+                const blockB = b._inExtracurricular ? 6 : parseBlockNumber(b.block_start);
                 if (blockA !== blockB) return blockA - blockB;
+
+                // Within same block, non-extracurricular courses come before extracurricular
+                const aIsExtracurricular = a.extracurricular === 'true';
+                const bIsExtracurricular = b.extracurricular === 'true';
+                if (!aIsExtracurricular && bIsExtracurricular) return -1;
+                if (aIsExtracurricular && !bIsExtracurricular) return 1;
 
                 // Within same block, prioritize core courses first
                 const aIsCore = a.core === 'true';
@@ -512,18 +1388,80 @@
             // Find total number of columns needed
             const numColumns = Math.max(...originalCourseColumns, 0) + 1;
 
+            // Group courses by block and calculate row assignments
+            const coursesByBlock = {};
+            const courseRowAssignments = {}; // Maps course index to row within its block
+            // blockRows is already declared earlier
+
+            coursesToRender.forEach((course, index) => {
+                const isInExtracurricular = course._inExtracurricular;
+                const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
+
+                if (!coursesByBlock[blockStart]) {
+                    coursesByBlock[blockStart] = [];
+                }
+                coursesByBlock[blockStart].push({ course, index, column: originalCourseColumns[index] });
+            });
+
+            // Limit to 4 courses per row
+            const maxCoursesPerRow = 4;
+
+            // Track column assignments within each row
+            const courseColumnsInRow = {}; // Maps course index to column within its row
+
+            // Assign rows to courses within each block
+            Object.keys(coursesByBlock).forEach(blockNum => {
+                const coursesInBlock = coursesByBlock[blockNum];
+
+                // Sort by column
+                coursesInBlock.sort((a, b) => a.column - b.column);
+
+                // Assign rows
+                let currentRow = 0;
+                let coursesInCurrentRow = 0;
+                let columnInRow = 0;
+
+                coursesInBlock.forEach(({ course, index, column }) => {
+                    if (coursesInCurrentRow >= maxCoursesPerRow) {
+                        currentRow++;
+                        coursesInCurrentRow = 0;
+                        columnInRow = 0;
+                    }
+                    courseRowAssignments[index] = currentRow;
+                    courseColumnsInRow[index] = columnInRow;
+                    coursesInCurrentRow++;
+                    columnInRow++;
+                });
+
+                blockRows[blockNum] = currentRow + 1; // Total rows for this block
+            });
+
+            // Recalculate block positions now that we know the actual number of rows
+            cumulativeY = 80; // Reset to top padding
+            tierOrder.forEach((blockNum) => {
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = numRows * ySpacing;
+
+                blockToY[blockNum] = cumulativeY;
+                blockHeights[blockNum] = blockHeight;
+                cumulativeY += blockHeight;
+            });
+
             // Clear previous content
             d3.select("#mynetwork").selectAll("*").remove();
 
             // Create SVG
+            const totalHeight = cumulativeY + 100; // Add bottom padding
             const svg = d3.select("#mynetwork")
                 .append("svg")
                 .attr("width", "100%")
-                .attr("height", "100vh")
-                .attr("viewBox", "-800 0 2000 " + (tierOrder.length * ySpacing + 200));
+                .attr("height", "calc(100vh - 50px)")
+                .attr("viewBox", "-900 0 2200 " + totalHeight);
 
             // Define arrowhead marker
-            svg.append("defs").append("marker")
+            const defs = svg.append("defs");
+
+            defs.append("marker")
                 .attr("id", "arrowhead")
                 .attr("viewBox", "0 0 10 10")
                 .attr("refX", 9)
@@ -535,11 +1473,53 @@
                 .attr("d", "M 0 0 L 10 5 L 0 10 z")
                 .attr("fill", "#666");
 
+            // Define inset border filter for placeholder nodes
+            const insetFilter = defs.append("filter")
+                .attr("id", "inset-border")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "200%")
+                .attr("height", "200%");
+
+            insetFilter.append("feFlood")
+                .attr("flood-color", "#666")
+                .attr("result", "flood");
+
+            insetFilter.append("feComposite")
+                .attr("in", "flood")
+                .attr("in2", "SourceGraphic")
+                .attr("operator", "atop")
+                .attr("result", "composite");
+
+            insetFilter.append("feMorphology")
+                .attr("in", "composite")
+                .attr("operator", "erode")
+                .attr("radius", "2")
+                .attr("result", "erode");
+
+            insetFilter.append("feGaussianBlur")
+                .attr("in", "erode")
+                .attr("stdDeviation", "1")
+                .attr("result", "blur");
+
+            insetFilter.append("feOffset")
+                .attr("in", "blur")
+                .attr("dx", "0")
+                .attr("dy", "0")
+                .attr("result", "offset");
+
+            const feMerge = insetFilter.append("feMerge");
+            feMerge.append("feMergeNode")
+                .attr("in", "offset");
+            feMerge.append("feMergeNode")
+                .attr("in", "SourceGraphic");
+
             // Add separator lines between tiers
             for (let i = 0; i < tierOrder.length - 1; i++) {
-                const y1 = blockToY[tierOrder[i]];
-                const y2 = blockToY[tierOrder[i + 1]];
-                const y = (y1 + y2) / 2;
+                const blockNum = tierOrder[i];
+                const y1 = blockToY[blockNum];
+                const height1 = blockHeights[blockNum];
+                const y = y1 + height1; // Line at the end of this block
 
                 svg.append("line")
                     .attr("x1", -1000)
@@ -551,7 +1531,7 @@
             }
 
             // Add header labels on the right side
-            const headerY = 30;
+            const headerY = 60;
             svg.append("text")
                 .attr("x", creditXOffset)
                 .attr("y", headerY)
@@ -561,7 +1541,7 @@
                 .text("Total Credits");
 
             svg.append("text")
-                .attr("x", creditXOffset + 200)
+                .attr("x", creditXOffset + 150)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
                 .attr("font-size", "18px")
@@ -570,9 +1550,17 @@
 
             // Add tier labels and credits
             tierOrder.forEach((blockNum) => {
-                const y = blockToY[blockNum];
+                const yStart = blockToY[blockNum];
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = blockHeights[blockNum];
+                const y = yStart + (blockHeight / 2); // Center vertically across all rows
+
                 const blockCredits = creditsPerBlock[blockNum] || 0;
                 const cumCredits = cumulativeCredits[blockNum] || 0;
+
+                // Get previous values for animation
+                const prevBlockCredits = previousCreditsPerBlock[blockNum] || 0;
+                const prevCumCredits = previousCumulativeCredits[blockNum] || 0;
 
                 // Left side label
                 svg.append("text")
@@ -584,24 +1572,41 @@
                     .attr("dominant-baseline", "middle")
                     .text(`${getTierLabel(blockNum)}:`);
 
-                // Right side - Total credits
-                svg.append("text")
-                    .attr("x", creditXOffset)
-                    .attr("y", y)
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "24px")
-                    .attr("dominant-baseline", "middle")
-                    .text(blockCredits.toString());
+                // Skip credit display for extracurricular (block 6)
+                if (blockNum !== 6) {
+                    // Right side - Total credits (with animation)
+                    const totalCreditsText = svg.append("text")
+                        .attr("x", creditXOffset)
+                        .attr("y", y)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "24px")
+                        .attr("dominant-baseline", "middle")
+                        .text(prevBlockCredits.toString());
 
-                // Right side - Cumulative credits
-                svg.append("text")
-                    .attr("x", creditXOffset + 200)
-                    .attr("y", y)
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "24px")
-                    .attr("dominant-baseline", "middle")
-                    .text(cumCredits.toString());
+                    // Animate to new value
+                    if (prevBlockCredits !== blockCredits) {
+                        animateNumber(totalCreditsText, prevBlockCredits, blockCredits);
+                    }
+
+                    // Right side - Cumulative credits (with animation)
+                    const cumCreditsText = svg.append("text")
+                        .attr("x", creditXOffset + 150)
+                        .attr("y", y)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "24px")
+                        .attr("dominant-baseline", "middle")
+                        .text(prevCumCredits.toString());
+
+                    // Animate to new value
+                    if (prevCumCredits !== cumCredits) {
+                        animateNumber(cumCreditsText, prevCumCredits, cumCredits);
+                    }
+                }
             });
+
+            // Store current values for next render
+            previousCreditsPerBlock = { ...creditsPerBlock };
+            previousCumulativeCredits = { ...cumulativeCredits };
 
             // Add course nodes and track positions by ID
             const coursePositions = {}; // Map of course ID to {x, y, width, height}
@@ -611,8 +1616,8 @@
                 const isPlaceholder = course._isPlaceholder;
                 const isInExtracurricular = course._inExtracurricular;
 
-                const blockStart = isInExtracurricular ? 6 : parseInt(course.block_start);
-                const blockEnd = isInExtracurricular ? 6 : parseInt(course.block_end);
+                const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
+                const blockEnd = isInExtracurricular ? 6 : parseBlockNumber(course.block_end);
 
                 // Calculate position
                 const yStart = blockToY[blockStart];
@@ -623,16 +1628,17 @@
                     return;
                 }
 
-                const y = (yStart + yEnd) / 2; // Center vertically
+                // Get row assignment for this course
+                const row = courseRowAssignments[index] || 0;
+                const y = yStart + (row * ySpacing) + (ySpacing / 2); // Position in specific row
 
                 // Calculate height based on block span
                 const blockSpan = blockEnd - blockStart + 1;
-                const height = (blockSpan * nodeHeight) + ((blockSpan - 1) * (ySpacing - nodeHeight));
+                const height = nodeHeight; // Single row height
 
-                // Position based on column assignment
-                const column = originalCourseColumns[index];
-                const totalWidth = (numColumns - 1) * xSpacing;
-                const x = (column * xSpacing) - (totalWidth / 2);
+                // Position based on column assignment within the row (left-aligned, but after labels)
+                const columnInRow = courseColumnsInRow[index] || 0;
+                const x = -400 + (columnInRow * xSpacing); // Start after block labels with margin
 
                 // Store position by ID for dependency drawing
                 coursePositions[course.id] = { x, y, width: nodeWidth, height };
@@ -676,7 +1682,7 @@
                     .attr("transform", `translate(${x}, ${y})`);
 
                 // Add main rectangle
-                nodeGroup.append("rect")
+                const rect = nodeGroup.append("rect")
                     .attr("x", -nodeWidth / 2)
                     .attr("y", -height / 2)
                     .attr("width", nodeWidth)
@@ -685,6 +1691,11 @@
                     .attr("fill-opacity", fillOpacity)
                     .attr("stroke", strokeColor)
                     .attr("stroke-width", strokeWidth);
+
+                // Add dashed border for placeholder nodes
+                if (isPlaceholder) {
+                    rect.attr("stroke-dasharray", "5,5");
+                }
 
                 // Add purple right border if QF (not for placeholders)
                 if (isQF && !isPlaceholder) {
@@ -739,7 +1750,91 @@
                 const buttonX = -nodeWidth / 2 + buttonRadius + 5;
                 const buttonY = -height / 2 + buttonRadius + 5;
 
-                if (isPlaceholder && course._isExtracurricularPlaceholder) {
+                if (course._isAlternative && isPlaceholder) {
+                    // Alternative placeholder - show + button to add it
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            // Add this alternative to the Set
+                            const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                            const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                            if (isQfAlt && selectedSpec === 'qf') {
+                                qfAddedCourses.add(course.id);
+                            }
+                            if (isOrAlt && selectedSpec === 'or') {
+                                orAddedCourses.add(course.id);
+                            }
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (course._isAlternative && !isPlaceholder) {
+                    // Alternative that's added - show - button to remove it
+                    // But only if we have more than 1 course added (must keep at least 1)
+                    const currentSet = selectedSpec === 'qf' ? qfAddedCourses : orAddedCourses;
+                    const alternativeCourseId = selectedSpec === 'qf' ? course.qf_alternative : course.or_alternative;
+
+                    // Check how many alternatives are currently added
+                    const alternativeIds = alternativeCourseId ? alternativeCourseId.split(';').map(id => id.trim()) : [];
+                    const allAlternativeIds = [course.id, ...alternativeIds];
+                    const numAdded = allAlternativeIds.filter(id => currentSet.has(id)).length;
+
+                    // Only show - button if we have more than 1 added (can't go to 0)
+                    if (numAdded > 1) {
+                        const btnGroup = nodeGroup.append("g")
+                            .attr("cursor", "pointer")
+                            .on("click", function(event) {
+                                event.stopPropagation();
+                                // Remove this alternative from the Set
+                                const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                                const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                                if (isQfAlt && selectedSpec === 'qf') {
+                                    qfAddedCourses.delete(course.id);
+                                }
+                                if (isOrAlt && selectedSpec === 'or') {
+                                    orAddedCourses.delete(course.id);
+                                }
+                                buildVisualization(allCoursesData);
+                            });
+
+                        btnGroup.append("circle")
+                            .attr("cx", buttonX)
+                            .attr("cy", buttonY)
+                            .attr("r", buttonRadius)
+                            .attr("fill", "#f44336")
+                            .attr("stroke", "#d32f2f")
+                            .attr("stroke-width", 1);
+
+                        btnGroup.append("text")
+                            .attr("x", buttonX)
+                            .attr("y", buttonY)
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("font-size", "18px")
+                            .attr("font-weight", "bold")
+                            .attr("fill", "white")
+                            .text("−");
+                    }
+                } else if (isPlaceholder && course._isExtracurricularPlaceholder) {
                     // Placeholder for extracurricular course (like SPOC) - show + button
                     const btnGroup = nodeGroup.append("g")
                         .attr("cursor", "pointer")
@@ -773,6 +1868,42 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             movedToExtracurricular.delete(course.id);
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#4CAF50")
+                        .attr("stroke", "#388E3C")
+                        .attr("stroke-width", 1);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "18px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "white")
+                        .text("+");
+                } else if (isInExtracurricular && course._isAlternative) {
+                    // Alternative course in optional row - show + button to add it
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            // Add this alternative to the Set
+                            const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                            const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                            if (isQfAlt && selectedSpec === 'qf') {
+                                qfAddedCourses.add(course.id);
+                            }
+                            if (isOrAlt && selectedSpec === 'or') {
+                                orAddedCourses.add(course.id);
+                            }
                             buildVisualization(allCoursesData);
                         });
 

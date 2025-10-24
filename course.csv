@@ -1,18 +1,21 @@
-id,course,credits,block_start,block_end,premaster,core,qf,or,econ,marketing,dependencies,alternative,extracurricular
-1,Probability,4,1,1,true,true,false,false,false,false,,,false
-2,Programming,4,1,1,true,true,false,false,false,false,,,false
-3,Statistics,4,1,1,true,true,false,false,false,false,1,,false
-4,Non-Linear Optimization,4,2,2,false,true,false,false,false,false,,,false
-5,Markov Processes,4,2,2,false,true,false,false,false,false,,,false
-6,Econometrics 1,4,3,3,false,true,false,false,false,false,10,,false
-7,Linear Optimization,4,5,5,false,true,false,false,false,false,,,false
-8,Seminar,4,4,5,true,true,false,false,false,false,,,false
-9,Time Series,4,5,5,false,true,false,false,false,false,,,false
-10,Multivariable Stats,4,1,1,false,false,true,false,true,true,3,,false
-11,Simulation,4,3,3,false,false,true,true,true,false,,,false
-12,Econometrics 2,4,4,4,false,false,true,false,true,true,6,,false
-13,Finance,4,3,3,false,false,true,true,false,false,,14,false
-14,Microeconomics,6,2,2,false,false,true,true,true,true,,13,false
-15,Marketing,4,3,3,false,false,false,false,false,true,,,false
-16,Combinatorial Optimization,4,1,1,false,false,false,true,false,false,,,false
-17,SPOC,4,4,4,false,false,true,true,true,true,,,true
+id,course,credits,block_start,block_end,premaster,core,qf,or,econ,marketing,dependencies,extracurricular,qf_alternative,or_alternative
+FEB21005S,Probability Theory (pre-master),4,BLOK1,BLOK1,true,true,false,false,false,false,FEB21021X,false,,
+FEB21007S,Statistics (pre-master),4,BLOK1,BLOK1,true,true,false,false,false,false,FEB21005S,false,,
+FEB21009X,Linear Optimisation,4,BLOK5,BLOK5,false,true,false,false,false,false,FEB21023X;FEB21010X,false,,
+FEB21010X,Mathematical Methods,4,BLOK5,BLOK5,false,false,false,false,false,false,FEB21017X;FEB21018X;FEB21020X,false,,
+FEB21011S,Introduction to Programming (pre-master),4,BLOK1,BLOK1,true,true,false,false,false,false,,false,,
+FEB21020X,Microeconomics (econometrics),6,BLOK2,BLOK2,false,false,true,true,true,true,,false,FEB22017X,FEB22017X
+FEB22002X,Combinatorial Optimisation,4,BLOK1,BLOK1,false,false,false,true,false,false,FEB21009X;FEB21010X;FEB21011X,false,,
+FEB22003X,Introduction to Multivariate Statistics,4,BLOK1,BLOK1,false,false,true,false,true,true,FEB21023X;FEB21007X,false,,
+FEB22004X,Econometrics 1,4,BLOK3,BLOK3,false,true,false,false,false,false,FEB21005X;FEB21007X;FEB21023X;FEB22003X;FEB22006X,false,,
+FEB22005X,Econometrics 2,4,BLOK4,BLOK4,false,false,true,false,true,true,FEB22004X,false,,
+FEB22006X,Non-linear Optimisation,4,BLOK2,BLOK2,false,true,false,false,false,false,FEB21023X;FEB21011X,false,,
+FEB22008X,Markov Processes,4,BLOK2,BLOK2,false,true,false,false,false,false,FEB21005X,false,,
+FEB22009S,Intro Seminar Econometrics (pre-master),4,BLOK4,BLOK5,true,true,false,false,false,false,FEB22002X;FEB22006X;FEB22005X;FEB22015X,false,,
+FEB22013X,Simulation,4,BLOK3,BLOK3,false,false,true,true,true,false,FEB22008X;FEB22012X,false,,
+FEB22017X,Finance (econometrics),4,BLOK3,BLOK3,false,false,true,true,false,false,FEB21017X;FEB21020X;FEB22023X;FEB22003X,false,FEB21020X,FEB21020X
+FEB22018X,Marketing (econometrics),4,BLOK4,BLOK4,false,false,false,false,false,true,FEB21020X;FEB22003X;FEB22005X,false,,
+FEB23001X,Time Series Analysis,4,BLOK5,BLOK5,false,true,false,false,false,false,FEB22008X;FEB22005X,false,,
+FEB61003,Programming (SPOC),4,BLOK2,BLOK2,false,false,false,false,false,false,FEB21011S,true,,
+FEB63016X,Guidance Pre-Master (econometrics),0,BLOK1,BLOK1,false,false,false,false,false,false,,true,,
+FEB63019X,Take-Off Pre-Master (econometrics),0,BLOK1,BLOK1,false,false,false,false,false,false,,true,,

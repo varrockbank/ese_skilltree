@@ -1,0 +1,428 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB21005S&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB21005S_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Master 1"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB21005S"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Probability Theory (pre-master)"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Probability Theory (pre-master)"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21005S&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB21005S"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "Dutch, English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (NL)"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>Via OSIRIS</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Secretariat Econometrics, ET-18, 010-4081264, eb-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body>Discrete and continuous random variables, moment generating functions, discrete and continuous joint distributions, independence, conditional distributions, conditional expectations, variance, covariance, functions of random variables, transformation methods, Central Limit Theorem, stochastic convergence.<br/><br/>This course uses knowledge from FEB21021X Analysis, and is required for FEB21007S Statistics, FEB22008(X) Markov Processes and FEB22004(X) Econometrics 1.</body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body>- Understanding the basics of probability theory, including central concepts and proofs of central results.<br/>- Obtaining knowledge of and proficiency in reasoning and calculating with probabilities: continuous and discrete random variables, functions of random variables, transformation methods, joint and conditional distributions.<br/>- Obtaining insight and experience in the use of probability theory in statistics: sampling distributions, central limit theorem.<br/>- Gaining insight into basic results in probability theory that are important in econometrics.<br/>- Gaining experience in applying mathematical concepts and techniques of probability theory.</body></html>"
+                },
+                {
+                    "veld": "item-inhoud-5",
+                    "titel": "Extra",
+                    "waarde": "<html><body>During the (re-)examination only non-programmable calculators (like FX-82SX Plus / FX-82MS / FX-350MS / TI-30XS Multiview) are allowed.</body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Required material",
+                            "velden": [
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Wackerly, Mendenhall, Scheaffer, Bain, Engelhardt: Custom Edition Introduction to Probability and Mathematical Statistics, Cengage, 2014. ISBN: 9781408092149."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-ingang-voorkennis",
+                    "titel": "Assumed previous knowledge",
+                    "waarde": "<b>Only accessible for pre-master students Econometrics</b>"
+                },
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>International Premaster Econometrics and Management Science</li><li>Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK1",
+                            "id_cursus_inschrijving": 152696,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-inschrijven",
+                                    "titel": "Enrolment period",
+                                    "waarde": "11 August 2025 until 12 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-uitschrijven",
+                                    "titel": "Unenrolment",
+                                    "waarde": " until 12 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "1 september 2025 until 26 oktober 2025"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "dr.ir. S Schalk",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "dr.ir. S Schalk",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "dr.ir. S Schalk",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "D Boers",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "IKH Tan",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-vrij-veld-15",
+                    "titel": "Assessment materials",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<ul><li>Bain, Engelhardt: Custom Edition Introduction to Probability and Mathematical Statistics, Cengage, 2014. ISBN: 9781408092149.</li><li>Lecture slides</li></ul>"
+                },
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "100"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toets-inschrijven",
+            "titel": "Test enrolment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toets-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Written exam 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": [
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-inschrijven",
+                                            "titel": "Enrolment period",
+                                            "waarde": "18 September 2025 until 19 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-na-inschrijven",
+                                            "titel": "Late enrolment",
+                                            "waarde": "20 October 2025 until 26 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-uitschrijven",
+                                            "titel": "Unenrolment",
+                                            "waarde": "5 September 2025 until 22 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-toetsdatum",
+                                            "titel": "Test date",
+                                            "waarde": "24 October 2025"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "blok": "Block BLOK-HER",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 12
+}

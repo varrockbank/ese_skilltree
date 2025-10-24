@@ -1,0 +1,479 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB22002X&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB22002X_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Bachelor 2"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB22002X"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Combinatorial Optimisation"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Combinatorial Optimisation"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22002X&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB22002X"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Bachelor 2 - International Bachelor Econometrics and Operations Research"
+                                    },
+                                    {
+                                        "omschrijving": "Bachelor 3- BSC2"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>Via OSIRIS</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Secretariat Econometrics, ET-18, 010-4081264, eb-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body>Combinatorial optimisation deals with finding an optimal solution from a finite set of feasible solutions. Since enumerating this set is practically infeasible in general, one tries to exploit the problem structure to find an optimal solution in a computationally efficient way. In this course, we develop techniques for combinatorial optimisation problems.<br/><br/>These techniques include:<br/>- Branch-and-bound<br/>- Lagrangean relaxation<br/>- Maximum flow algorithm<br/>- Hungarian method<br/>- Dynamic programming<br/><br/>This course uses knowledge of FEB21009X Linear Programming, FEB21010X Mathematical Methods and FEB21011X(S) Introduction to Programming, and is required for FEB22009 Introductory Seminar Econometrics and Operations Research and FEB23004 Quantitative Models in Logistics.</body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body>- To recognise and model combinatorial optimisation problems as integer programming problems.<br/>- To understand the basic theory and techniques to solve integer programming problems.<br/>- To master the basic techniques to solve some specific combinatorial optimisation problems.<br/>- To be able to implement the basic solution techniques in a software package.</body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Recommended material",
+                            "velden": [
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "There is no mandatory book, but if you plan to attend a few or no lectures, the following book is recommended: L.A. Wolsey, Integer Programming, Wiley, 1998."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>BSc2 Econometrics</li><li>International Bachelor Econometrics and Operations Research</li><li>International Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK1",
+                            "id_cursus_inschrijving": 152714,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-inschrijven",
+                                    "titel": "Enrolment period",
+                                    "waarde": "11 August 2025 until 2 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-uitschrijven",
+                                    "titel": "Unenrolment",
+                                    "waarde": " until 16 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "1 september 2025 until 26 oktober 2025"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "dr. W van den Heuvel",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "dr. W van den Heuvel",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "dr. W van den Heuvel",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "J Cho",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "PJ Correia Duarte",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "AB Baisuanov",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "BP Widawski",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "EE Trogemann",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "HTK Nguyen",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "ML van Puffelen",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-vrij-veld-14",
+                    "titel": "Assessment requirements",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<p>At least a grade 4.5 for the exam is required.</p>"
+                },
+                {
+                    "veld": "item-vrij-veld-15",
+                    "titel": "Assessment materials",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<p>All course material treated during the lectures and tutorials.</p>"
+                },
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "10"
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "90"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toets-inschrijven",
+            "titel": "Test enrolment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toets-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": [
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-inschrijven",
+                                            "titel": "Enrolment period",
+                                            "waarde": "16 September 2025 until 15 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-na-inschrijven",
+                                            "titel": "Late enrolment",
+                                            "waarde": "16 October 2025 until 22 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-uitschrijven",
+                                            "titel": "Unenrolment",
+                                            "waarde": "3 September 2025 until 20 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-toetsdatum",
+                                            "titel": "Test date",
+                                            "waarde": "22 October 2025"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "blok": "Block BLOK-HER",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 12
+}
