@@ -368,6 +368,14 @@
             </div>
         </div>
 
+        <div class="specialization-section">
+            <div class="stage-label">Dependency Graph</div>
+            <div class="radio-option">
+                <input type="checkbox" id="show-graph" name="show-graph">
+                <label for="show-graph">Show dependencies</label>
+            </div>
+        </div>
+
         <div class="stage-label">Course Type:</div>
         <div class="legend-item">
             <span class="legend-color" style="background-color: #90ee90;"></span>
@@ -1016,6 +1024,15 @@
                         buildVisualization(allCoursesData);
                     });
                 }
+
+                // Add event listener for graph checkbox
+                const showGraphCheckbox = document.getElementById('show-graph');
+                if (showGraphCheckbox) {
+                    showGraphCheckbox.addEventListener('change', function() {
+                        console.log('Show graph checkbox:', this.checked);
+                        buildVisualization(allCoursesData);
+                    });
+                }
             } catch (error) {
                 console.error('Error loading CSV:', error);
                 document.getElementById('mynetwork').innerHTML =
@@ -1391,11 +1408,20 @@
             // Group courses by block and calculate row assignments
             const coursesByBlock = {};
             const courseRowAssignments = {}; // Maps course index to row within its block
+            const multiBlockCourses = new Set(); // Track courses that span multiple blocks
             // blockRows is already declared earlier
 
             coursesToRender.forEach((course, index) => {
                 const isInExtracurricular = course._inExtracurricular;
                 const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
+                const blockEnd = isInExtracurricular ? 6 : parseBlockNumber(course.block_end);
+
+                // Check if course spans multiple blocks
+                if (blockEnd > blockStart) {
+                    multiBlockCourses.add(index);
+                    // Don't add multi-block courses to the normal row assignment
+                    return;
+                }
 
                 if (!coursesByBlock[blockStart]) {
                     coursesByBlock[blockStart] = [];
@@ -1630,15 +1656,35 @@
 
                 // Get row assignment for this course
                 const row = courseRowAssignments[index] || 0;
-                const y = yStart + (row * ySpacing) + (ySpacing / 2); // Position in specific row
 
-                // Calculate height based on block span
+                // Calculate height and position based on block span
                 const blockSpan = blockEnd - blockStart + 1;
-                const height = nodeHeight; // Single row height
+                let height, y, x;
 
-                // Position based on column assignment within the row (left-aligned, but after labels)
-                const columnInRow = courseColumnsInRow[index] || 0;
-                const x = -400 + (columnInRow * xSpacing); // Start after block labels with margin
+                if (blockSpan > 1) {
+                    // Course spans multiple blocks - calculate total height
+                    // Need to account for heights of all blocks it spans
+                    let totalHeight = 0;
+                    for (let b = blockStart; b <= blockEnd; b++) {
+                        totalHeight += blockHeights[b] || ySpacing;
+                    }
+                    height = totalHeight - 20; // Subtract padding
+
+                    // Center vertically across the span
+                    y = yStart + (totalHeight / 2);
+
+                    // Position multi-block courses in column 1 (first column on left)
+                    x = -400; // First column position
+                } else {
+                    // Single block - use row assignment
+                    height = nodeHeight;
+                    y = yStart + (row * ySpacing) + (ySpacing / 2); // Position in specific row
+
+                    // Position based on column assignment within the row, shifted one column to the right
+                    // to make room for multi-block courses in column 1
+                    const columnInRow = courseColumnsInRow[index] || 0;
+                    x = -400 + ((columnInRow + 1) * xSpacing); // +1 to shift everything right
+                }
 
                 // Store position by ID for dependency drawing
                 coursePositions[course.id] = { x, y, width: nodeWidth, height };
@@ -2076,41 +2122,48 @@
                 return !(maxX < rx || minX > rx + rw || maxY < ry || minY > ry + rh);
             }
 
-            // Draw dependency edges - direct lines from top-right to bottom-right
-            // HIDDEN FOR NOW
-            // courses.forEach((course) => {
-            //     if (course.dependencies && course.dependencies.trim() !== '') {
-            //         const deps = course.dependencies.split(',').map(d => d.trim());
+            // Draw dependency edges - direct lines from course to its dependencies
+            // Only draw if "Show as graph" checkbox is checked
+            const showGraphCheckbox = document.getElementById('show-graph');
+            if (showGraphCheckbox && showGraphCheckbox.checked) {
+                coursesToRender.forEach((course) => {
+                    // Skip placeholders - don't draw edges to/from placeholders
+                    if (course._isPlaceholder) return;
 
-            //         deps.forEach(depId => {
-            //             if (!coursePositions[depId] || !coursePositions[course.id]) {
-            //                 console.warn('Missing position for dependency:', depId, 'or course:', course.id);
-            //                 return;
-            //             }
+                    if (course.dependencies && course.dependencies.trim() !== '') {
+                        const deps = course.dependencies.split(';').map(d => d.trim());
 
-            //             const from = coursePositions[depId];
-            //             const to = coursePositions[course.id];
+                        deps.forEach(depId => {
+                            if (!coursePositions[depId] || !coursePositions[course.id]) {
+                                console.warn('Missing position for dependency:', depId, 'or course:', course.id);
+                                return;
+                            }
 
-            //             // Start from top-right corner of source
-            //             const startX = from.x + from.width / 2;
-            //             const startY = from.y - from.height / 2;
+                            const from = coursePositions[depId];
+                            const to = coursePositions[course.id];
 
-            //             // End at bottom-right corner of target
-            //             const endX = to.x + to.width / 2;
-            //             const endY = to.y + to.height / 2;
+                            // Start from right edge of source (dependency)
+                            const startX = from.x + from.width / 2;
+                            const startY = from.y;
 
-            //             // Draw direct line
-            //             const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+                            // End at left edge of target (course)
+                            const endX = to.x - to.width / 2;
+                            const endY = to.y;
 
-            //             svg.append("path")
-            //                 .attr("d", path)
-            //                 .attr("fill", "none")
-            //                 .attr("stroke", "#666")
-            //                 .attr("stroke-width", 2)
-            //                 .attr("marker-end", "url(#arrowhead)");
-            //         });
-            //     }
-            // });
+                            // Draw direct line
+                            const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+
+                            svg.append("path")
+                                .attr("d", path)
+                                .attr("fill", "none")
+                                .attr("stroke", "#666")
+                                .attr("stroke-width", 2)
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("opacity", 0.6);
+                        });
+                    }
+                });
+            }
 
             // Draw alternative edges - undirected lines between alternative courses
             // HIDDEN FOR NOW
