@@ -20,7 +20,35 @@
         .content-wrapper {
             flex: 1;
             margin-left: 280px;
+            margin-right: 150px;
             padding: 0;
+            position: relative;
+        }
+
+        /* Right panel for spirograph */
+        .right-panel {
+            position: fixed;
+            right: 0;
+            top: 50px;
+            width: 150px;
+            height: calc(100vh - 50px);
+            background-color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Spirograph animation */
+        .spirograph-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spirograph-canvas {
+            width: 100%;
+            height: 100%;
         }
 
         #mynetwork {
@@ -84,12 +112,320 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-size: 10px;
         }
 
         .specialization-section {
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #FF0000;
+        }
+
+        /* Radar box styling */
+        .radar {
+            position: relative;
+            border: 1px solid #000;
+            background: rgb(2, 137, 68);
+            padding: 0.2rem 0 0.4rem;
+            overflow: hidden;
+        }
+
+        .radar .bg-overlay {
+            position: absolute;
+            inset: 0;
+            transform: translate3d(0,0,0);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .radar .bg-overlay::before,
+        .radar .bg-overlay::after {
+            content: '';
+            position: absolute;
+            display: block;
+            inset: 0;
+        }
+
+        .radar .bg-overlay::before {
+            filter: url(#noiseFilter);
+            transform: translate3d(0,0,0);
+        }
+
+        .radar .bg-overlay::after {
+            background: rgba(255 255 255 / 0.32);
+            animation: scanlines 7ms linear infinite;
+        }
+
+        .radar header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            padding: 8px 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: rgb(2, 137, 68);
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .radar h2::after {
+            content: '';
+            display: block;
+            background: repeating-linear-gradient(90deg,
+                currentColor 0 12px,
+                transparent 0 16px,
+                currentColor 0 20px,
+                transparent 0 24px,
+                currentColor 0 52px,
+                transparent 0 56px,
+                currentColor 0 64px
+            );
+            height: 4px;
+            margin-top: 4px;
+        }
+
+        .radar .spec-name {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            padding: 0;
+            min-height: 50px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-name.glitch-effect {
+            animation: glitch 0.5s ease-in-out;
+        }
+
+        .radar .spec-character-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            margin: 0;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-character-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .radar .gibberish {
+            display: grid;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+            color: #000000;
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            grid-template-rows: repeat(3, 14px);
+            grid-template-areas:
+                "scroll"
+                "scroll"
+                "typing";
+        }
+
+        .radar .gibberish span {
+            overflow: hidden;
+        }
+
+        .radar .gibberish .scroll-container {
+            grid-area: scroll;
+            display: grid;
+            grid-template-rows: repeat(2, 14px);
+            grid-template-areas:
+                "s1"
+                "s2";
+            animation: gibberishScroll 3s infinite linear;
+        }
+
+        .radar .gibberish .scroll-container span:nth-child(1) { grid-area: s1; overflow: hidden; }
+        .radar .gibberish .scroll-container span:nth-child(2) { grid-area: s2; overflow: hidden; }
+        .radar .gibberish .scroll-container span:nth-child(3) { grid-area: s1; overflow: hidden; }
+
+        .radar .gibberish .typing-line {
+            grid-area: typing;
+            width: 0;
+            overflow: hidden;
+            animation: typingEffect 1s infinite linear;
+        }
+
+        @keyframes gibberishScroll {
+            0% {
+                grid-template-areas: "s1" "s2";
+            }
+            50% {
+                grid-template-areas: "s2" "s1";
+            }
+            100% {
+                grid-template-areas: "s1" "s2";
+            }
+        }
+
+        @keyframes typingEffect {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .radar .spec-cycler {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-arrow {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: rgb(2, 137, 68);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar .spec-arrow:hover {
+            background: rgba(2, 137, 68, 0.3);
+        }
+
+        .barcode {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 30px;
+            margin-left: 10px;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .barcode span {
+            background: #000000;
+            height: 100%;
+            display: inline-block;
+        }
+
+        @keyframes scanlines {
+            from {
+                clip-path: polygon(0 0, 100% 0, 100% 2px, 0 2px);
+            }
+            to {
+                clip-path: polygon(0 calc(100% - 2px), 100% calc(100% - 2px), 100% 100%, 0 100%);
+            }
+        }
+
+        /* Specialization Cycler */
+        .spec-cycler {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .spec-arrow {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: #00FF00;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spec-arrow:hover {
+            background: rgba(160, 32, 240, 0.3);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.6);
+        }
+
+        .spec-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .spec-display {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+        }
+
+        .spec-current {
+            color: #00FF00;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-align: center;
+            text-transform: uppercase;
+            min-height: 2.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spec-character-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .spec-character-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .radio-option {
@@ -98,27 +434,18 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid #A020F0;
-            border-left: 4px solid #A020F0;
+            padding: 0;
+            background: transparent;
+            border: none;
             position: relative;
             transition: all 0.3s;
             cursor: pointer;
-            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
         }
 
         .radio-option:hover {
-            background: rgba(160, 32, 240, 0.2);
-            box-shadow: 0 0 15px rgba(160, 32, 240, 0.5);
-            border-left-color: #C060FF;
         }
 
         .radio-option:has(input[type="radio"]:checked) {
-            background: rgba(160, 32, 240, 0.3);
-            border-color: #C060FF;
-            border-left-width: 6px;
-            box-shadow: 0 0 20px rgba(192, 96, 255, 0.7), inset 0 0 20px rgba(160, 32, 240, 0.2);
         }
 
         .radio-option input[type="radio"] {
@@ -219,6 +546,7 @@
         /* Tab Navigation */
         .tab-nav {
             display: flex;
+            justify-content: center;
             background-color: #000000;
             padding: 0;
             margin: 0;
@@ -230,6 +558,68 @@
             z-index: 2000;
             height: 50px;
             box-shadow: 0 3px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .hex-container {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .hex-row {
+            display: flex;
+            clear: both;
+        }
+
+        .hex {
+            --edge-size: 8px;
+            --diagonal-s-size: calc(var(--edge-size) * 1.75);
+            --gutter-ratio: .85;
+            --gutter-size: calc(var(--edge-size) * .35);
+            float: left;
+            height: var(--diagonal-s-size);
+            margin-bottom: var(--gutter-size);
+            margin-left: calc(var(--gutter-ratio) * var(--edge-size) / 2);
+            margin-right: calc(var(--gutter-ratio) * var(--edge-size) / 2);
+            position: relative;
+            width: var(--edge-size);
+            --fill-color: #f30;
+            --glow-color: rgba(255, 0, 0, .5);
+            background: var(--fill-color);
+            box-shadow: 0 0 4px var(--glow-color), 0 0 2px var(--glow-color);
+        }
+
+        .hex::before, .hex::after {
+            content: '';
+            display: block;
+            position: absolute;
+            background: var(--fill-color);
+            box-shadow: inherit;
+            height: var(--diagonal-s-size);
+            width: var(--edge-size);
+        }
+
+        .hex::before { transform: rotate(60deg); }
+        .hex::after { transform: rotate(-60deg); }
+
+        .hex:nth-child(odd) {
+            top: calc((var(--diagonal-s-size) + var(--gutter-size)) / 2);
+        }
+
+        .hex.-blink {
+            animation: hexBlink 3s infinite ease-in-out;
+        }
+
+        .hex:nth-child(2n) { animation-delay: .2s; }
+        .hex:nth-child(3n) { animation-delay: .3s; }
+        .hex-row:nth-child(even) > .hex { animation-delay: .3s; }
+        .hex-row:nth-child(even) > .hex:nth-child(2n) { animation-delay: .2s; }
+        .hex-row:nth-child(even) > .hex:nth-child(3n) { animation-delay: .1s; }
+
+        @keyframes hexBlink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         .tab-nav::after {
@@ -253,7 +643,7 @@
         }
 
         .tab-nav button {
-            padding: 0;
+            padding: 0 30px;
             margin: 10px 10px 0 10px;
             border: none;
             background: #000000;
@@ -261,7 +651,7 @@
             font-size: 16px;
             font-weight: 900;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #FF6602;
+            color: #5BEB9D;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
             letter-spacing: 3px;
@@ -274,17 +664,41 @@
         }
 
         .tab-nav button:hover {
-            background-color: rgba(255, 102, 2, 0.3);
-            color: #FF6602;
+            background-color: rgba(91, 235, 157, 0.2);
+            color: #5BEB9D;
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% {
+                text-shadow: 2px 0 #FF0000, -2px 0 #00FFFF;
+                transform: translate(0);
+            }
+            20% {
+                text-shadow: -2px 0 #FF0000, 2px 0 #00FFFF;
+                transform: translate(-2px, 0);
+            }
+            40% {
+                text-shadow: 2px 0 #00FFFF, -2px 0 #FF0000;
+                transform: translate(2px, 0);
+            }
+            60% {
+                text-shadow: -2px 0 #00FFFF, 2px 0 #FF0000;
+                transform: translate(-1px, 0);
+            }
+            80% {
+                text-shadow: 2px 0 #FF0000, -2px 0 #00FFFF;
+                transform: translate(1px, 0);
+            }
+            100% {
+                text-shadow: -2px 0 #FF0000, 2px 0 #00FFFF;
+                transform: translate(0);
+            }
         }
 
         .tab-nav button.active {
-            color: #FF6602;
-            background-color: #000000;
-            border: 2px solid #FF6602;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            box-shadow: inset 0 0 15px rgba(255, 102, 2, 0.3);
+            color: #000000;
+            background-color: #5BEB9D;
         }
 
         .tab-content {
@@ -534,46 +948,102 @@
     </style>
 </head>
 <body>
+    <!-- SVG Noise Filter for Radar Effect -->
+    <svg viewBox="0 0 20 20" style="position: fixed; width: 0; height: 0; pointer-events: none;">
+        <defs>
+            <filter id='noiseFilter'>
+                <feTurbulence type='fractalNoise' baseFrequency='0.5' seed='0'>
+                    <animate attributeName="seed" values="1;3;5;1" dur="0.2s" repeatCount="indefinite" />
+                </feTurbulence>
+            </filter>
+            <pattern id="hexagonPattern" x="0" y="0" width="87" height="100" patternUnits="userSpaceOnUse">
+                <!-- First row hexagons -->
+                <polygon points="30,0 60,0 75,25 60,50 30,50 15,25" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+                <!-- Second row hexagons (offset) -->
+                <polygon points="-15,50 15,50 30,75 15,100 -15,100 -30,75" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+                <polygon points="72,50 102,50 117,75 102,100 72,100 57,75" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+            </pattern>
+        </defs>
+    </svg>
+
     <!-- Tab Navigation -->
     <ul class="tab-nav">
         <li><button class="tab-button active" data-tab="course-page">Schedule</button></li>
         <li><button class="tab-button" data-tab="course-data">Course Data</button></li>
         <li><button class="tab-button" data-tab="programme-data">Programme Data</button></li>
         <li><button class="tab-button" data-tab="program-data">Collated Data</button></li>
+
+        <div class="hex-container">
+            <div class="hex-row">
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+            </div>
+            <div class="hex-row">
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+            </div>
+        </div>
     </ul>
 
     <!-- Course Page Tab -->
     <div id="course-page" class="tab-content active">
         <div class="sidenav">
         <div class="specialization-section">
-            <div class="stage-label">Specialization:</div>
-            <div class="radio-option">
-                <input type="radio" id="spec-qf" name="specialization" value="qf" checked>
-                <label for="spec-qf">Quant Finance</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-or" name="specialization" value="or">
-                <label for="spec-or">Operations Research</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-econ" name="specialization" value="econ">
-                <label for="spec-econ">Econometrics</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-marketing" name="specialization" value="marketing">
-                <label for="spec-marketing">Business Analytics</label>
+            <div class="radar jamming">
+                <span class="bg-overlay"></span>
+                <header>
+                    <h2>Specialization</h2>
+                </header>
+
+                <div class="spec-name" id="spec-name">QUANT FINANCE</div>
+
+                <div class="spec-character-container">
+                    <img id="spec-character" src="assets/iceman.gif" alt="Character" class="spec-character-img">
+                </div>
+
+                <div class="gibberish" aria-hidden="true">
+                    <div class="scroll-container">
+                        <span> ■ ■■■ ■■■■■■ ■■ ■ ■■ ■ ■■■■ ■ ■ ■■■■■■ ■■ ■ ■ ■■ </span>
+                        <span> ■■ ■■■■■■■ ■■■ ■ ■■ ■■■■■ ■ ■■■ ■ ■ ■■■■■■■■■■■■ </span>
+                    </div>
+                    <span class="typing-line"> ■■■ ■■■■■■ ■■ ■■■ ■■■■■■■ ■■■■■■■■■ ■■ ■ ■ ■■■■■ </span>
+                </div>
+
+                <div class="spec-cycler">
+                    <button class="spec-arrow" id="spec-prev" aria-label="Previous specialization">&lt;</button>
+                    <input type="hidden" id="specialization-value" name="specialization" value="qf">
+                    <button class="spec-arrow" id="spec-next" aria-label="Next specialization">&gt;</button>
+                    <div class="barcode" id="barcode-right"></div>
+                </div>
+
+                <!-- Hidden radio buttons for backward compatibility with existing code -->
+                <div style="display: none;">
+                    <input type="radio" id="spec-qf" name="specialization" value="qf" checked>
+                    <input type="radio" id="spec-or" name="specialization" value="or">
+                    <input type="radio" id="spec-econ" name="specialization" value="econ">
+                    <input type="radio" id="spec-marketing" name="specialization" value="marketing">
+                </div>
             </div>
         </div>
 
         <div class="specialization-section">
-            <div class="stage-label">Dependency Graph</div>
             <div class="radio-option">
                 <input type="checkbox" id="show-graph" name="show-graph" checked>
                 <label for="show-graph">Show dependencies</label>
             </div>
         </div>
 
-        <div class="stage-label">Course Type:</div>
+        <div class="stage-label">Legend:</div>
         <div class="legend-item">
             <span class="legend-color" style="background-color: #000000; border: 2px solid #FFFFFF;"></span>
             <span>Core</span>
@@ -586,15 +1056,12 @@
             <span class="legend-color" style="background-color: #202810; border: 2px solid #83D802;"></span>
             <span>Optional</span>
         </div>
-
-        <hr style="border: none; border-top: 4px solid #FF0000; margin: 10px 0;">
-        <div class="stage-label">Part of:</div>
         <div class="legend-item">
             <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
             <span>Quant Finance</span>
         </div>
         <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #FF0000; margin-right: 5px; vertical-align: middle;"></span>
+            <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #A020F0; margin-right: 5px; vertical-align: middle;"></span>
             <span>Operations Research</span>
         </div>
         <div class="legend-item">
@@ -609,6 +1076,13 @@
 
         <div class="content-wrapper" id="contentWrapper">
             <div id="mynetwork"></div>
+        </div>
+
+        <!-- Right Panel with Spirograph -->
+        <div class="right-panel">
+            <div class="spirograph-container">
+                <canvas id="spirograph-canvas" class="spirograph-canvas"></canvas>
+            </div>
         </div>
     </div>
 
@@ -697,6 +1171,84 @@
                 const subTabId = button.getAttribute('data-sub-tab');
                 document.getElementById(subTabId).classList.add('active');
             });
+        });
+
+        // Specialization cycling functionality
+        const specializations = [
+            { value: 'qf', label: 'QUANT FINANCE', image: 'assets/iceman.gif', barcode: [3, 2, 5, 2, 3, 6, 2, 4, 2, 5, 3, 2, 4, 3, 6, 2, 3, 5, 2, 4, 3, 2, 6, 3, 5, 2, 3, 4, 2, 5] },
+            { value: 'or', label: 'OPERATIONS RESEARCH', image: 'assets/big.gif', barcode: [4, 3, 2, 6, 3, 5, 2, 3, 4, 2, 5, 3, 2, 6, 2, 4, 3, 5, 2, 3, 4, 6, 2, 3, 5, 2, 4, 3, 2, 5] },
+            { value: 'econ', label: 'ECONOMETRICS', image: 'assets/cyberpunk.gif', barcode: [2, 5, 3, 4, 2, 6, 3, 2, 5, 4, 3, 2, 6, 2, 4, 5, 3, 2, 4, 3, 5, 2, 6, 3, 4, 2, 5, 3, 2, 4] },
+            { value: 'marketing', label: 'BUSINESS ANALYTICS', image: 'assets/robo.gif', barcode: [5, 2, 4, 3, 6, 2, 3, 5, 2, 4, 6, 3, 2, 5, 3, 4, 2, 6, 3, 2, 4, 5, 3, 2, 6, 3, 4, 2, 5, 3] }
+        ];
+        let currentSpecIndex = 0;
+
+        function generateBarcode(pattern, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            pattern.forEach(width => {
+                const bar = document.createElement('span');
+                bar.style.width = width + 'px';
+                container.appendChild(bar);
+            });
+        }
+
+        function updateSpecialization(index) {
+            currentSpecIndex = (index + specializations.length) % specializations.length;
+            const spec = specializations[currentSpecIndex];
+            document.getElementById('specialization-value').value = spec.value;
+            document.getElementById('spec-character').src = spec.image;
+
+            const specNameEl = document.getElementById('spec-name');
+            specNameEl.textContent = spec.label;
+
+            // Update barcode
+            generateBarcode(spec.barcode, 'barcode-right');
+
+            // Trigger glitch animation
+            specNameEl.classList.remove('glitch-effect');
+            void specNameEl.offsetWidth; // Force reflow to restart animation
+            specNameEl.classList.add('glitch-effect');
+
+            // Remove the class after animation completes
+            setTimeout(() => {
+                specNameEl.classList.remove('glitch-effect');
+            }, 500);
+
+            // Check the appropriate hidden radio button
+            const radioId = 'spec-' + spec.value;
+            const radioButton = document.getElementById(radioId);
+            if (radioButton) {
+                radioButton.checked = true;
+                // Trigger change event on the radio button
+                const event = new Event('change', { bubbles: true });
+                radioButton.dispatchEvent(event);
+            }
+        }
+
+        document.getElementById('spec-prev').addEventListener('click', () => {
+            updateSpecialization(currentSpecIndex - 1);
+        });
+
+        document.getElementById('spec-next').addEventListener('click', () => {
+            updateSpecialization(currentSpecIndex + 1);
+        });
+
+        // Listen for changes to the hidden input
+        document.getElementById('specialization-value').addEventListener('change', function() {
+            loadAndVisualize();
+        });
+
+        // Trigger glitch animation on page load
+        window.addEventListener('load', () => {
+            const specNameEl = document.getElementById('spec-name');
+            specNameEl.classList.add('glitch-effect');
+            setTimeout(() => {
+                specNameEl.classList.remove('glitch-effect');
+            }, 500);
+
+            // Initialize barcode
+            const spec = specializations[currentSpecIndex];
+            generateBarcode(spec.barcode, 'barcode-right');
         });
 
         // List of course files (based on courses.txt)
@@ -1911,7 +2463,7 @@
                 .attr("font-weight", "bold")
                 .attr("font-family", "'Consolas', 'Monaco', 'Lucida Console', monospace")
                 .attr("fill", "#72D69F")
-                .text("CREDITS");
+                .text("SYSTEM CREDITS");
 
             // Add tier labels and credits
             tierOrder.forEach((blockNum) => {
@@ -1966,7 +2518,21 @@
                     // Right side - Total credits (with animation)
                     const triangleSize = 90;
 
-                    // Orange triangle for total credits (pointing up)
+                    // Outer triangle outline (20px away - double the space)
+                    const outerTriangleSize = triangleSize + 40;
+                    const outerTrianglePoints = [
+                        [dynamicCreditXOffset, y - outerTriangleSize/2],
+                        [dynamicCreditXOffset - outerTriangleSize/2, y + outerTriangleSize/2],
+                        [dynamicCreditXOffset + outerTriangleSize/2, y + outerTriangleSize/2]
+                    ].map(p => p.join(',')).join(' ');
+
+                    backgroundGroup.append("polygon")
+                        .attr("points", outerTrianglePoints)
+                        .attr("fill", "none")
+                        .attr("stroke", "#72D69F")
+                        .attr("stroke-width", 1);
+
+                    // Inner solid triangle for total credits (pointing up)
                     const trianglePoints1 = [
                         [dynamicCreditXOffset, y - triangleSize/2],
                         [dynamicCreditXOffset - triangleSize/2, y + triangleSize/2],
@@ -2725,11 +3291,11 @@
                 .attr("x2", rulerX)
                 .attr("y1", 0)
                 .attr("y2", totalHeight)
-                .attr("stroke", "#FFFFFF")
+                .attr("stroke", "#B84604")
                 .attr("stroke-width", 2);
 
             // Add vertical "CUMULATIVE CREDITS" label
-            rulerGroup.append("text")
+            const creditLabel = rulerGroup.append("text")
                 .attr("x", rulerX + 25)
                 .attr("y", totalHeight / 2)
                 .attr("text-anchor", "middle")
@@ -2739,7 +3305,16 @@
                 .attr("fill", "#FFFFFF")
                 .attr("letter-spacing", "4px")
                 .attr("transform", `rotate(90, ${rulerX + 25}, ${totalHeight / 2})`)
-                .text("CUMULATIVE CREDITS");
+                .attr("xml:space", "preserve");
+
+            creditLabel.append("tspan")
+                .text("+++");
+            creditLabel.append("tspan")
+                .attr("dx", "100")
+                .text("Σ CUMULATIVE CREDITS");
+            creditLabel.append("tspan")
+                .attr("dx", "100")
+                .text("+++");
 
             // Add tick marks at each block position showing cumulative credits
             const tickWidth = 30;
@@ -2765,6 +3340,15 @@
                     .attr("stroke", "#FFFFFF")
                     .attr("stroke-width", 2);
 
+                // Add circle at datapoint on the ruler line
+                rulerGroup.append("circle")
+                    .attr("cx", rulerX)
+                    .attr("cy", y)
+                    .attr("r", 8)
+                    .attr("fill", "#B84604")
+                    .attr("stroke", "#000000")
+                    .attr("stroke-width", 1);
+
                 // Add cumulative credit label with animation
                 const rulerCreditText = rulerGroup.append("text")
                     .attr("x", rulerX - tickWidth - 10)
@@ -2773,7 +3357,7 @@
                     .attr("font-size", "40px")
                     .attr("font-family", "'Courier New', monospace")
                     .attr("font-weight", "bold")
-                    .attr("fill", "#FFFFFF")
+                    .attr("fill", "#B84604")
                     .text(prevCumCredits.toString());
 
                 // Animate to new value with longer duration for larger numbers
@@ -2781,6 +3365,34 @@
                     animateNumber(rulerCreditText, prevCumCredits, cumCredits, 800);
                 }
             });
+
+            // Add smaller tick marks between main datapoints
+            const smallTickWidth = 12;
+            const numSmallTicks = 8;
+            const validBlocks = tierOrder.filter(b => b !== 6); // Exclude extracurricular
+
+            for (let i = 0; i < validBlocks.length - 1; i++) {
+                const currentBlock = validBlocks[i];
+                const nextBlock = validBlocks[i + 1];
+
+                const currentY = blockToY[currentBlock] + ((blockRows[currentBlock] || 1) * ySpacing) / 2;
+                const nextY = blockToY[nextBlock] + ((blockRows[nextBlock] || 1) * ySpacing) / 2;
+
+                // Draw small ticks between the two main ticks
+                for (let j = 1; j <= numSmallTicks; j++) {
+                    const fraction = j / (numSmallTicks + 1);
+                    const y = currentY + (nextY - currentY) * fraction;
+
+                    rulerGroup.append("line")
+                        .attr("x1", rulerX)
+                        .attr("x2", rulerX - smallTickWidth)
+                        .attr("y1", y)
+                        .attr("y2", y)
+                        .attr("stroke", "#FFFFFF")
+                        .attr("stroke-width", 1)
+                        .attr("opacity", 0.5);
+                }
+            }
 
             // Store current values for next render (after all animations are set up)
             previousCreditsPerBlock = { ...creditsPerBlock };
@@ -2830,6 +3442,206 @@
             //     }
             // });
 
+            // Add MAGI system visualization
+            const magiGroup = svg.append("g")
+                .attr("class", "magi-system")
+                .attr("transform", `translate(900, ${totalHeight - 180})`);
+
+            // MAGI configuration
+            function generateHex() {
+                return Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase().padStart(6, '0');
+            }
+
+            const magiSystems = [
+                { name: generateHex(), color: "#0066FF", angle: -90 },
+                { name: generateHex(), color: "#FF6600", angle: 30 },
+                { name: generateHex(), color: "#FFCC00", angle: 150 }
+            ];
+
+            const centerX = 0;
+            const centerY = 0;
+            const radius = 60;
+            const distance = 80;
+
+            // Draw three overlapping circles
+            magiSystems.forEach((system, i) => {
+                const angleRad = (system.angle * Math.PI) / 180;
+                const cx = centerX + Math.cos(angleRad) * distance;
+                const cy = centerY + Math.sin(angleRad) * distance;
+
+                // Create circle with pulsing animation
+                const circle = magiGroup.append("circle")
+                    .attr("cx", cx)
+                    .attr("cy", cy)
+                    .attr("r", radius)
+                    .attr("fill", "none")
+                    .attr("stroke", system.color)
+                    .attr("stroke-width", 2)
+                    .attr("opacity", 0.3);
+
+                // Add label
+                magiGroup.append("text")
+                    .attr("x", cx)
+                    .attr("y", cy - radius - 10)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .attr("font-family", "'Courier New', monospace")
+                    .attr("font-weight", "bold")
+                    .attr("fill", system.color)
+                    .attr("opacity", 0.5)
+                    .attr("letter-spacing", "1px")
+                    .text(system.name);
+
+                // Pulse animation
+                function pulse() {
+                    circle
+                        .transition()
+                        .duration(1000 + i * 200)
+                        .ease(d3.easeSinInOut)
+                        .attr("opacity", 0.5)
+                        .attr("stroke-width", 3)
+                        .transition()
+                        .duration(1000 + i * 200)
+                        .ease(d3.easeSinInOut)
+                        .attr("opacity", 0.2)
+                        .attr("stroke-width", 2)
+                        .on("end", pulse);
+                }
+                pulse();
+            });
+
+            // Add spinning 3D globe in center
+            const globeGroup = magiGroup.append("g")
+                .attr("class", "globe")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            const globeRadius = 45;
+
+            // Outer circle
+            globeGroup.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", globeRadius)
+                .attr("fill", "none")
+                .attr("stroke", "#00FF00")
+                .attr("stroke-width", 1)
+                .attr("opacity", 0.4);
+
+            // Horizontal ellipses (latitude lines)
+            for (let i = -30; i <= 30; i += 30) {
+                globeGroup.append("ellipse")
+                    .attr("cx", 0)
+                    .attr("cy", i)
+                    .attr("rx", globeRadius * 0.95)
+                    .attr("ry", globeRadius * 0.3)
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 0.5)
+                    .attr("opacity", 0.3);
+            }
+
+            // Vertical rotating ellipses (longitude lines)
+            const longitudeLines = [];
+            for (let i = 0; i < 3; i++) {
+                const line = globeGroup.append("ellipse")
+                    .attr("cx", 0)
+                    .attr("cy", 0)
+                    .attr("rx", globeRadius * 0.3)
+                    .attr("ry", globeRadius)
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 0.5)
+                    .attr("opacity", 0.3)
+                    .attr("transform", `rotate(${i * 60}, 0, 0)`);
+                longitudeLines.push(line);
+            }
+
+            // Animate globe rotation
+            let globeRotation = 0;
+            function rotateGlobe() {
+                globeRotation += 0.5;
+                longitudeLines.forEach((line, i) => {
+                    line.attr("transform", `rotate(${i * 60 + globeRotation}, 0, 0)`);
+                });
+                requestAnimationFrame(rotateGlobe);
+            }
+            rotateGlobe();
+
+            // Add sine waves to the bottom left
+            const waveGroup = svg.append("g")
+                .attr("class", "sine-waves")
+                .attr("transform", `translate(-720, ${totalHeight - 100})`);
+
+            const waveWidth = 240;
+            const waveAmplitude = 30;
+            const waveFrequency = 3;
+            const numWaves = 5;
+            const waveShift = 3;
+
+            // Add border box around waves
+            waveGroup.append("rect")
+                .attr("x", -10)
+                .attr("y", -waveAmplitude - 15)
+                .attr("width", waveWidth + 20)
+                .attr("height", waveAmplitude * 2 + 30)
+                .attr("fill", "none")
+                .attr("stroke", "#FFFFFF")
+                .attr("stroke-width", 1)
+                .attr("opacity", 0.3);
+
+            // Generate sine wave path
+            function generateWavePath(yOffset, phase) {
+                const points = [];
+                for (let x = 0; x <= waveWidth; x += 2) {
+                    const y = yOffset + waveAmplitude * Math.sin((x / waveWidth) * Math.PI * 2 * waveFrequency + phase);
+                    points.push([x, y]);
+                }
+                return d3.line()
+                    .x(d => d[0])
+                    .y(d => d[1])
+                    .curve(d3.curveBasis)(points);
+            }
+
+            // Create multiple sine waves
+            const waves = [];
+            for (let i = 0; i < numWaves; i++) {
+                const yOffset = (i - Math.floor(numWaves / 2)) * waveShift;
+                const wave = waveGroup.append("path")
+                    .attr("d", generateWavePath(yOffset, 0))
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 1)
+                    .attr("opacity", 0.3);
+                waves.push({ path: wave, yOffset: yOffset, phase: 0 });
+            }
+
+            // Animate sine waves
+            function animateWaves() {
+                waves.forEach((wave, i) => {
+                    wave.phase += 0.05 + (i * 0.01);
+                    wave.path.attr("d", generateWavePath(wave.yOffset, wave.phase));
+
+                    // Pulse opacity
+                    const opacity = 0.2 + 0.3 * Math.sin(wave.phase * 0.5);
+                    wave.path.attr("opacity", opacity);
+                });
+                requestAnimationFrame(animateWaves);
+            }
+            animateWaves();
+
+            // Add center text
+            magiGroup.append("text")
+                .attr("x", centerX)
+                .attr("y", centerY + 5)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "14px")
+                .attr("font-family", "'Courier New', monospace")
+                .attr("font-weight", "bold")
+                .attr("fill", "#00FF00")
+                .attr("opacity", 0.5)
+                .attr("letter-spacing", "1px")
+                .text(generateHex());
+
             console.log('D3 visualization complete');
         }
 
@@ -2868,6 +3680,114 @@
 
         // Load data when page loads
         loadAndVisualize();
+
+        // Conway's Game of Life
+        const canvas = document.getElementById('spirograph-canvas');
+        if (canvas) {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            const ctx = canvas.getContext('2d');
+            const cellSize = 5;
+            const cols = Math.floor(canvas.width / cellSize);
+            const rows = Math.floor(canvas.height / cellSize);
+
+            let grid = createGrid();
+            let generation = 0;
+
+            function createGrid() {
+                const grid = new Array(cols);
+                for (let i = 0; i < cols; i++) {
+                    grid[i] = new Array(rows);
+                    for (let j = 0; j < rows; j++) {
+                        grid[i][j] = Math.random() > 0.7 ? 1 : 0;
+                    }
+                }
+                return grid;
+            }
+
+            function countNeighbors(grid, x, y) {
+                let sum = 0;
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue;
+                        const col = (x + i + cols) % cols;
+                        const row = (y + j + rows) % rows;
+                        sum += grid[col][row];
+                    }
+                }
+                return sum;
+            }
+
+            function nextGeneration() {
+                const next = createGrid();
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        next[i][j] = 0;
+                    }
+                }
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        const state = grid[i][j];
+                        const neighbors = countNeighbors(grid, i, j);
+
+                        if (state === 0 && neighbors === 3) {
+                            next[i][j] = 1;
+                        } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+                            next[i][j] = 0;
+                        } else {
+                            next[i][j] = state;
+                        }
+                    }
+                }
+
+                grid = next;
+                generation++;
+
+                // Reset if all cells are dead or after many generations
+                if (generation > 500 || isGridEmpty()) {
+                    grid = createGrid();
+                    generation = 0;
+                }
+            }
+
+            function isGridEmpty() {
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        if (grid[i][j] === 1) return false;
+                    }
+                }
+                return true;
+            }
+
+            function draw() {
+                // Clear canvas
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw cells
+                ctx.fillStyle = 'rgba(91, 235, 157, 0.3)';
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        if (grid[i][j] === 1) {
+                            ctx.fillRect(i * cellSize, j * cellSize, cellSize - 1, cellSize - 1);
+                        }
+                    }
+                }
+            }
+
+            function update() {
+                nextGeneration();
+                draw();
+            }
+
+            // Run at 10 FPS
+            setInterval(update, 100);
+            draw();
+        }
     </script>
 </body>
 </html>
