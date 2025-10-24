@@ -371,7 +371,7 @@
         <div class="specialization-section">
             <div class="stage-label">Dependency Graph</div>
             <div class="radio-option">
-                <input type="checkbox" id="show-graph" name="show-graph">
+                <input type="checkbox" id="show-graph" name="show-graph" checked>
                 <label for="show-graph">Show dependencies</label>
             </div>
         </div>
@@ -1146,11 +1146,11 @@
 
             // Position constants
             const ySpacing = 150;  // Vertical spacing between tiers
-            const xSpacing = 240;  // Horizontal spacing between nodes
+            const xSpacing = 310;  // Horizontal spacing between nodes (increased for wider nodes)
             const labelXOffset = -700;  // Position for tier labels on left
             const creditXOffset = 900;   // Position for credit info on right
             const nodeHeight = 120; // Height of a single-block node
-            const nodeWidth = 200;  // Fixed width for all course nodes
+            const nodeWidth = 260;  // Fixed width for all course nodes (30% wider: 200 * 1.3)
 
             // Pre-calculate row assignments to determine block heights
             // We need to do this early so we can calculate proper y positions
@@ -1374,21 +1374,60 @@
                 indexMap[originalIndex] = sortedIndex;
             });
 
-            // Assign columns using greedy algorithm on sorted courses
+            // Assign columns using topological ordering for better graph layout
             const courseColumns = [];
+            const courseDepthMap = {}; // Map course ID to its depth in dependency chain
+
+            // Calculate depth for each course (longest path from source nodes)
+            function calculateDepth(courseId, visited = new Set()) {
+                if (courseDepthMap[courseId] !== undefined) {
+                    return courseDepthMap[courseId];
+                }
+
+                if (visited.has(courseId)) {
+                    return 0; // Circular dependency, return 0
+                }
+
+                visited.add(courseId);
+
+                const course = coursesToRender.find(c => c.id === courseId);
+                if (!course || !course.dependencies || course.dependencies.trim() === '') {
+                    courseDepthMap[courseId] = 0;
+                    return 0;
+                }
+
+                const deps = course.dependencies.split(';').map(d => d.trim());
+                let maxDepth = 0;
+                deps.forEach(depId => {
+                    const depDepth = calculateDepth(depId, new Set(visited));
+                    maxDepth = Math.max(maxDepth, depDepth + 1);
+                });
+
+                courseDepthMap[courseId] = maxDepth;
+                return maxDepth;
+            }
+
+            // Calculate depths for all courses
+            coursesToRender.forEach(course => {
+                calculateDepth(course.id);
+            });
+
             sortedCourses.forEach((course, sortedIndex) => {
-                // Find all courses this one overlaps with
+                // Find all courses this one overlaps with (same block range)
                 const overlappingCourses = sortedCourses
                     .map((c, i) => ({ course: c, index: i }))
                     .filter((item, i) => i < sortedIndex && coursesOverlap(course, item.course));
+
+                // Get the depth of this course
+                const courseDepth = courseDepthMap[course.id] || 0;
 
                 // Find columns used by overlapping courses
                 const usedColumns = new Set(
                     overlappingCourses.map(item => courseColumns[item.index])
                 );
 
-                // Assign first available column
-                let column = 0;
+                // Try to assign column based on depth first
+                let column = courseDepth;
                 while (usedColumns.has(column)) {
                     column++;
                 }
@@ -1429,8 +1468,8 @@
                 coursesByBlock[blockStart].push({ course, index, column: originalCourseColumns[index] });
             });
 
-            // Limit to 4 courses per row
-            const maxCoursesPerRow = 4;
+            // Limit to 3 courses per row
+            const maxCoursesPerRow = 3;
 
             // Track column assignments within each row
             const courseColumnsInRow = {}; // Maps course index to column within its row
@@ -1484,6 +1523,11 @@
                 .attr("height", "calc(100vh - 50px)")
                 .attr("viewBox", "-900 0 2200 " + totalHeight);
 
+            // Create groups for proper layering in correct order
+            const backgroundGroup = svg.append("g").attr("class", "background");
+            const nodesGroup = svg.append("g").attr("class", "nodes");
+            const edgesGroup = svg.append("g").attr("class", "edges");
+
             // Define arrowhead marker
             const defs = svg.append("defs");
 
@@ -1497,7 +1541,7 @@
                 .attr("orient", "auto")
                 .append("path")
                 .attr("d", "M 0 0 L 10 5 L 0 10 z")
-                .attr("fill", "#666");
+                .attr("fill", "#2196F3");
 
             // Define inset border filter for placeholder nodes
             const insetFilter = defs.append("filter")
@@ -1547,7 +1591,7 @@
                 const height1 = blockHeights[blockNum];
                 const y = y1 + height1; // Line at the end of this block
 
-                svg.append("line")
+                backgroundGroup.append("line")
                     .attr("x1", -1000)
                     .attr("x2", 1000)
                     .attr("y1", y)
@@ -1558,7 +1602,7 @@
 
             // Add header labels on the right side
             const headerY = 60;
-            svg.append("text")
+            backgroundGroup.append("text")
                 .attr("x", creditXOffset)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
@@ -1566,7 +1610,7 @@
                 .attr("font-weight", "bold")
                 .text("Total Credits");
 
-            svg.append("text")
+            backgroundGroup.append("text")
                 .attr("x", creditXOffset + 150)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
@@ -1589,7 +1633,7 @@
                 const prevCumCredits = previousCumulativeCredits[blockNum] || 0;
 
                 // Left side label
-                svg.append("text")
+                backgroundGroup.append("text")
                     .attr("x", labelXOffset)
                     .attr("y", y)
                     .attr("text-anchor", "start")
@@ -1601,7 +1645,7 @@
                 // Skip credit display for extracurricular (block 6)
                 if (blockNum !== 6) {
                     // Right side - Total credits (with animation)
-                    const totalCreditsText = svg.append("text")
+                    const totalCreditsText = backgroundGroup.append("text")
                         .attr("x", creditXOffset)
                         .attr("y", y)
                         .attr("text-anchor", "middle")
@@ -1615,7 +1659,7 @@
                     }
 
                     // Right side - Cumulative credits (with animation)
-                    const cumCreditsText = svg.append("text")
+                    const cumCreditsText = backgroundGroup.append("text")
                         .attr("x", creditXOffset + 150)
                         .attr("y", y)
                         .attr("text-anchor", "middle")
@@ -1723,7 +1767,7 @@
                 }
 
                 // Create group for the course node
-                const nodeGroup = svg.append("g")
+                const nodeGroup = nodesGroup.append("g")
                     .attr("class", "course-node")
                     .attr("transform", `translate(${x}, ${y})`);
 
@@ -1832,8 +1876,8 @@
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
-                } else if (course._isAlternative && !isPlaceholder) {
-                    // Alternative that's added - show - button to remove it
+                } else if (course._isAlternative && !isPlaceholder && !isInExtracurricular) {
+                    // Alternative that's added in its original position - show - button to remove it
                     // But only if we have more than 1 course added (must keep at least 1)
                     const currentSet = selectedSpec === 'qf' ? qfAddedCourses : orAddedCourses;
                     const alternativeCourseId = selectedSpec === 'qf' ? course.qf_alternative : course.or_alternative;
@@ -2150,16 +2194,44 @@
                             const endX = to.x - to.width / 2;
                             const endY = to.y;
 
-                            // Draw direct line
-                            const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+                            // Calculate control point for quadratic Bezier curve
+                            // Place it at the midpoint horizontally, and offset vertically for a nice arc
+                            const midX = (startX + endX) / 2;
+                            const midY = (startY + endY) / 2;
 
-                            svg.append("path")
+                            // Offset the control point perpendicular to the line
+                            const dx = endX - startX;
+                            const dy = endY - startY;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            const offsetRatio = Math.min(distance / 400, 0.5); // Scale arc based on distance
+
+                            // Control point offset perpendicular to the line direction
+                            const controlX = midX - dy * offsetRatio * 0.3;
+                            const controlY = midY + dx * offsetRatio * 0.3;
+
+                            // Draw curved path using quadratic Bezier curve
+                            const path = `M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`;
+
+                            edgesGroup.append("path")
                                 .attr("d", path)
                                 .attr("fill", "none")
-                                .attr("stroke", "#666")
-                                .attr("stroke-width", 2)
+                                .attr("stroke", "#2196F3")
+                                .attr("stroke-width", 3)
                                 .attr("marker-end", "url(#arrowhead)")
-                                .attr("opacity", 0.6);
+                                .attr("opacity", 0.7)
+                                .attr("cursor", "pointer")
+                                .on("mouseenter", function() {
+                                    d3.select(this)
+                                        .attr("stroke", "#FF6B35")
+                                        .attr("stroke-width", 5)
+                                        .attr("opacity", 1);
+                                })
+                                .on("mouseleave", function() {
+                                    d3.select(this)
+                                        .attr("stroke", "#2196F3")
+                                        .attr("stroke-width", 3)
+                                        .attr("opacity", 0.7);
+                                });
                         });
                     }
                 });
