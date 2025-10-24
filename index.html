@@ -383,7 +383,7 @@
         </div>
         <div class="legend-item">
             <span class="legend-color" style="background-color: #ADD8E6;"></span>
-            <span>Specialization dependent</span>
+            <span>Specialization</span>
         </div>
         <div class="legend-item">
             <span class="legend-color" style="background-color: #fffacd;"></span>
@@ -391,7 +391,7 @@
         </div>
 
         <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
-        <div class="stage-label">Specializations:</div>
+        <div class="stage-label">Part of:</div>
         <div class="legend-item">
             <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #8b008b; margin-right: 5px; vertical-align: middle;"></span>
             <span>Quant Finance</span>
@@ -974,6 +974,34 @@
         // Store previous credit values for animation
         let previousCreditsPerBlock = {};
         let previousCumulativeCredits = {};
+        // Store previous course positions for animation
+        let previousCoursePositions = {};
+
+        // Function to enrich courses with URLs from JSON files
+        async function enrichCoursesWithUrls(courses) {
+            const urlMap = {};
+
+            // Load all JSON files to get URLs
+            for (const course of courses) {
+                try {
+                    const response = await fetch(`output/${course.id}.json`);
+                    if (response.ok) {
+                        const jsonData = await response.json();
+                        if (jsonData.url) {
+                            urlMap[course.id] = jsonData.url;
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Could not load JSON for ${course.id}:`, error);
+                }
+            }
+
+            // Enrich courses with URLs
+            return courses.map(course => ({
+                ...course,
+                url: urlMap[course.id] || null
+            }));
+        }
 
         // Main function to load and visualize data
         async function loadAndVisualize() {
@@ -986,7 +1014,10 @@
                 const csvData = await response.text();
 
                 // Parse data
-                allCoursesData = parseCSV(csvData);
+                let parsedCourses = parseCSV(csvData);
+
+                // Enrich with URLs from JSON files
+                allCoursesData = await enrichCoursesWithUrls(parsedCourses);
 
                 // Build the visualization
                 buildVisualization(allCoursesData);
@@ -1148,7 +1179,7 @@
             const ySpacing = 150;  // Vertical spacing between tiers
             const xSpacing = 310;  // Horizontal spacing between nodes (increased for wider nodes)
             const labelXOffset = -700;  // Position for tier labels on left
-            const creditXOffset = 900;   // Position for credit info on right
+            // creditXOffset is now calculated dynamically - see dynamicCreditXOffset below
             const nodeHeight = 120; // Height of a single-block node
             const nodeWidth = 260;  // Fixed width for all course nodes (30% wider: 200 * 1.3)
 
@@ -1478,8 +1509,18 @@
             Object.keys(coursesByBlock).forEach(blockNum => {
                 const coursesInBlock = coursesByBlock[blockNum];
 
-                // Sort by column
-                coursesInBlock.sort((a, b) => a.column - b.column);
+                // Sort: core courses first (left), then optional courses (right)
+                coursesInBlock.sort((a, b) => {
+                    const aIsCore = a.course.core === 'true';
+                    const bIsCore = b.course.core === 'true';
+
+                    // Core courses before optional courses
+                    if (aIsCore && !bIsCore) return -1;
+                    if (!aIsCore && bIsCore) return 1;
+
+                    // Within same type, sort by column
+                    return a.column - b.column;
+                });
 
                 // Assign rows
                 let currentRow = 0;
@@ -1512,16 +1553,52 @@
                 cumulativeY += blockHeight;
             });
 
+            // Calculate dynamic layout positions
+            // Find the maximum column used across all courses
+            const maxColumnInRow = Math.max(...Object.values(courseColumnsInRow), -1);
+
+            // Calculate the rightmost course position
+            // Multi-block courses are at x = -400
+            // Single-block courses are at x = -400 + (columnInRow + 1) * xSpacing
+            const rightmostCourseX = -400 + ((maxColumnInRow + 1) * xSpacing) + (nodeWidth / 2);
+
+            // Position credit columns with spacing after the rightmost course
+            const creditColumnMargin = 100; // Space between courses and credit columns
+            const dynamicCreditXOffset = rightmostCourseX + creditColumnMargin;
+
+            // Calculate total viewBox width needed
+            const creditColumnSpacing = 150; // Space between the two credit columns
+            const rightPadding = 100; // Padding after the last credit column
+            const viewBoxWidth = dynamicCreditXOffset + creditColumnSpacing + rightPadding + 900; // +900 to account for starting from -900
+
+            // Store positions of existing nodes before clearing
+            d3.selectAll(".course-node").each(function() {
+                const node = d3.select(this);
+                const courseId = node.attr("data-course-id");
+                const transform = node.attr("transform");
+                if (courseId && transform) {
+                    const match = transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+                    if (match) {
+                        const x = parseFloat(match[1]);
+                        const y = parseFloat(match[2]);
+                        const isExtra = node.attr("data-is-extra") === "true";
+                        const wasPlaceholder = node.attr("data-is-placeholder") === "true";
+                        const key = `${courseId}_${isExtra ? 'extra' : 'regular'}`;
+                        previousCoursePositions[key] = { x, y, wasPlaceholder };
+                    }
+                }
+            });
+
             // Clear previous content
             d3.select("#mynetwork").selectAll("*").remove();
 
-            // Create SVG
+            // Create SVG with dynamic viewBox
             const totalHeight = cumulativeY + 100; // Add bottom padding
             const svg = d3.select("#mynetwork")
                 .append("svg")
                 .attr("width", "100%")
                 .attr("height", "calc(100vh - 50px)")
-                .attr("viewBox", "-900 0 2200 " + totalHeight);
+                .attr("viewBox", `-900 0 ${viewBoxWidth} ${totalHeight}`);
 
             // Create groups for proper layering in correct order
             const backgroundGroup = svg.append("g").attr("class", "background");
@@ -1603,20 +1680,20 @@
             // Add header labels on the right side
             const headerY = 60;
             backgroundGroup.append("text")
-                .attr("x", creditXOffset)
+                .attr("x", dynamicCreditXOffset)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "18px")
+                .attr("font-size", "24px")
                 .attr("font-weight", "bold")
-                .text("Total Credits");
+                .text("Credits");
 
             backgroundGroup.append("text")
-                .attr("x", creditXOffset + 150)
+                .attr("x", dynamicCreditXOffset + creditColumnSpacing)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "18px")
+                .attr("font-size", "24px")
                 .attr("font-weight", "bold")
-                .text("Cumulative Credits");
+                .text("Cumulative");
 
             // Add tier labels and credits
             tierOrder.forEach((blockNum) => {
@@ -1646,10 +1723,10 @@
                 if (blockNum !== 6) {
                     // Right side - Total credits (with animation)
                     const totalCreditsText = backgroundGroup.append("text")
-                        .attr("x", creditXOffset)
+                        .attr("x", dynamicCreditXOffset)
                         .attr("y", y)
                         .attr("text-anchor", "middle")
-                        .attr("font-size", "24px")
+                        .attr("font-size", "48px")
                         .attr("dominant-baseline", "middle")
                         .text(prevBlockCredits.toString());
 
@@ -1660,10 +1737,10 @@
 
                     // Right side - Cumulative credits (with animation)
                     const cumCreditsText = backgroundGroup.append("text")
-                        .attr("x", creditXOffset + 150)
+                        .attr("x", dynamicCreditXOffset + creditColumnSpacing)
                         .attr("y", y)
                         .attr("text-anchor", "middle")
-                        .attr("font-size", "24px")
+                        .attr("font-size", "48px")
                         .attr("dominant-baseline", "middle")
                         .text(prevCumCredits.toString());
 
@@ -1685,6 +1762,9 @@
                 // Use the flags we set earlier
                 const isPlaceholder = course._isPlaceholder;
                 const isInExtracurricular = course._inExtracurricular;
+
+                // Create unique key for this course instance
+                const courseKey = `${course.id}_${isInExtracurricular ? 'extra' : 'regular'}`;
 
                 const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
                 const blockEnd = isInExtracurricular ? 6 : parseBlockNumber(course.block_end);
@@ -1733,6 +1813,9 @@
                 // Store position by ID for dependency drawing
                 coursePositions[course.id] = { x, y, width: nodeWidth, height };
 
+                // Store position for animation next time
+                previousCoursePositions[courseKey] = { x, y, wasPlaceholder: isPlaceholder };
+
                 // Check course properties
                 const isQF = course.qf === 'true';
                 const isOR = course.or === 'true';
@@ -1766,10 +1849,85 @@
                     fillOpacity = 1;
                 }
 
+                // Check if we have a previous position for animation
+                const prevPos = previousCoursePositions[courseKey];
+                const startX = prevPos ? prevPos.x : x;
+                const startY = prevPos ? prevPos.y : y;
+
                 // Create group for the course node
                 const nodeGroup = nodesGroup.append("g")
                     .attr("class", "course-node")
-                    .attr("transform", `translate(${x}, ${y})`);
+                    .attr("data-course-id", course.id)
+                    .attr("data-is-extra", isInExtracurricular)
+                    .attr("data-is-placeholder", isPlaceholder)
+                    .attr("transform", `translate(${startX}, ${startY})`)
+                    .style("cursor", "pointer")
+                    .on("click", function() {
+                        // Open course URL from JSON data
+                        if (course.url) {
+                            window.open(course.url, '_blank');
+                        } else {
+                            console.warn(`No URL available for course ${course.id}`);
+                        }
+                    })
+                    .on("mouseenter", function() {
+                        const currentNode = d3.select(this);
+                        const courseId = currentNode.attr("data-course-id");
+
+                        // Dim all nodes and edges
+                        d3.selectAll(".course-node").style("opacity", 0.2);
+                        d3.selectAll(".dependency-edge").style("opacity", 0.1);
+
+                        // Highlight current node
+                        currentNode.style("opacity", 1);
+
+                        // Find and highlight all edges connected to this node
+                        d3.selectAll(".dependency-edge").each(function() {
+                            const edge = d3.select(this);
+                            const sourceId = edge.attr("data-source-id");
+                            const targetId = edge.attr("data-target-id");
+
+                            // If this edge is connected to the current node
+                            if (sourceId === courseId || targetId === courseId) {
+                                // Highlight the edge
+                                edge.style("opacity", 1)
+                                    .attr("stroke", "#FF6B35")
+                                    .attr("stroke-width", 5);
+
+                                // Highlight the connected node
+                                const connectedId = sourceId === courseId ? targetId : sourceId;
+                                d3.selectAll(".course-node").each(function() {
+                                    const node = d3.select(this);
+                                    if (node.attr("data-course-id") === connectedId) {
+                                        node.style("opacity", 1);
+                                    }
+                                });
+                            }
+                        });
+                    })
+                    .on("mouseleave", function() {
+                        // Reset all nodes and edges to normal state
+                        d3.selectAll(".course-node").style("opacity", 1);
+                        d3.selectAll(".dependency-edge")
+                            .style("opacity", 0.7)
+                            .attr("stroke", "#2196F3")
+                            .attr("stroke-width", 3);
+                    });
+
+                // Animate to new position if it changed
+                if (prevPos && (prevPos.x !== x || prevPos.y !== y)) {
+                    console.log(`Animating ${course.id} from (${prevPos.x}, ${prevPos.y}) to (${x}, ${y})`);
+                    nodeGroup.transition()
+                        .duration(800)
+                        .ease(d3.easeCubicInOut)
+                        .attr("transform", `translate(${x}, ${y})`);
+                } else if (!prevPos) {
+                    // First render - fade in
+                    nodeGroup.style("opacity", 0)
+                        .transition()
+                        .duration(400)
+                        .style("opacity", 1);
+                }
 
                 // Add main rectangle
                 const rect = nodeGroup.append("rect")
@@ -1785,6 +1943,25 @@
                 // Add dashed border for placeholder nodes
                 if (isPlaceholder) {
                     rect.attr("stroke-dasharray", "5,5");
+                }
+
+                // Animate placeholder state changes
+                const prevWasPlaceholder = prevPos ? prevPos.wasPlaceholder : false;
+                if (prevPos && prevWasPlaceholder !== isPlaceholder) {
+                    // State changed - animate the transition
+                    if (isPlaceholder) {
+                        // Becoming a placeholder - fade out colors
+                        rect.attr("fill-opacity", fillOpacity === 0 ? 0 : 1)
+                            .transition()
+                            .duration(400)
+                            .attr("fill-opacity", fillOpacity);
+                    } else {
+                        // Becoming filled - fade in colors
+                        rect.attr("fill-opacity", 0)
+                            .transition()
+                            .duration(400)
+                            .attr("fill-opacity", fillOpacity);
+                    }
                 }
 
                 // Add purple right border if QF (not for placeholders)
@@ -1836,9 +2013,9 @@
                 }
 
                 // Add circular +/- buttons based on course state
-                const buttonRadius = 12;
-                const buttonX = -nodeWidth / 2 + buttonRadius + 5;
-                const buttonY = -height / 2 + buttonRadius + 5;
+                const buttonRadius = 24;
+                const buttonX = -nodeWidth / 2 + buttonRadius - 6;
+                const buttonY = -height / 2 + buttonRadius - 5;
 
                 if (course._isAlternative && isPlaceholder) {
                     // Alternative placeholder - show + button to add it
@@ -1872,7 +2049,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -1919,7 +2096,7 @@
                             .attr("y", buttonY)
                             .attr("text-anchor", "middle")
                             .attr("dominant-baseline", "middle")
-                            .attr("font-size", "18px")
+                            .attr("font-size", "36px")
                             .attr("font-weight", "bold")
                             .attr("fill", "white")
                             .text("−");
@@ -1947,7 +2124,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -1974,7 +2151,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -2010,7 +2187,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -2037,7 +2214,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -2064,7 +2241,7 @@
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
                         .attr("fill", "white")
                         .text("+");
@@ -2123,7 +2300,7 @@
                             .attr("y", buttonY)
                             .attr("text-anchor", "middle")
                             .attr("dominant-baseline", "middle")
-                            .attr("font-size", "18px")
+                            .attr("font-size", "36px")
                             .attr("font-weight", "bold")
                             .attr("fill", "white")
                             .text("−");
@@ -2186,13 +2363,13 @@
                             const from = coursePositions[depId];
                             const to = coursePositions[course.id];
 
-                            // Start from right edge of source (dependency)
-                            const startX = from.x + from.width / 2;
-                            const startY = from.y;
+                            // Start from top right corner of source (10px inward)
+                            const startX = from.x + from.width / 2 - 10;
+                            const startY = from.y - from.height / 2 + 10;
 
-                            // End at left edge of target (course)
-                            const endX = to.x - to.width / 2;
-                            const endY = to.y;
+                            // End at bottom right corner of target (10px inward)
+                            const endX = to.x + to.width / 2 - 10;
+                            const endY = to.y + to.height / 2 - 10;
 
                             // Calculate control point for quadratic Bezier curve
                             // Place it at the midpoint horizontally, and offset vertically for a nice arc
@@ -2220,6 +2397,9 @@
                                 .attr("marker-end", "url(#arrowhead)")
                                 .attr("opacity", 0.7)
                                 .attr("cursor", "pointer")
+                                .attr("data-source-id", depId)
+                                .attr("data-target-id", course.id)
+                                .attr("class", "dependency-edge")
                                 .on("mouseenter", function() {
                                     d3.select(this)
                                         .attr("stroke", "#FF6B35")

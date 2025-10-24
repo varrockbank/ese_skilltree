@@ -16,6 +16,6 @@ FEB22013X,Simulation,4,BLOK3,BLOK3,false,false,true,true,true,false,FEB22008X;FE
 FEB22017X,Finance (econometrics),4,BLOK3,BLOK3,false,false,true,true,false,false,FEB21017X;FEB21020X;FEB22023X;FEB22003X,false,FEB21020X,FEB21020X
 FEB22018X,Marketing (econometrics),4,BLOK4,BLOK4,false,false,false,false,false,true,FEB21020X;FEB22003X;FEB22005X,false,,
 FEB23001X,Time Series Analysis,4,BLOK5,BLOK5,false,true,false,false,false,false,FEB22008X;FEB22005X,false,,
-FEB61003,Programming (SPOC),4,BLOK2,BLOK2,false,false,false,false,false,false,FEB21011S,true,,
+FEB61003,Programming (SPOC),4,BLOK4,BLOK4,false,false,false,false,false,false,FEB21011S,true,,
 FEB63016X,Guidance Pre-Master (econometrics),0,BLOK1,BLOK1,false,false,false,false,false,false,,true,,
 FEB63019X,Take-Off Pre-Master (econometrics),0,BLOK1,BLOK1,false,false,false,false,false,false,,true,,
