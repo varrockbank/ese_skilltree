@@ -1,0 +1,13 @@
+{
+  "id": "FEB22003X",
+  "name": "Introduction to Multivariate Statistics",
+  "credits": 4,
+  "blockStart": "BLOK1",
+  "blockEnd": "BLOK1",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22003X&collegejaar=2025",
+  "dependencies": [
+    "FEB21023X",
+    "FEB21007X"
+  ],
+  "premaster": false
+}

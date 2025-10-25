@@ -1,0 +1,455 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB22003X&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB22003X_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Bachelor 2"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB22003X"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Introduction to Multivariate Statistics"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Introduction to Multivariate Statistics"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22003X&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB22003X"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Bachelor 2 - BSC2"
+                                    },
+                                    {
+                                        "omschrijving": "Bachelor 2 - International Bachelor Econometrics and Operations Research"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>Via OSIRIS</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Secretariat Econometrics, ET-18, 010-4081264, eb-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body>The course is primarily theoretical. In this course we use a lot of linear algebra and see its connection with statistics. After the univariate statistics studied in the previous courses, we move to multivariate statistical methods. We start with the geometry of multivariate samples. Then we generalize the univariate methods to multivariate setting. And finally, we study several techniques that are useful in practice.<br/><br/>This course uses knowledge of FEB21023X Vector Calculus and FEB21007X(S) Statistics, and is required for FEB22004X Econometrics 1, FEB22017X Finance en FEB22018X Marketing.</body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body>- Students get introduced to the geometry of multivariate samples.<br/>- Students get introduced to the multivariate normal distribution.<br/>- Students learn to apply some multivariate methods (estimation and tests) that involve the multivariate normal distribution.<br/>- Students learn the basis of principal components and factor analysis.</body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Required material",
+                            "velden": [
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Johnson and Wichern; Applied Multivariate Statistical Analysis, 6th edition, 2007. ISBN: 0-13-514350-0"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>BSc2 Econometrics</li><li>International Bachelor Econometrics and Operations Research</li><li>International Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Exercise",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK1",
+                            "id_cursus_inschrijving": 152715,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-inschrijven",
+                                    "titel": "Enrolment period",
+                                    "waarde": "11 August 2025 until 2 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-uitschrijven",
+                                    "titel": "Unenrolment",
+                                    "waarde": " until 16 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "1 september 2025 until 26 oktober 2025"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "dr. M Zhelonkin",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "dr. M Zhelonkin",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "dr. M Zhelonkin",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "A Ražanauskas",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "AB Baisuanov",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "FA Simonis",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "JE van Langen",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "M Ong",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "OQA Halewijn, BSc",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "TA Mossel Gonzalez",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "Y Hazon Neufeld",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-vrij-veld-15",
+                    "titel": "Assessment materials",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<ul><li>Chapters from Johnson and Wichern.</li></ul>"
+                },
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "100"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toets-inschrijven",
+            "titel": "Test enrolment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toets-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Written exam 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": [
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-inschrijven",
+                                            "titel": "Enrolment period",
+                                            "waarde": "12 September 2025 until 13 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-na-inschrijven",
+                                            "titel": "Late enrolment",
+                                            "waarde": "14 October 2025 until 20 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-uitschrijven",
+                                            "titel": "Unenrolment",
+                                            "waarde": "1 September 2025 until 16 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-toetsdatum",
+                                            "titel": "Test date",
+                                            "waarde": "20 October 2025"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "blok": "Block BLOK-HER",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 12
+}

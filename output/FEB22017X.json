@@ -1,0 +1,15 @@
+{
+  "id": "FEB22017X",
+  "name": "Finance (econometrics)",
+  "credits": 4,
+  "blockStart": "BLOK3",
+  "blockEnd": "BLOK3",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22017X&collegejaar=2025",
+  "dependencies": [
+    "FEB21017X",
+    "FEB21020X",
+    "FEB22023X",
+    "FEB22003X"
+  ],
+  "premaster": false
+}

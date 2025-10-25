@@ -1,0 +1,13 @@
+{
+  "id": "FEB22013X",
+  "name": "Simulation",
+  "credits": 4,
+  "blockStart": "BLOK3",
+  "blockEnd": "BLOK3",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22013X&collegejaar=2025",
+  "dependencies": [
+    "FEB22008X",
+    "FEB22012X"
+  ],
+  "premaster": false
+}

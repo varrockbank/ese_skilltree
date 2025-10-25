@@ -1,0 +1,434 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB21009X&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB21009X_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Bachelor 1"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB21009X"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Linear Optimisation"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Linear Optimisation"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21009X&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB21009X"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Bachelor 1 - BSC2"
+                                    },
+                                    {
+                                        "omschrijving": "Bachelor 1 - International Bachelor Econometrics and Operations Research"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    },
+                                    {
+                                        "omschrijving": "Recommended Courses-English"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>First-year students are registered centrally. Students who have to retake first-year courses must report to the information desk at E building.</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Secretariat Econometrics, ET-18, 010-4081264, eb-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body><p>This course is an introduction in the theory and methods to solve linear optimisation problems. The topics of the course are:<br />\n- Modeling and solving linear optimisation problems<br />\n- Primal and dual simplex methods<br />\n- Duality theory<br />\n- Sensitivity analysis<br />\n- Linear optimisation for network problems<br />\nThis course uses knowledge from FEB21023X Vector Calculus and FEB21010X Mathematical Methods, and is required for FEB22002X Combinatorial Optimisation.</p></body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body><p>- To recognise and model linear optimisation problems<br />\n- To understand the basic theory to solve linear optimisation problems and interpret their solutions<br />\n- To solve linear optimisation problems<br />\n- To solve linear optimisation problems using a software package</p></body></html>"
+                },
+                {
+                    "veld": "item-inhoud-3",
+                    "titel": "Changes as compared to previous year",
+                    "waarde": "<html><body><p>No substantial changes</p></body></html>"
+                },
+                {
+                    "veld": "item-inhoud-5",
+                    "titel": "Extra",
+                    "waarde": "<html><body>None</body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Recommended material",
+                            "velden": [
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Vanderbei, Robert J, \"Linear Programming: Foundations and Extensions\""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Hillier, F. S., Lieberman, G. J. \"Introduction to Operations Research\""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Bertsimas, D., Tsitsiklis, J.N. \"Introduction to Linear Optimization\""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>BSc2 Econometrics</li><li>International Bachelor Econometrics and Operations Research</li><li>International Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK5",
+                            "id_cursus_inschrijving": 152700,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "4 mei 2026 until 10 juli 2026"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "dr. O Kuryatnikova",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "dr. O Kuryatnikova",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "dr. O Kuryatnikova",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "DB Mesland",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-vrij-veld-14",
+                    "titel": "Assessment requirements",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<p>Compulsory attendance of at least 7 of the 9 tutorials, of which at least 1 computer tutorial (this obligation does not apply - if applicable - to HBO/WO pre-master students, Erasmus Colleges students and students who have already achieved a valid - registered in OSIRIS - but insufficient course result).</p>"
+                },
+                {
+                    "veld": "item-vrij-veld-15",
+                    "titel": "Assessment materials",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<p>All lecture notes.</p>"
+                },
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Attendance",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "0"
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Homework assignement 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "5"
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "95"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 11
+}

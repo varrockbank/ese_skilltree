@@ -4,48 +4,192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Graph Visualization</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #000000;
             display: flex;
             min-height: 100vh;
             align-items: flex-start;
+            color: #72D69F;
+        }
+
+        /* Yellow scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+            border: 1px solid #333;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #FEA800, #FFFF00);
+            border-radius: 2px;
+            border: 1px solid #FEA800;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFFF00;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #FEA800 #000000;
         }
 
         .content-wrapper {
             flex: 1;
             margin-left: 280px;
+            margin-right: 200px;
             padding: 0;
+            position: relative;
+        }
+
+        /* Right panel for spirograph */
+        .right-panel {
+            position: fixed;
+            right: 0;
+            top: 50px;
+            width: 200px;
+            height: calc(100vh - 50px);
+            background-color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Spirograph animation */
+        .spirograph-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .spirograph-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .at-gif {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .sigmoid-gif {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .video-embed {
+            width: 100%;
+            height: auto;
+            border: none;
+            z-index: 3;
+            opacity: 0.8;
+            mix-blend-mode: screen;
         }
 
         #mynetwork {
             width: 100%;
-            height: 100vh;
-            background-color: white;
+            height: calc(100vh - 50px);
+            background-color: #0a0a0a;
+            background-image:
+                linear-gradient(rgba(160, 32, 240, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(160, 32, 240, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
             position: relative;
         }
 
         .sidenav {
             position: fixed;
-            top: 0;
+            top: 50px;
             left: 0;
-            height: 100vh;
+            height: calc(100vh - 50px);
             width: 280px;
-            background-color: white;
-            border-right: 1px solid #ddd;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            background-color: #000000;
+            box-shadow: 2px 0 20px rgba(255, 102, 0, 0.3);
             z-index: 1000;
             overflow-y: auto;
-            padding: 20px;
+            padding: 20px 10px 20px 0;
+        }
+
+        .sidenav-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .sidenav::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                #A020F0 0%,
+                #0000FF 33%,
+                #00FFFF 66%,
+                #00FF00 100%);
+        }
+
+        .legend-container {
+            position: relative;
+            padding: 20px 15px 25px 35px;
+            margin-top: 20px;
+            margin-bottom: 100px;
+            margin-left: 10px;
+            z-index: 1;
+            opacity: 0.8;
+
+            /* Augmented-ui properties */
+            --aug-tl: 20px;
+            --aug-tr: 25px;
+            --aug-bl: 30px;
+            --aug-br: 25px;
+            --aug-tr-inset2: 35%;
+            --aug-bl-inset2: 40%;
+            --aug-br-inset2: 35%;
+            --aug-border-all: 4px;
+            --aug-border-bg: #51D153;
+            --aug-inlay-all: 4px;
+            --aug-inlay-bg: #9846D8;
+
+            background: linear-gradient(to bottom, #A020F0, #000000);
+            border: 4px solid #A020F0;
+            color: #FFFFFF;
+            box-shadow: 0 0 20px rgba(81, 209, 83, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
         .legend-item {
             display: block;
             margin-bottom: 8px;
+            color: #FFFFFF;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         .legend-color {
@@ -60,24 +204,497 @@
         .stage-label {
             font-weight: bold;
             margin-bottom: 5px;
+            margin-left: 20px;
+            color: #FFFFFF;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 10px;
         }
 
         .specialization-section {
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
+            margin-left: 10px;
+            transform: translateY(-10px);
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Radar box styling */
+        .radar {
+            position: relative;
+            z-index: 1;
+            border: 1px solid #000;
+            background: rgb(2, 137, 68);
+            padding: 0.2rem 0 0.4rem;
+            overflow: hidden;
+        }
+
+        .radar .bg-overlay {
+            position: absolute;
+            inset: 0;
+            transform: translate3d(0,0,0);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .radar .bg-overlay::before,
+        .radar .bg-overlay::after {
+            content: '';
+            position: absolute;
+            display: block;
+            inset: 0;
+        }
+
+        .radar .bg-overlay::before {
+            filter: url(#noiseFilter);
+            transform: translate3d(0,0,0);
+        }
+
+        .radar .bg-overlay::after {
+            background: rgba(255 255 255 / 0.32);
+            animation: scanlines 7ms linear infinite;
+        }
+
+        .radar header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            padding: 8px 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: rgb(2, 137, 68);
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0;
+            opacity: 0.7;
+        }
+
+        .radar h2::after {
+            content: '';
+            display: block;
+            background: repeating-linear-gradient(90deg,
+                currentColor 0 12px,
+                transparent 0 16px,
+                currentColor 0 20px,
+                transparent 0 24px,
+                currentColor 0 52px,
+                transparent 0 56px,
+                currentColor 0 64px
+            );
+            height: 4px;
+            margin-top: 4px;
+        }
+
+        .radar .spec-name {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            padding: 0;
+            min-height: 50px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-name.glitch-effect {
+            animation: glitch 0.5s ease-in-out;
+        }
+
+        .radar .spec-character-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            margin: 0;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-character-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .radar .gibberish {
+            display: grid;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-align: left;
+            white-space: nowrap;
+            color: #000000;
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            grid-template-rows: repeat(3, 14px);
+            grid-template-areas:
+                "scroll"
+                "scroll"
+                "typing";
+        }
+
+        .radar .gibberish span {
+            overflow: hidden;
+        }
+
+        .radar .gibberish .scroll-container {
+            grid-area: scroll;
+            display: grid;
+            grid-template-rows: repeat(2, 14px);
+            grid-template-areas:
+                "s1"
+                "s2";
+            animation: gibberishScroll 3s infinite linear;
+        }
+
+        .radar .gibberish .scroll-container span:nth-child(1) { grid-area: s1; overflow: hidden; }
+        .radar .gibberish .scroll-container span:nth-child(2) { grid-area: s2; overflow: hidden; }
+        .radar .gibberish .scroll-container span:nth-child(3) { grid-area: s1; overflow: hidden; }
+
+        .radar .gibberish .typing-line {
+            grid-area: typing;
+            width: 0;
+            overflow: hidden;
+            animation: typingEffect 1s infinite linear;
+        }
+
+        @keyframes gibberishScroll {
+            0% {
+                grid-template-areas: "s1" "s2";
+            }
+            50% {
+                grid-template-areas: "s2" "s1";
+            }
+            100% {
+                grid-template-areas: "s1" "s2";
+            }
+        }
+
+        @keyframes typingEffect {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .radar .spec-cycler {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .radar .spec-arrow {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: rgb(2, 137, 68);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar .spec-arrow:hover {
+            background: rgba(2, 137, 68, 0.3);
+        }
+
+        .barcode {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 30px;
+            margin-left: 10px;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .barcode span {
+            background: #000000;
+            height: 100%;
+            display: inline-block;
+        }
+
+        @keyframes scanlines {
+            from {
+                clip-path: polygon(0 0, 100% 0, 100% 2px, 0 2px);
+            }
+            to {
+                clip-path: polygon(0 calc(100% - 2px), 100% calc(100% - 2px), 100% 100%, 0 100%);
+            }
+        }
+
+        /* Specialization Cycler */
+        .spec-cycler {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .spec-arrow {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: #00FF00;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spec-arrow:hover {
+            background: rgba(160, 32, 240, 0.3);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.6);
+        }
+
+        .spec-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .spec-display {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+        }
+
+        .spec-current {
+            color: #00FF00;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-align: center;
+            text-transform: uppercase;
+            min-height: 2.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spec-character-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .spec-character-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .radio-option {
-            margin: 10px 0;
+            margin: 0 auto;
+            color: #00FF00;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            background: transparent;
+            border: none;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+        }
+
+        .radio-option:has(input[type="radio"]:checked) {
         }
 
         .radio-option input[type="radio"] {
-            margin-right: 8px;
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #A020F0;
+            background-color: #000000;
+            margin-right: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            clip-path: polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
+        }
+
+        .radio-option input[type="radio"]:checked {
+            background-color: #00FF00;
+            border-color: #A020F0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        .radio-option input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #000000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .radio-option label {
             cursor: pointer;
+            color: #E4541E;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 12px;
+            flex-grow: 1;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid #A020F0;
+            background-color: #000000;
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: #A020F0;
+            box-shadow: 0 0 10px rgba(160, 32, 240, 0.6);
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #72D69F;
+            border-color: #A020F0;
+            box-shadow: 0 0 15px rgba(114, 214, 159, 0.9);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 900;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        label {
+            cursor: pointer;
+            color: #72D69F;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 500;
+        }
+
+        /* Rectangular Toggle */
+        .rect-toggle {
+            position: relative;
+            display: inline-block;
+            width: 52px !important;
+            min-width: 52px !important;
+            max-width: 52px !important;
+            height: 30px;
+            margin-right: 10px;
+            padding: 0 !important;
+            overflow: hidden;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        .rect-toggle input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .rect-slider {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            width: 52px;
+            height: 30px;
+            background-color: #000000;
+            border: 2px solid #E4541E;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        .rect-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            top: 2px;
+            background-color: #E4541E;
+            transition: 0.3s;
+        }
+
+        input:checked + .rect-slider {
+            background-color: #E4541E;
+            border-color: #E4541E;
+        }
+
+        input:checked + .rect-slider:before {
+            transform: translateX(24px);
+            background-color: #000000;
         }
 
         .course-node {
@@ -87,69 +704,1286 @@
         .course-node:hover {
             opacity: 0.8;
         }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #000000;
+            padding: 0;
+            margin: 0 0 5px 0;
+            list-style: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            height: 50px;
+            box-shadow: 0 3px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .hex-container {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .wave-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 90px;
+            z-index: 2001;
+            pointer-events: none;
+        }
+
+        .wave-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hex-row {
+            display: flex;
+            clear: both;
+        }
+
+        .hex {
+            --edge-size: 8px;
+            --diagonal-s-size: calc(var(--edge-size) * 1.75);
+            --gutter-ratio: .85;
+            --gutter-size: calc(var(--edge-size) * .35);
+            float: left;
+            height: var(--diagonal-s-size);
+            margin-bottom: var(--gutter-size);
+            margin-left: calc(var(--gutter-ratio) * var(--edge-size) / 2);
+            margin-right: calc(var(--gutter-ratio) * var(--edge-size) / 2);
+            position: relative;
+            width: var(--edge-size);
+            --fill-color: #f30;
+            --glow-color: rgba(255, 0, 0, .5);
+            background: var(--fill-color);
+            box-shadow: 0 0 4px var(--glow-color), 0 0 2px var(--glow-color);
+        }
+
+        .hex::before, .hex::after {
+            content: '';
+            display: block;
+            position: absolute;
+            background: var(--fill-color);
+            box-shadow: inherit;
+            height: var(--diagonal-s-size);
+            width: var(--edge-size);
+        }
+
+        .hex::before { transform: rotate(60deg); }
+        .hex::after { transform: rotate(-60deg); }
+
+        .hex:nth-child(odd) {
+            top: calc((var(--diagonal-s-size) + var(--gutter-size)) / 2);
+        }
+
+        .hex.-blink {
+            animation: hexBlink 3s infinite ease-in-out;
+        }
+
+        .hex:nth-child(2n) { animation-delay: .2s; }
+        .hex:nth-child(3n) { animation-delay: .3s; }
+        .hex-row:nth-child(even) > .hex { animation-delay: .3s; }
+        .hex-row:nth-child(even) > .hex:nth-child(2n) { animation-delay: .2s; }
+        .hex-row:nth-child(even) > .hex:nth-child(3n) { animation-delay: .1s; }
+
+        @keyframes hexBlink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .tab-nav::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -15px;
+            right: 0;
+            height: 16px;
+            background-image:
+                repeating-linear-gradient(
+                    -45deg,
+                    #E4541E,
+                    #E4541E 15px,
+                    #000000 15px,
+                    #000000 30px
+                ),
+                repeating-linear-gradient(
+                    45deg,
+                    #E4541E,
+                    #E4541E 15px,
+                    #000000 15px,
+                    #000000 30px
+                );
+            background-size: 50% 100%, 50% 100%;
+            background-position: left center, right center;
+            background-repeat: no-repeat;
+        }
+
+        .tab-nav li {
+            margin: 0;
+        }
+
+        .tab-nav button {
+            padding: 0 30px;
+            margin: 0 10px 0 10px;
+            border: none;
+            background: #000000;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 900;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #E4541E;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+        }
+
+        .tab-nav button:hover {
+            background-color: rgba(233, 165, 41, 0.2);
+            color: #E4541E;
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% {
+                text-shadow: 2px 0 #FF0000, -2px 0 #00FFFF;
+                transform: translate(0);
+            }
+            20% {
+                text-shadow: -2px 0 #FF0000, 2px 0 #00FFFF;
+                transform: translate(-2px, 0);
+            }
+            40% {
+                text-shadow: 2px 0 #00FFFF, -2px 0 #FF0000;
+                transform: translate(2px, 0);
+            }
+            60% {
+                text-shadow: -2px 0 #00FFFF, 2px 0 #FF0000;
+                transform: translate(-1px, 0);
+            }
+            80% {
+                text-shadow: 2px 0 #FF0000, -2px 0 #00FFFF;
+                transform: translate(1px, 0);
+            }
+            100% {
+                text-shadow: -2px 0 #FF0000, 2px 0 #00FFFF;
+                transform: translate(0);
+            }
+        }
+
+        @keyframes radarSweep {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .radar-sweep {
+            transform-origin: center;
+            animation: radarSweep 4s linear infinite;
+        }
+
+        @keyframes radarPulse {
+            0%, 100% {
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .radar-ring {
+            animation: radarPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes hexagonPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 2px #DD5500);
+            }
+            50% {
+                filter: drop-shadow(0 0 8px #DD5500) drop-shadow(0 0 12px #DD5500);
+            }
+        }
+
+        .block-hexagon {
+            animation: hexagonPulse 7s ease-in-out infinite;
+        }
+
+        .tab-nav button.active {
+            color: #000000;
+            background-color: #E4541E;
+            padding: 0;
+            border-top: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 50px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Course Data Tab - Full Width */
+        #course-data {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+        }
+
+        /* Programme Data Tab - Full Width */
+        #programme-data {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+        }
+
+        /* Course Data Page Styles */
+        .course-data-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .course-data-sidebar {
+            width: 300px;
+            background-color: #000000;
+            border-right: 3px solid #DD5500;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .course-data-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #DD5500;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .course-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .course-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 0px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 3px solid transparent;
+            color: #72D69F;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            position: relative;
+        }
+
+        .course-item:hover {
+            background-color: rgba(160, 33, 240, 0.2);
+        }
+
+        .course-item.active {
+            background-color: transparent;
+            border-left-color: transparent;
+            font-weight: bold;
+            color: #00FF00;
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -5px;
+            right: -10px;
+            bottom: 0;
+            background-color: #A021F0;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            z-index: -1;
+        }
+
+        .course-item-number {
+            color: #DD5500;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .course-data-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #0a0a0a;
+        }
+
+        .course-data-toolbar {
+            padding: 15px 20px;
+            background-color: #000000;
+            border-bottom: 3px solid #DD5500;
+        }
+
+        .course-data-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #DD5500;
+            margin-bottom: 15px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .content-sub-tabs {
+            display: flex;
+            gap: 5px;
+        }
+
+        .content-sub-tab {
+            padding: 8px 16px;
+            background: #000000;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: #72D69F;
+            transition: all 0.2s;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .content-sub-tab:hover {
+            color: #FFFF00;
+            background-color: rgba(160, 33, 240, 0.2);
+        }
+
+        .content-sub-tab.active {
+            color: #00FF00;
+            background-color: #A021F0;
+            border-bottom-color: #A021F0;
+            font-weight: 700;
+        }
+
+        .course-data-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            position: relative;
+        }
+
+        .sub-content {
+            display: none;
+            height: 100%;
+        }
+
+        .sub-content.active {
+            display: block;
+        }
+
+        .json-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: calc(100vh - 200px);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            padding: 15px;
+            border: 2px solid #DD5500;
+            border-radius: 0px;
+            background-color: #000000;
+            color: #72D69F;
+            resize: none;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: #DD5500;
+            font-size: 16px;
+            margin-top: 100px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* Program Data Table Styles */
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #000000;
+            box-shadow: 0 2px 4px rgba(164, 219, 89, 0.3);
+            border: 2px solid #A4DB59;
+        }
+
+        .csv-table th {
+            background-color: #A4DB59;
+            color: #000000;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .csv-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #A4DB59;
+            font-size: 13px;
+            color: #72D69F;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .csv-table td.dependencies-column {
+            max-width: 200px;
+            white-space: normal;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .csv-table tbody tr:nth-child(odd) {
+            background-color: #201330;
+            color: #9BDB7C;
+        }
+
+        .csv-table tbody tr:nth-child(even) {
+            background-color: #654C7F;
+            color: #000000;
+        }
+
+        .csv-table tr:hover {
+            background-color: rgba(160, 33, 240, 0.3);
+        }
     </style>
 </head>
 <body>
-    <div class="sidenav">
+    <!-- SVG Noise Filter for Radar Effect -->
+    <svg viewBox="0 0 20 20" style="position: fixed; width: 0; height: 0; pointer-events: none;">
+        <defs>
+            <filter id='noiseFilter'>
+                <feTurbulence type='fractalNoise' baseFrequency='0.5' seed='0'>
+                    <animate attributeName="seed" values="1;3;5;1" dur="0.2s" repeatCount="indefinite" />
+                </feTurbulence>
+            </filter>
+            <pattern id="hexagonPattern" x="0" y="0" width="137" height="100" patternUnits="userSpaceOnUse">
+                <!-- First row hexagons -->
+                <polygon points="30,0 60,0 75,25 60,50 30,50 15,25" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+                <!-- Second row hexagons (offset) -->
+                <polygon points="-15,50 15,50 30,75 15,100 -15,100 -30,75" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+                <polygon points="72,50 102,50 117,75 102,100 72,100 57,75" fill="none" stroke="rgba(160, 32, 240, 0.3)" stroke-width="1"/>
+            </pattern>
+        </defs>
+    </svg>
+
+    <!-- Sine Wave Container -->
+    <div class="wave-container">
+        <svg class="wave-svg" id="wave-svg" viewBox="0 0 280 90"></svg>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="tab-nav">
+        <li><button class="tab-button active" data-tab="course-page">Schedule</button></li>
+        <li><button class="tab-button" data-tab="course-data">Course Data</button></li>
+        <li><button class="tab-button" data-tab="programme-data">Programme Data</button></li>
+        <li><button class="tab-button" data-tab="program-data">Collated Data</button></li>
+
+        <div class="dna-container">
+            <svg class="dna-helix" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="tabRadarGradient">
+                        <stop offset="0%" stop-color="#DD5500" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="#DD5500" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <g transform="translate(50, 25)">
+                    <!-- Octagon rings -->
+                    <polygon points="20,0 14.14,14.14 0,20 -14.14,14.14 -20,0 -14.14,-14.14 0,-20 14.14,-14.14"
+                        fill="none" stroke="#00FFFF" stroke-width="1" class="radar-ring" opacity="0.15"/>
+                    <polygon points="35,0 24.75,24.75 0,35 -24.75,24.75 -35,0 -24.75,-24.75 0,-35 24.75,-24.75"
+                        fill="none" stroke="#00FFFF" stroke-width="1" class="radar-ring" opacity="0.2" style="animation-delay: 0.3s"/>
+                    <polygon points="50,0 35.35,35.35 0,50 -35.35,35.35 -50,0 -35.35,-35.35 0,-50 35.35,-35.35"
+                        fill="none" stroke="#00FFFF" stroke-width="1" class="radar-ring" opacity="0.25" style="animation-delay: 0.6s"/>
+
+                    <!-- Radar sweep -->
+                    <g class="radar-sweep">
+                        <path d="M 0,0 L 0,-50 A 50,50 0 0,1 43.3,-25 Z" fill="url(#tabRadarGradient)" opacity="0.5"/>
+                    </g>
+
+                    <!-- Center dot -->
+                    <circle cx="0" cy="0" r="3" fill="#DD5500" opacity="0.9"/>
+                </g>
+            </svg>
+        </div>
+
+        <div class="hex-container">
+            <div class="hex-row">
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+            </div>
+            <div class="hex-row">
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+                <div class="hex -blink"></div>
+            </div>
+        </div>
+    </ul>
+
+    <!-- Course Page Tab -->
+    <div id="course-page" class="tab-content active">
+        <div class="sidenav">
+        <canvas id="sidenav-canvas" class="sidenav-canvas"></canvas>
         <div class="specialization-section">
-            <div class="stage-label">Specialization:</div>
-            <div class="radio-option">
-                <input type="radio" id="spec-qf" name="specialization" value="qf" checked>
-                <label for="spec-qf">Quant Finance</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-or" name="specialization" value="or">
-                <label for="spec-or">Operations Research</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-econ" name="specialization" value="econ">
-                <label for="spec-econ">Econometrics</label>
-            </div>
-            <div class="radio-option">
-                <input type="radio" id="spec-marketing" name="specialization" value="marketing">
-                <label for="spec-marketing">Business Analytics</label>
+            <div class="radar jamming">
+                <span class="bg-overlay"></span>
+                <header>
+                    <h2>Specialization</h2>
+                </header>
+
+                <div class="spec-name" id="spec-name">QUANT FINANCE</div>
+
+                <div class="spec-character-container">
+                    <img id="spec-character" src="assets/iceman.gif" alt="Character" class="spec-character-img">
+                </div>
+
+                <div class="gibberish" aria-hidden="true">
+                    <div class="scroll-container">
+                        <span> ■ ■■■ ■■■■■■ ■■ ■ ■■ ■ ■■■■ ■ ■ ■■■■■■ ■■ ■ ■ ■■ </span>
+                        <span> ■■ ■■■■■■■ ■■■ ■ ■■ ■■■■■ ■ ■■■ ■ ■ ■■■■■■■■■■■■ </span>
+                    </div>
+                    <span class="typing-line"> ■■■ ■■■■■■ ■■ ■■■ ■■■■■■■ ■■■■■■■■■ ■■ ■ ■ ■■■■■ </span>
+                </div>
+
+                <div class="spec-cycler">
+                    <button class="spec-arrow" id="spec-prev" aria-label="Previous specialization">&lt;</button>
+                    <input type="hidden" id="specialization-value" name="specialization" value="qf">
+                    <button class="spec-arrow" id="spec-next" aria-label="Next specialization">&gt;</button>
+                    <div class="barcode" id="barcode-right"></div>
+                </div>
+
+                <!-- Hidden radio buttons for backward compatibility with existing code -->
+                <div style="display: none;">
+                    <input type="radio" id="spec-qf" name="specialization" value="qf" checked>
+                    <input type="radio" id="spec-or" name="specialization" value="or">
+                    <input type="radio" id="spec-econ" name="specialization" value="econ">
+                    <input type="radio" id="spec-marketing" name="specialization" value="marketing">
+                </div>
             </div>
         </div>
 
-        <div class="stage-label">Course Type:</div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #90ee90;"></span>
-            <span>Core</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #ADD8E6;"></span>
-            <span>Specialization dependent</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #fffacd;"></span>
-            <span>Optional</span>
+        <div class="specialization-section">
+            <div class="radio-option">
+                <label class="rect-toggle">
+                    <input type="checkbox" id="show-graph" name="show-graph" checked>
+                    <span class="rect-slider"></span>
+                </label>
+                <label for="show-graph">Show dependencies</label>
+            </div>
         </div>
 
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
-        <div class="stage-label">Specializations:</div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #8b008b; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Quant Finance</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #ff0000; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Operations Research</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-left: 4px solid #228b22; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Econometrics</span>
-        </div>
-        <div class="legend-item">
-            <span style="display: inline-block; width: 20px; height: 20px; border-bottom: 4px solid #ff8c00; margin-right: 5px; vertical-align: middle;"></span>
-            <span>Business Analytics</span>
+        <div class="legend-container" data-augmented-ui="tl-clip tr-clip bl-clip br-clip border inlay">
+            <div class="stage-label">Legend:</div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #000000; border: 2px solid #FFFFFF;"></span>
+                <span>Core</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #A020F0; border: 2px solid #FFFFFF;"></span>
+                <span>Specialization</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #202810; border: 2px solid #83D802;"></span>
+                <span>Optional</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-right: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Quant Finance</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-top: 4px solid #A020F0; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Operations Research</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-left: 4px solid #00FF00; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Econometrics</span>
+            </div>
+            <div class="legend-item">
+                <span style="display: inline-block; width: 20px; height: 20px; border-bottom: 4px solid #00FFFF; margin-right: 5px; vertical-align: middle;"></span>
+                <span>Business Analytics</span>
+            </div>
+            <div style="height: 10px;"></div>
         </div>
     </div>
 
-    <div class="content-wrapper" id="contentWrapper">
-        <div id="mynetwork"></div>
+        <div class="content-wrapper" id="contentWrapper">
+            <div id="mynetwork"></div>
+        </div>
+
+        <!-- Right Panel with Video and GIFs -->
+        <div class="right-panel">
+            <div class="spirograph-container">
+                <img src="assets/at.gif" class="at-gif" alt="At animation">
+                <img src="assets/sigmoid.gif" class="sigmoid-gif" alt="Sigmoid animation">
+                <video class="video-embed" autoplay muted loop playsinline>
+                    <source src="assets/spear.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Data Tab -->
+    <div id="course-data" class="tab-content">
+        <div class="course-data-container">
+            <!-- Left Sidebar: Course List -->
+            <div class="course-data-sidebar">
+                <ul id="course-list" class="course-list">
+                    <!-- Course list will be loaded here dynamically -->
+                </ul>
+            </div>
+
+            <!-- Right Panel: JSON Display -->
+            <div class="course-data-main">
+                <div class="course-data-toolbar">
+                    <div class="content-sub-tabs">
+                        <button class="content-sub-tab active" data-sub-tab="raw-json">Raw Data</button>
+                        <button class="content-sub-tab" data-sub-tab="transformed-json">Processed Data</button>
+                    </div>
+                </div>
+                <div class="course-data-content">
+                    <div id="raw-json" class="sub-content active">
+                        <textarea id="raw-json-display" class="json-textarea" readonly placeholder="Click a course on the left to view its JSON data..."></textarea>
+                    </div>
+                    <div id="transformed-json" class="sub-content">
+                        <textarea id="transformed-json-display" class="json-textarea" readonly placeholder="Click a course on the left to view transformed JSON data..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Program Data Tab -->
+    <div id="program-data" class="tab-content">
+        <div style="padding: 20px; height: calc(100vh - 50px); overflow: auto;">
+            <div id="csv-table-container">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programme Data Tab -->
+    <div id="programme-data" class="tab-content">
+        <div class="course-data-container">
+            <!-- Left Sidebar: Category Files List -->
+            <div class="course-data-sidebar">
+                <ul id="category-list" class="course-list">
+                    <!-- Category files will be loaded here -->
+                </ul>
+            </div>
+
+            <!-- Right Panel: JSON Display -->
+            <div class="course-data-main">
+                <div class="course-data-content">
+                    <textarea id="category-json-display" class="json-textarea" readonly placeholder="Click a category on the left to view its JSON data..."></textarea>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Sub-tab switching functionality (for content area)
+        document.querySelectorAll('.content-sub-tab').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all sub-tab buttons and content
+                document.querySelectorAll('.content-sub-tab').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.sub-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const subTabId = button.getAttribute('data-sub-tab');
+                document.getElementById(subTabId).classList.add('active');
+            });
+        });
+
+        // Specialization cycling functionality
+        const specializations = [
+            { value: 'qf', label: 'QUANT FINANCE', image: 'assets/iceman.gif', barcode: [3, 2, 5, 2, 3, 6, 2, 4, 2, 5, 3, 2, 4, 3, 6, 2, 3, 5, 2, 4, 3, 2, 6, 3, 5, 2, 3, 4, 2, 5] },
+            { value: 'or', label: 'OPERATIONS RESEARCH', image: 'assets/big.gif', barcode: [4, 3, 2, 6, 3, 5, 2, 3, 4, 2, 5, 3, 2, 6, 2, 4, 3, 5, 2, 3, 4, 6, 2, 3, 5, 2, 4, 3, 2, 5] },
+            { value: 'econ', label: 'ECONOMETRICS', image: 'assets/cyberpunk.gif', barcode: [2, 5, 3, 4, 2, 6, 3, 2, 5, 4, 3, 2, 6, 2, 4, 5, 3, 2, 4, 3, 5, 2, 6, 3, 4, 2, 5, 3, 2, 4] },
+            { value: 'marketing', label: 'BUSINESS ANALYTICS', image: 'assets/robo.gif', barcode: [5, 2, 4, 3, 6, 2, 3, 5, 2, 4, 6, 3, 2, 5, 3, 4, 2, 6, 3, 2, 4, 5, 3, 2, 6, 3, 4, 2, 5, 3] }
+        ];
+        let currentSpecIndex = 0;
+
+        function generateBarcode(pattern, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            pattern.forEach(width => {
+                const bar = document.createElement('span');
+                bar.style.width = width + 'px';
+                container.appendChild(bar);
+            });
+        }
+
+        function updateSpecialization(index) {
+            currentSpecIndex = (index + specializations.length) % specializations.length;
+            const spec = specializations[currentSpecIndex];
+            document.getElementById('specialization-value').value = spec.value;
+            document.getElementById('spec-character').src = spec.image;
+
+            const specNameEl = document.getElementById('spec-name');
+            specNameEl.textContent = spec.label;
+
+            // Update barcode
+            generateBarcode(spec.barcode, 'barcode-right');
+
+            // Trigger glitch animation
+            specNameEl.classList.remove('glitch-effect');
+            void specNameEl.offsetWidth; // Force reflow to restart animation
+            specNameEl.classList.add('glitch-effect');
+
+            // Remove the class after animation completes
+            setTimeout(() => {
+                specNameEl.classList.remove('glitch-effect');
+            }, 500);
+
+            // Check the appropriate hidden radio button
+            const radioId = 'spec-' + spec.value;
+            const radioButton = document.getElementById(radioId);
+            if (radioButton) {
+                radioButton.checked = true;
+                // Trigger change event on the radio button
+                const event = new Event('change', { bubbles: true });
+                radioButton.dispatchEvent(event);
+            }
+        }
+
+        document.getElementById('spec-prev').addEventListener('click', () => {
+            updateSpecialization(currentSpecIndex - 1);
+        });
+
+        document.getElementById('spec-next').addEventListener('click', () => {
+            updateSpecialization(currentSpecIndex + 1);
+        });
+
+        // Listen for changes to the hidden input
+        document.getElementById('specialization-value').addEventListener('change', function() {
+            loadAndVisualize();
+        });
+
+        // Trigger glitch animation on page load
+        window.addEventListener('load', () => {
+            const specNameEl = document.getElementById('spec-name');
+            specNameEl.classList.add('glitch-effect');
+            setTimeout(() => {
+                specNameEl.classList.remove('glitch-effect');
+            }, 500);
+
+            // Initialize barcode
+            const spec = specializations[currentSpecIndex];
+            generateBarcode(spec.barcode, 'barcode-right');
+
+            // Initialize animated sine wave
+            const waveSvg = d3.select("#wave-svg");
+            const waveWidth = 280;
+            const waveAmplitude = 30;
+            const waveFrequency = 3;
+            const numWaves = 5;
+            const waveShift = 3;
+
+            // Generate sine wave path
+            function generateWavePath(yOffset, phase) {
+                const points = [];
+                for (let x = 0; x <= waveWidth; x += 2) {
+                    const y = yOffset + waveAmplitude * Math.sin((x / waveWidth) * Math.PI * 2 * waveFrequency + phase);
+                    points.push([x, y + 45]);
+                }
+                return d3.line()
+                    .x(d => d[0])
+                    .y(d => d[1])
+                    .curve(d3.curveBasis)(points);
+            }
+
+            // Create multiple sine waves
+            const waves = [];
+            for (let i = 0; i < numWaves; i++) {
+                const yOffset = (i - Math.floor(numWaves / 2)) * waveShift;
+                const wave = waveSvg.append("path")
+                    .attr("d", generateWavePath(yOffset, 0))
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FFFF")
+                    .attr("stroke-width", 1)
+                    .attr("opacity", 0.3);
+                waves.push({ path: wave, yOffset: yOffset, phase: 0 });
+            }
+
+            // Animate sine waves
+            function animateWaves() {
+                waves.forEach((wave, i) => {
+                    wave.phase += 0.05 + (i * 0.01);
+                    wave.path.attr("d", generateWavePath(wave.yOffset, wave.phase));
+
+                    // Pulse opacity
+                    const opacity = 0.2 + 0.3 * Math.sin(wave.phase * 0.5);
+                    wave.path.attr("opacity", opacity);
+                });
+                requestAnimationFrame(animateWaves);
+            }
+            animateWaves();
+        });
+
+        // List of course files (based on courses.txt)
+        const courseFiles = [
+            'FEB22002X', 'FEB22004X', 'FEB22005X', 'FEB22017X', 'FEB63016X',
+            'FEB22003X', 'FEB21011S', 'FEB22009S', 'FEB21009X', 'FEB22018X',
+            'FEB22008X', 'FEB21010X', 'FEB21020X', 'FEB22006X', 'FEB21005S',
+            'FEB61003', 'FEB22013X', 'FEB21007S', 'FEB63019X', 'FEB23001X'
+        ];
+
+        // Extract course ID (cursus) from raw JSON
+        function extractCourseId(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find cursus field
+                const idField = rubriekKop.velden.find(field => field.veld === 'cursus');
+                if (!idField) {
+                    return null;
+                }
+
+                return idField.waarde;
+            } catch (error) {
+                console.error('Error extracting course ID:', error);
+                return null;
+            }
+        }
+
+        // Extract cursus_korte_naam from raw JSON
+        function extractCourseName(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find cursus_korte_naam field
+                const nameField = rubriekKop.velden.find(field => field.veld === 'cursus_korte_naam');
+                if (!nameField) {
+                    return null;
+                }
+
+                return nameField.waarde;
+            } catch (error) {
+                console.error('Error extracting course name:', error);
+                return null;
+            }
+        }
+
+        // Extract URL from raw JSON
+        function extractUrl(rawJson) {
+            try {
+                // Find rubriek-kop item
+                const rubriekKop = rawJson.items.find(item => item.rubriek === 'rubriek-kop');
+                if (!rubriekKop || !rubriekKop.velden) {
+                    return null;
+                }
+
+                // Find deeplink_detailscherm_extern field
+                const urlField = rubriekKop.velden.find(field => field.veld === 'deeplink_detailscherm_extern');
+                if (!urlField) {
+                    return null;
+                }
+
+                return urlField.waarde;
+            } catch (error) {
+                console.error('Error extracting URL:', error);
+                return null;
+            }
+        }
+
+        // Extract study credits from raw JSON
+        function extractStudyCredits(rawJson) {
+            try {
+                // Find rubriek-zoek item
+                const rubriekZoek = rawJson.items.find(item => item.rubriek === 'rubriek-zoek');
+                if (!rubriekZoek || !rubriekZoek.velden) {
+                    return null;
+                }
+
+                // Find Study points field by titel
+                const creditsField = rubriekZoek.velden.find(field => field.titel === 'Study points');
+                if (!creditsField) {
+                    return null;
+                }
+
+                // Parse the value (e.g., "4 EC" -> 4)
+                const match = creditsField.waarde.match(/(\d+)/);
+                if (match) {
+                    return parseInt(match[1], 10);
+                }
+
+                return null;
+            } catch (error) {
+                console.error('Error extracting study credits:', error);
+                return null;
+            }
+        }
+
+        // Extract dependencies (prerequisites) from raw JSON
+        function extractDependencies(rawJson) {
+            try {
+                // Find rubriek-inhoud item
+                const rubriekInhoud = rawJson.items.find(item => item.rubriek === 'rubriek-inhoud');
+                if (!rubriekInhoud || !rubriekInhoud.velden) {
+                    return [];
+                }
+
+                // Find content field (item-inhoud-1)
+                const contentField = rubriekInhoud.velden.find(field => field.veld === 'item-inhoud-1');
+                if (!contentField || !contentField.waarde) {
+                    return [];
+                }
+
+                const content = contentField.waarde;
+
+                // Remove HTML tags
+                const textContent = content.replace(/<[^>]*>/g, ' ');
+
+                // Look for prerequisite patterns
+                // Pattern 1: "uses knowledge of [courses]"
+                // Pattern 2: "required: [courses]"
+                // Pattern 3: Any course mentions before "and is required for" or "is required for"
+
+                const dependencies = [];
+
+                // Split by common separators that indicate "downstream" courses
+                const prerequisiteSection = textContent.split(/and is required for|is required for/i)[0];
+
+                // Extract all course codes in the prerequisite section
+                // Match patterns like: FEB21005X, FEB21005S, FEB22013X, etc.
+                const courseCodePattern = /FEB\d{5}[A-Z\d]/g;
+                const matches = prerequisiteSection.match(courseCodePattern);
+
+                if (matches) {
+                    // Remove duplicates
+                    const uniqueCodes = [...new Set(matches)];
+                    dependencies.push(...uniqueCodes);
+                }
+
+                return dependencies;
+            } catch (error) {
+                console.error('Error extracting dependencies:', error);
+                return [];
+            }
+        }
+
+        // Extract block information from raw JSON
+        function extractBlock(rawJson) {
+            try {
+                // Find rubriek-inschrijven item
+                const rubriekInschrijven = rawJson.items.find(item => item.rubriek === 'rubriek-inschrijven');
+                if (!rubriekInschrijven || !rubriekInschrijven.velden) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                // Find enrollment periods table
+                const enrollmentTable = rubriekInschrijven.velden.find(field => field.veld === 'tabel-inschrijfperiodes');
+                if (!enrollmentTable || !enrollmentTable.waarde || !Array.isArray(enrollmentTable.waarde)) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                // Get the first enrollment period
+                const firstPeriod = enrollmentTable.waarde[0];
+                if (!firstPeriod || !firstPeriod.omschrijving) {
+                    return { blockStart: null, blockEnd: null };
+                }
+
+                const omschrijving = firstPeriod.omschrijving;
+
+                // Check if it's a range (e.g., "Block BLOK4 until Block BLOK5")
+                const rangeMatch = omschrijving.match(/Block\s+(\S+)\s+until\s+Block\s+(\S+)/);
+                if (rangeMatch) {
+                    return {
+                        blockStart: rangeMatch[1],
+                        blockEnd: rangeMatch[2]
+                    };
+                }
+
+                // Check if it's a single block (e.g., "Block BLOK2")
+                const singleMatch = omschrijving.match(/Block\s+(\S+)/);
+                if (singleMatch) {
+                    return {
+                        blockStart: singleMatch[1],
+                        blockEnd: singleMatch[1]
+                    };
+                }
+
+                return { blockStart: null, blockEnd: null };
+            } catch (error) {
+                console.error('Error extracting block:', error);
+                return { blockStart: null, blockEnd: null };
+            }
+        }
+
+        // Load and display a specific course JSON
+        async function loadCourseJSON(courseCode) {
+            const rawJsonDisplay = document.getElementById('raw-json-display');
+            const transformedJsonDisplay = document.getElementById('transformed-json-display');
+
+            // Show loading state
+            rawJsonDisplay.value = 'Loading...';
+            transformedJsonDisplay.value = 'Loading...';
+
+            try {
+                // Load raw data from input directory
+                const rawResponse = await fetch(`input/${courseCode}.json`);
+                if (!rawResponse.ok) {
+                    throw new Error(`HTTP error! status: ${rawResponse.status}`);
+                }
+                const rawJson = await rawResponse.json();
+
+                // Display raw JSON
+                rawJsonDisplay.value = JSON.stringify(rawJson, null, 2);
+
+                // Load processed data from output directory
+                const processedResponse = await fetch(`output/${courseCode}.json`);
+                if (!processedResponse.ok) {
+                    throw new Error(`HTTP error! status: ${processedResponse.status}`);
+                }
+                const processedJson = await processedResponse.json();
+
+                // Display processed JSON
+                transformedJsonDisplay.value = JSON.stringify(processedJson, null, 2);
+
+            } catch (error) {
+                const errorMsg = `Error loading ${courseCode}.json: ${error.message}`;
+                rawJsonDisplay.value = errorMsg;
+                transformedJsonDisplay.value = errorMsg;
+            }
+        }
+
+        // Initialize course list in sidebar
+        function initializeCourseList() {
+            const courseList = document.getElementById('course-list');
+            courseList.innerHTML = '';
+
+            courseFiles.forEach((courseCode, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'course-item';
+                listItem.dataset.courseCode = courseCode;
+                listItem.innerHTML = `
+                    <span class="course-item-number">${index + 1}.</span>
+                    <span>${courseCode}</span>
+                `;
+
+                // Add click handler
+                listItem.addEventListener('click', () => {
+                    // Remove active class from all items
+                    document.querySelectorAll('.course-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    // Add active class to clicked item
+                    listItem.classList.add('active');
+
+                    // Load the course JSON
+                    loadCourseJSON(courseCode);
+                });
+
+                courseList.appendChild(listItem);
+            });
+
+            console.log(`Initialized ${courseFiles.length} course items`);
+
+            // Auto-select first course
+            if (courseFiles.length > 0) {
+                const firstItem = courseList.querySelector('.course-item');
+                if (firstItem) {
+                    firstItem.classList.add('active');
+                    loadCourseJSON(courseFiles[0]);
+                }
+            }
+        }
+
+        // Initialize course list when page loads
+        initializeCourseList();
+
+        // Load and display CSV as table
+        async function loadProgramData() {
+            const container = document.getElementById('csv-table-container');
+
+            try {
+                const response = await fetch('course.csv');
+                if (!response.ok) {
+                    throw new Error('Failed to load course.csv');
+                }
+                const csvText = await response.text();
+
+                // Parse CSV
+                const lines = csvText.trim().split('\n');
+                const headers = lines[0].split(',');
+
+                // Find dependencies column index
+                const dependenciesIndex = headers.indexOf('dependencies');
+
+                // Create table
+                let tableHtml = '<table class="csv-table"><thead><tr>';
+
+                // Add headers
+                headers.forEach(header => {
+                    tableHtml += `<th>${header}</th>`;
+                });
+                tableHtml += '</tr></thead><tbody>';
+
+                // Add rows
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',');
+                    tableHtml += '<tr>';
+                    values.forEach((value, index) => {
+                        const className = index === dependenciesIndex ? ' class="dependencies-column"' : '';
+                        tableHtml += `<td${className}>${value || ''}</td>`;
+                    });
+                    tableHtml += '</tr>';
+                }
+
+                tableHtml += '</tbody></table>';
+                container.innerHTML = tableHtml;
+
+                console.log(`Loaded ${lines.length - 1} courses from course.csv`);
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                container.innerHTML = `<p style="color: red;">Error loading course.csv: ${error.message}</p>`;
+            }
+        }
+
+        // Load program data when page loads
+        loadProgramData();
+
+        // Category files list
+        const categoryFiles = [
+            { name: 'Core', filename: 'programme/core.json' },
+            { name: 'Quantitative Finance', filename: 'programme/qf.json' },
+            { name: 'Operations Research', filename: 'programme/or.json' },
+            { name: 'Econometrics', filename: 'programme/econ.json' },
+            { name: 'Marketing', filename: 'programme/marketing.json' },
+            { name: 'Extracurricular', filename: 'programme/extracurricular.json' }
+        ];
+
+        // Load and display a specific category JSON
+        async function loadCategoryJSON(filename, displayName) {
+            const jsonDisplay = document.getElementById('category-json-display');
+
+            // Show loading state
+            jsonDisplay.value = 'Loading...';
+
+            try {
+                const response = await fetch(filename);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const json = await response.json();
+
+                // Just show raw JSON
+                jsonDisplay.value = JSON.stringify(json, null, 2);
+            } catch (error) {
+                jsonDisplay.value = `Error loading ${filename}: ${error.message}`;
+            }
+        }
+
+        // Initialize category list in sidebar
+        function initializeCategoryList() {
+            const categoryList = document.getElementById('category-list');
+            categoryList.innerHTML = '';
+
+            categoryFiles.forEach((category, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'course-item';
+                listItem.dataset.filename = category.filename;
+                listItem.innerHTML = `
+                    <span class="course-item-number">${index + 1}.</span>
+                    <span>${category.name}</span>
+                `;
+
+                // Add click handler
+                listItem.addEventListener('click', () => {
+                    // Remove active class from all items
+                    document.querySelectorAll('#category-list .course-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    // Add active class to clicked item
+                    listItem.classList.add('active');
+
+                    // Load the category JSON
+                    loadCategoryJSON(category.filename, category.name);
+                });
+
+                categoryList.appendChild(listItem);
+            });
+
+            console.log(`Initialized ${categoryFiles.length} category items`);
+
+            // Auto-select first category
+            if (categoryFiles.length > 0) {
+                const firstItem = categoryList.querySelector('.course-item');
+                if (firstItem) {
+                    firstItem.classList.add('active');
+                    loadCategoryJSON(categoryFiles[0].filename, categoryFiles[0].name);
+                }
+            }
+        }
+
+        // Initialize category list when page loads
+        initializeCategoryList();
+
         // Parse CSV
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
@@ -174,7 +2008,31 @@
         function getTierLabel(blockNum) {
             if (blockNum === -1) return 'Uncategorized';
             if (blockNum === 6) return 'Optional';
-            return `Block ${blockNum}`;
+            return `BLOK${blockNum}`;
+        }
+
+        // Animate number from start to end
+        function animateNumber(element, start, end, duration = 500) {
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth animation
+                const easeProgress = progress < 0.5
+                    ? 2 * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+                const current = Math.round(start + (end - start) * easeProgress);
+                element.text(current.toString());
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
         }
 
         // Store courses globally for re-rendering
@@ -183,6 +2041,40 @@
         let movedToExtracurricular = new Set(['13']);
         // Track which extracurricular courses have been added back to their regular position
         let extracurricularAddedToRegular = new Set();
+        // Track which alternatives are added (can have 0, 1, or 2)
+        let qfAddedCourses = new Set();
+        let orAddedCourses = new Set();
+        // Store previous credit values for animation
+        let previousCreditsPerBlock = {};
+        let previousCumulativeCredits = {};
+        // Store previous course positions for animation
+        let previousCoursePositions = {};
+
+        // Function to enrich courses with URLs from JSON files
+        async function enrichCoursesWithUrls(courses) {
+            const urlMap = {};
+
+            // Load all JSON files to get URLs
+            for (const course of courses) {
+                try {
+                    const response = await fetch(`output/${course.id}.json`);
+                    if (response.ok) {
+                        const jsonData = await response.json();
+                        if (jsonData.url) {
+                            urlMap[course.id] = jsonData.url;
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Could not load JSON for ${course.id}:`, error);
+                }
+            }
+
+            // Enrich courses with URLs
+            return courses.map(course => ({
+                ...course,
+                url: urlMap[course.id] || null
+            }));
+        }
 
         // Main function to load and visualize data
         async function loadAndVisualize() {
@@ -195,7 +2087,10 @@
                 const csvData = await response.text();
 
                 // Parse data
-                allCoursesData = parseCSV(csvData);
+                let parsedCourses = parseCSV(csvData);
+
+                // Enrich with URLs from JSON files
+                allCoursesData = await enrichCoursesWithUrls(parsedCourses);
 
                 // Build the visualization
                 buildVisualization(allCoursesData);
@@ -233,6 +2128,15 @@
                         buildVisualization(allCoursesData);
                     });
                 }
+
+                // Add event listener for graph checkbox
+                const showGraphCheckbox = document.getElementById('show-graph');
+                if (showGraphCheckbox) {
+                    showGraphCheckbox.addEventListener('change', function() {
+                        console.log('Show graph checkbox:', this.checked);
+                        buildVisualization(allCoursesData);
+                    });
+                }
             } catch (error) {
                 console.error('Error loading CSV:', error);
                 document.getElementById('mynetwork').innerHTML =
@@ -242,6 +2146,22 @@
 
         // Build the visualization using D3.js
         function buildVisualization(allCourses) {
+            // Initialize added courses if not already set
+            if (qfAddedCourses.size === 0) {
+                // Find QF alternatives and add the first one by default
+                const qfCourseWithAlt = allCourses.find(c => c.qf_alternative && c.qf_alternative.trim() !== '');
+                if (qfCourseWithAlt) {
+                    qfAddedCourses.add(qfCourseWithAlt.id);
+                }
+            }
+            if (orAddedCourses.size === 0) {
+                // Find OR alternatives and add the first one by default
+                const orCourseWithAlt = allCourses.find(c => c.or_alternative && c.or_alternative.trim() !== '');
+                if (orCourseWithAlt) {
+                    orAddedCourses.add(orCourseWithAlt.id);
+                }
+            }
+
             // Filter courses based on specialization selection
             const qfRadio = document.getElementById('spec-qf');
             const orRadio = document.getElementById('spec-or');
@@ -271,24 +2191,24 @@
 
             let courses;
             if (selectedSpec === 'qf') {
-                // Show QF courses + core courses
+                // Show QF courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.qf === 'true' || course.core === 'true'
+                    course.qf === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'or') {
-                // Show OR courses + core courses
+                // Show OR courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.or === 'true' || course.core === 'true'
+                    course.or === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'econ') {
-                // Show Econ courses + core courses
+                // Show Econ courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.econ === 'true' || course.core === 'true'
+                    course.econ === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else if (selectedSpec === 'marketing') {
-                // Show Marketing courses + core courses
+                // Show Marketing courses + core courses + extracurricular
                 courses = allCourses.filter(course =>
-                    course.marketing === 'true' || course.core === 'true'
+                    course.marketing === 'true' || course.core === 'true' || course.extracurricular === 'true'
                 );
             } else {
                 // Show all courses
@@ -300,11 +2220,19 @@
 
             // No separate filtering needed - we'll handle rendering logic below
 
+            // Helper function to extract block number from "BLOK1", "BLOK2", etc.
+            function parseBlockNumber(blockString) {
+                if (typeof blockString === 'number') return blockString;
+                if (!blockString) return NaN;
+                const match = blockString.match(/\d+/);
+                return match ? parseInt(match[0]) : NaN;
+            }
+
             // Get all unique block numbers from courses
             const allBlocks = new Set();
             courses.forEach(course => {
-                const start = parseInt(course.block_start);
-                const end = parseInt(course.block_end);
+                const start = parseBlockNumber(course.block_start);
+                const end = parseBlockNumber(course.block_end);
                 for (let i = start; i <= end; i++) {
                     allBlocks.add(i);
                 }
@@ -322,16 +2250,31 @@
 
             // Position constants
             const ySpacing = 150;  // Vertical spacing between tiers
-            const xSpacing = 250;  // Horizontal spacing between nodes
-            const labelXOffset = -600;  // Position for tier labels on left
-            const creditXOffset = 800;   // Position for credit info on right
+            const xSpacing = 310;  // Horizontal spacing between nodes (increased for wider nodes)
+            const labelXOffset = -720;  // Position for tier labels on left (moved 20px left for spacing)
+            // creditXOffset is now calculated dynamically - see dynamicCreditXOffset below
             const nodeHeight = 120; // Height of a single-block node
-            const nodeWidth = 200;  // Fixed width for all course nodes
+            const nodeWidth = 260;  // Fixed width for all course nodes (30% wider: 200 * 1.3)
 
-            // Create map of block number to y position
+            // Pre-calculate row assignments to determine block heights
+            // We need to do this early so we can calculate proper y positions
+            const blockRows = {}; // Maps block number to number of rows needed
+            tierOrder.forEach(blockNum => {
+                blockRows[blockNum] = 1; // Default to 1 row per block
+            });
+
+            // Create map of block number to y position (accounting for multi-row blocks)
             const blockToY = {};
-            tierOrder.forEach((blockNum, tierIndex) => {
-                blockToY[blockNum] = tierIndex * ySpacing + 100; // +100 for top padding
+            const blockHeights = {}; // Store height of each block
+            let cumulativeY = 80; // Start with top padding
+
+            tierOrder.forEach((blockNum) => {
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = numRows * ySpacing;
+
+                blockToY[blockNum] = cumulativeY;
+                blockHeights[blockNum] = blockHeight;
+                cumulativeY += blockHeight;
             });
 
             // Calculate credits per block and cumulative
@@ -343,7 +2286,7 @@
                 creditsPerBlock[blockNum] = 0;
             });
 
-            // Count credits for each block (excluding moved courses and extracurricular courses not added to regular)
+            // Count credits for each block (excluding moved courses, extracurricular courses not added to regular, and alternatives not added)
             courses.forEach(course => {
                 // Skip courses moved to extracurricular
                 if (movedToExtracurricular.has(course.id)) return;
@@ -351,8 +2294,21 @@
                 // Skip extracurricular courses unless they've been added to regular
                 if (course.extracurricular === 'true' && !extracurricularAddedToRegular.has(course.id)) return;
 
+                // Check if this is an alternative for the current specialization
+                const isQfAlternative = course.qf_alternative && course.qf_alternative.trim() !== '';
+                const isOrAlternative = course.or_alternative && course.or_alternative.trim() !== '';
+                const isAlternative = (selectedSpec === 'qf' && isQfAlternative) || (selectedSpec === 'or' && isOrAlternative);
+
+                // Skip alternatives that are not added
+                if (isAlternative) {
+                    const isQfAdded = qfAddedCourses.has(course.id);
+                    const isOrAdded = orAddedCourses.has(course.id);
+                    const isAdded = (selectedSpec === 'qf' && isQfAdded) || (selectedSpec === 'or' && isOrAdded);
+                    if (!isAdded) return;
+                }
+
                 const credits = parseInt(course.credits);
-                const start = parseInt(course.block_start);
+                const start = parseBlockNumber(course.block_start);
 
                 // Add credits to the starting block
                 creditsPerBlock[start] = (creditsPerBlock[start] || 0) + credits;
@@ -367,10 +2323,10 @@
 
             // Helper function to check if courses overlap vertically
             function coursesOverlap(course1, course2) {
-                const start1 = parseInt(course1.block_start);
-                const end1 = parseInt(course1.block_end);
-                const start2 = parseInt(course2.block_start);
-                const end2 = parseInt(course2.block_end);
+                const start1 = parseBlockNumber(course1.block_start);
+                const end1 = parseBlockNumber(course1.block_end);
+                const start2 = parseBlockNumber(course2.block_start);
+                const end2 = parseBlockNumber(course2.block_end);
 
                 return !(end1 < start2 || end2 < start1);
             }
@@ -391,21 +2347,56 @@
 
             // Create a list that includes courses in multiple places when needed
             const coursesToRender = [];
-            courses.forEach(course => {
-                if (course.extracurricular !== 'true') {
-                    // Regular course - always render in original position
-                    // Show as placeholder if moved to extracurricular
-                    coursesToRender.push({ ...course, _isPlaceholder: movedToExtracurricular.has(course.id) });
 
-                    // If moved to extracurricular, also render in extracurricular area
-                    if (movedToExtracurricular.has(course.id)) {
+            courses.forEach(course => {
+                // Check if this course is a QF or OR alternative
+                const isQfAlternative = course.qf_alternative && course.qf_alternative.trim() !== '';
+                const isOrAlternative = course.or_alternative && course.or_alternative.trim() !== '';
+
+                // Check if this course is added (in the Sets)
+                const isQfAdded = qfAddedCourses.has(course.id);
+                const isOrAdded = orAddedCourses.has(course.id);
+
+                // Determine if it's an alternative for the current specialization
+                const isAlternative = (selectedSpec === 'qf' && isQfAlternative) || (selectedSpec === 'or' && isOrAlternative);
+                const isAdded = (selectedSpec === 'qf' && isQfAdded) || (selectedSpec === 'or' && isOrAdded);
+
+                if (course.extracurricular !== 'true') {
+                    // Regular course
+                    if (isAlternative) {
+                        // Alternative course - always show placeholder in original position
                         coursesToRender.push({
                             ...course,
-                            block_start: '6',
-                            block_end: '6',
-                            _inExtracurricular: true,
-                            _isPlaceholder: false
+                            _isPlaceholder: !isAdded,
+                            _isAlternative: true
                         });
+
+                        // If NOT added, also show in optional row (block 6)
+                        if (!isAdded) {
+                            coursesToRender.push({
+                                ...course,
+                                block_start: '6',
+                                block_end: '6',
+                                _inExtracurricular: true,
+                                _isPlaceholder: false,
+                                _isAlternative: true
+                            });
+                        }
+                    } else {
+                        // Regular rendering
+                        // Show as placeholder if moved to extracurricular
+                        coursesToRender.push({ ...course, _isPlaceholder: movedToExtracurricular.has(course.id) });
+
+                        // If moved to extracurricular, also render in extracurricular area
+                        if (movedToExtracurricular.has(course.id)) {
+                            coursesToRender.push({
+                                ...course,
+                                block_start: '6',
+                                block_end: '6',
+                                _inExtracurricular: true,
+                                _isPlaceholder: false
+                            });
+                        }
                     }
                 } else {
                     // Extracurricular course with a designated block
@@ -433,9 +2424,15 @@
             // Strategy: Within each tier, core courses on left, specialization courses on right
             const sortedCourses = [...coursesToRender].sort((a, b) => {
                 // Extracurricular courses go to block 6
-                const blockA = a._inExtracurricular ? 6 : parseInt(a.block_start);
-                const blockB = b._inExtracurricular ? 6 : parseInt(b.block_start);
+                const blockA = a._inExtracurricular ? 6 : parseBlockNumber(a.block_start);
+                const blockB = b._inExtracurricular ? 6 : parseBlockNumber(b.block_start);
                 if (blockA !== blockB) return blockA - blockB;
+
+                // Within same block, non-extracurricular courses come before extracurricular
+                const aIsExtracurricular = a.extracurricular === 'true';
+                const bIsExtracurricular = b.extracurricular === 'true';
+                if (!aIsExtracurricular && bIsExtracurricular) return -1;
+                if (aIsExtracurricular && !bIsExtracurricular) return 1;
 
                 // Within same block, prioritize core courses first
                 const aIsCore = a.core === 'true';
@@ -481,21 +2478,60 @@
                 indexMap[originalIndex] = sortedIndex;
             });
 
-            // Assign columns using greedy algorithm on sorted courses
+            // Assign columns using topological ordering for better graph layout
             const courseColumns = [];
+            const courseDepthMap = {}; // Map course ID to its depth in dependency chain
+
+            // Calculate depth for each course (longest path from source nodes)
+            function calculateDepth(courseId, visited = new Set()) {
+                if (courseDepthMap[courseId] !== undefined) {
+                    return courseDepthMap[courseId];
+                }
+
+                if (visited.has(courseId)) {
+                    return 0; // Circular dependency, return 0
+                }
+
+                visited.add(courseId);
+
+                const course = coursesToRender.find(c => c.id === courseId);
+                if (!course || !course.dependencies || course.dependencies.trim() === '') {
+                    courseDepthMap[courseId] = 0;
+                    return 0;
+                }
+
+                const deps = course.dependencies.split(';').map(d => d.trim());
+                let maxDepth = 0;
+                deps.forEach(depId => {
+                    const depDepth = calculateDepth(depId, new Set(visited));
+                    maxDepth = Math.max(maxDepth, depDepth + 1);
+                });
+
+                courseDepthMap[courseId] = maxDepth;
+                return maxDepth;
+            }
+
+            // Calculate depths for all courses
+            coursesToRender.forEach(course => {
+                calculateDepth(course.id);
+            });
+
             sortedCourses.forEach((course, sortedIndex) => {
-                // Find all courses this one overlaps with
+                // Find all courses this one overlaps with (same block range)
                 const overlappingCourses = sortedCourses
                     .map((c, i) => ({ course: c, index: i }))
                     .filter((item, i) => i < sortedIndex && coursesOverlap(course, item.course));
+
+                // Get the depth of this course
+                const courseDepth = courseDepthMap[course.id] || 0;
 
                 // Find columns used by overlapping courses
                 const usedColumns = new Set(
                     overlappingCourses.map(item => courseColumns[item.index])
                 );
 
-                // Assign first available column
-                let column = 0;
+                // Try to assign column based on depth first
+                let column = courseDepth;
                 while (usedColumns.has(column)) {
                     column++;
                 }
@@ -512,18 +2548,163 @@
             // Find total number of columns needed
             const numColumns = Math.max(...originalCourseColumns, 0) + 1;
 
+            // Group courses by block and calculate row assignments
+            const coursesByBlock = {};
+            const courseRowAssignments = {}; // Maps course index to row within its block
+            const multiBlockCourses = new Set(); // Track courses that span multiple blocks
+            // blockRows is already declared earlier
+
+            coursesToRender.forEach((course, index) => {
+                const isInExtracurricular = course._inExtracurricular;
+                const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
+                const blockEnd = isInExtracurricular ? 6 : parseBlockNumber(course.block_end);
+
+                // Check if course spans multiple blocks
+                if (blockEnd > blockStart) {
+                    multiBlockCourses.add(index);
+                    // Don't add multi-block courses to the normal row assignment
+                    return;
+                }
+
+                if (!coursesByBlock[blockStart]) {
+                    coursesByBlock[blockStart] = [];
+                }
+                coursesByBlock[blockStart].push({ course, index, column: originalCourseColumns[index] });
+            });
+
+            // Limit to 3 courses per row
+            const maxCoursesPerRow = 3;
+
+            // Track column assignments within each row
+            const courseColumnsInRow = {}; // Maps course index to column within its row
+
+            // Assign rows to courses within each block
+            Object.keys(coursesByBlock).forEach(blockNum => {
+                const coursesInBlock = coursesByBlock[blockNum];
+
+                // Sort: core courses first (left), then optional courses (right)
+                coursesInBlock.sort((a, b) => {
+                    const aIsCore = a.course.core === 'true';
+                    const bIsCore = b.course.core === 'true';
+
+                    // Core courses before optional courses
+                    if (aIsCore && !bIsCore) return -1;
+                    if (!aIsCore && bIsCore) return 1;
+
+                    // Within same type, sort by column
+                    return a.column - b.column;
+                });
+
+                // Assign rows
+                let currentRow = 0;
+                let coursesInCurrentRow = 0;
+                let columnInRow = 0;
+
+                coursesInBlock.forEach(({ course, index, column }) => {
+                    if (coursesInCurrentRow >= maxCoursesPerRow) {
+                        currentRow++;
+                        coursesInCurrentRow = 0;
+                        columnInRow = 0;
+                    }
+                    courseRowAssignments[index] = currentRow;
+                    courseColumnsInRow[index] = columnInRow;
+                    coursesInCurrentRow++;
+                    columnInRow++;
+                });
+
+                blockRows[blockNum] = currentRow + 1; // Total rows for this block
+            });
+
+            // Recalculate block positions now that we know the actual number of rows
+            cumulativeY = 80; // Reset to top padding
+            tierOrder.forEach((blockNum) => {
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = numRows * ySpacing;
+
+                blockToY[blockNum] = cumulativeY;
+                blockHeights[blockNum] = blockHeight;
+                cumulativeY += blockHeight;
+            });
+
+            // Calculate dynamic layout positions
+            // Find the maximum column used across all courses
+            const maxColumnInRow = Math.max(...Object.values(courseColumnsInRow), -1);
+
+            // Calculate the rightmost course position
+            // Multi-block courses are at x = -400
+            // Single-block courses are at x = -400 + (columnInRow + 1) * xSpacing
+            const rightmostCourseX = -400 + ((maxColumnInRow + 1) * xSpacing) + (nodeWidth / 2);
+
+            // Position credit columns with spacing after the rightmost course
+            const creditColumnMargin = 100; // Space between courses and credit columns
+            const dynamicCreditXOffset = rightmostCourseX + creditColumnMargin;
+
+            // Calculate total viewBox width needed
+            const creditColumnSpacing = 150; // Space between the two credit columns
+            const rightPadding = 210; // Padding after the last credit column (10px more padding on right)
+            const viewBoxWidth = dynamicCreditXOffset + creditColumnSpacing + rightPadding + 800; // +800 to account for starting from -800
+
+            // Store positions of existing nodes before clearing
+            d3.selectAll(".course-node").each(function() {
+                const node = d3.select(this);
+                const courseId = node.attr("data-course-id");
+                const transform = node.attr("transform");
+                if (courseId && transform) {
+                    const match = transform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+                    if (match) {
+                        const x = parseFloat(match[1]);
+                        const y = parseFloat(match[2]);
+                        const isExtra = node.attr("data-is-extra") === "true";
+                        const wasPlaceholder = node.attr("data-is-placeholder") === "true";
+                        const key = `${courseId}_${isExtra ? 'extra' : 'regular'}`;
+                        previousCoursePositions[key] = { x, y, wasPlaceholder };
+                    }
+                }
+            });
+
             // Clear previous content
             d3.select("#mynetwork").selectAll("*").remove();
 
-            // Create SVG
+            // Create SVG with dynamic viewBox
+            const totalHeight = cumulativeY + 100; // Add bottom padding
             const svg = d3.select("#mynetwork")
                 .append("svg")
                 .attr("width", "100%")
-                .attr("height", "100vh")
-                .attr("viewBox", "-800 0 2000 " + (tierOrder.length * ySpacing + 200));
+                .attr("height", "calc(100vh - 50px)")
+                .attr("viewBox", `-800 0 ${viewBoxWidth} ${totalHeight}`);
 
-            // Define arrowhead marker
-            svg.append("defs").append("marker")
+            // Create groups for proper layering in correct order
+            const backgroundGroup = svg.append("g").attr("class", "background");
+            const nodesGroup = svg.append("g").attr("class", "nodes");
+            const edgesGroup = svg.append("g").attr("class", "edges");
+
+            // Define arrowhead markers and filters
+            const defs = svg.append("defs");
+
+            // DNA glow filter
+            const dnaFilter = defs.append("filter")
+                .attr("id", "dnaGlowFilter");
+            dnaFilter.append("feGaussianBlur")
+                .attr("stdDeviation", 1)
+                .attr("result", "coloredBlur");
+            const dnaMerge = dnaFilter.append("feMerge");
+            dnaMerge.append("feMergeNode").attr("in", "coloredBlur");
+            dnaMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+            // Radar gradient
+            const radarGradient = defs.append("radialGradient")
+                .attr("id", "radarGradient");
+            radarGradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#DD5500")
+                .attr("stop-opacity", 0.4);
+            radarGradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#DD5500")
+                .attr("stop-opacity", 0);
+
+            // Orange arrowhead (default)
+            defs.append("marker")
                 .attr("id", "arrowhead")
                 .attr("viewBox", "0 0 10 10")
                 .attr("refX", 9)
@@ -533,15 +2714,83 @@
                 .attr("orient", "auto")
                 .append("path")
                 .attr("d", "M 0 0 L 10 5 L 0 10 z")
-                .attr("fill", "#666");
+                .attr("fill", "#DD5500");
+
+            // Green arrowhead (for edge hover)
+            defs.append("marker")
+                .attr("id", "arrowhead-green")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 9)
+                .attr("refY", 5)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                .attr("fill", "#00FF00");
+
+            // Purple arrowhead (for node hover)
+            defs.append("marker")
+                .attr("id", "arrowhead-purple")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 9)
+                .attr("refY", 5)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                .attr("fill", "#A020F0");
+
+            // Define inset border filter for placeholder nodes
+            const insetFilter = defs.append("filter")
+                .attr("id", "inset-border")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "200%")
+                .attr("height", "200%");
+
+            insetFilter.append("feFlood")
+                .attr("flood-color", "#666")
+                .attr("result", "flood");
+
+            insetFilter.append("feComposite")
+                .attr("in", "flood")
+                .attr("in2", "SourceGraphic")
+                .attr("operator", "atop")
+                .attr("result", "composite");
+
+            insetFilter.append("feMorphology")
+                .attr("in", "composite")
+                .attr("operator", "erode")
+                .attr("radius", "2")
+                .attr("result", "erode");
+
+            insetFilter.append("feGaussianBlur")
+                .attr("in", "erode")
+                .attr("stdDeviation", "1")
+                .attr("result", "blur");
+
+            insetFilter.append("feOffset")
+                .attr("in", "blur")
+                .attr("dx", "0")
+                .attr("dy", "0")
+                .attr("result", "offset");
+
+            const feMerge = insetFilter.append("feMerge");
+            feMerge.append("feMergeNode")
+                .attr("in", "offset");
+            feMerge.append("feMergeNode")
+                .attr("in", "SourceGraphic");
 
             // Add separator lines between tiers
             for (let i = 0; i < tierOrder.length - 1; i++) {
-                const y1 = blockToY[tierOrder[i]];
-                const y2 = blockToY[tierOrder[i + 1]];
-                const y = (y1 + y2) / 2;
+                const blockNum = tierOrder[i];
+                const y1 = blockToY[blockNum];
+                const height1 = blockHeights[blockNum];
+                const y = y1 + height1; // Line at the end of this block
 
-                svg.append("line")
+                backgroundGroup.append("line")
                     .attr("x1", -1000)
                     .attr("x2", 1000)
                     .attr("y1", y)
@@ -551,56 +2800,172 @@
             }
 
             // Add header labels on the right side
-            const headerY = 30;
-            svg.append("text")
-                .attr("x", creditXOffset)
+            const headerY = 60;
+            backgroundGroup.append("text")
+                .attr("x", dynamicCreditXOffset + 60)
                 .attr("y", headerY)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "18px")
+                .attr("font-size", "29px")
                 .attr("font-weight", "bold")
-                .text("Total Credits");
+                .attr("font-family", "'Consolas', 'Monaco', 'Lucida Console', monospace")
+                .attr("fill", "#72D69F")
+                .text("SYSTEM CREDITS");
 
-            svg.append("text")
-                .attr("x", creditXOffset + 200)
-                .attr("y", headerY)
-                .attr("text-anchor", "middle")
-                .attr("font-size", "18px")
-                .attr("font-weight", "bold")
-                .text("Cumulative Credits");
+            // Calculate ruler position for horizontal lines
+            const rulerX = viewBoxWidth - 800 - 60;
+
+            // Draw vertical orange dashed line through hexagon centers (behind hexagons)
+            backgroundGroup.append("line")
+                .attr("class", "hexagon-vertical-line")
+                .attr("x1", labelXOffset + 90)
+                .attr("x2", labelXOffset + 90)
+                .attr("y1", 0)
+                .attr("y2", totalHeight)
+                .attr("stroke", "#E4541E")
+                .attr("stroke-width", 3)
+                .attr("opacity", 0.6)
+                .attr("stroke-dasharray", "10,5");
+
+            // Add scrolling hexadecimal values along the vertical line
+            const hexScrollGroup = backgroundGroup.append("g").attr("class", "hex-scroll");
+            const numHexValues = 100;
+            const hexSpacing = 15; // Tight spacing between hex values
+            const scrollSpeed = 0.5; // Half speed, scrolling upward
+
+            function generateRandomHex() {
+                return Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0');
+            }
+
+            // Create hex values
+            const hexValues = [];
+            for (let i = 0; i < numHexValues; i++) {
+                const hexText = hexScrollGroup.append("text")
+                    .attr("x", labelXOffset + 90)
+                    .attr("y", i * hexSpacing)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .attr("font-family", "'Courier New', monospace")
+                    .attr("fill", "#E4541E")
+                    .attr("opacity", 0.7)
+                    .text(generateRandomHex());
+                hexValues.push(hexText);
+            }
+
+            // Animate scrolling upward
+            function scrollHexValues() {
+                hexValues.forEach((textEl, index) => {
+                    let currentY = parseFloat(textEl.attr("y"));
+                    currentY -= scrollSpeed; // Scroll upward
+
+                    // Reset to bottom when it goes above the top
+                    if (currentY < -hexSpacing) {
+                        currentY = totalHeight + hexSpacing;
+                        textEl.text(generateRandomHex());
+                    }
+
+                    textEl.attr("y", currentY);
+                });
+                requestAnimationFrame(scrollHexValues);
+            }
+            scrollHexValues();
 
             // Add tier labels and credits
             tierOrder.forEach((blockNum) => {
-                const y = blockToY[blockNum];
+                const yStart = blockToY[blockNum];
+                const numRows = blockRows[blockNum] || 1;
+                const blockHeight = blockHeights[blockNum];
+                const y = yStart + (blockHeight / 2); // Center vertically across all rows
+
                 const blockCredits = creditsPerBlock[blockNum] || 0;
                 const cumCredits = cumulativeCredits[blockNum] || 0;
 
-                // Left side label
-                svg.append("text")
-                    .attr("x", labelXOffset)
-                    .attr("y", y)
-                    .attr("text-anchor", "start")
-                    .attr("font-size", "24px")
+                // Get previous values for animation
+                const prevBlockCredits = previousCreditsPerBlock[blockNum] || 0;
+                const prevCumCredits = previousCumulativeCredits[blockNum] || 0;
+
+                // Left side label - Hexagon shaped
+                const hexGroup = backgroundGroup.append("g")
+                    .attr("transform", `translate(${labelXOffset + 90}, ${y}) rotate(90)`);
+
+                // Create hexagon shape
+                const hexRadius = 66;
+                const hexHeight = hexRadius * Math.sqrt(3);
+                const hexPoints = [
+                    [0, -hexRadius],
+                    [hexHeight/2, -hexRadius/2],
+                    [hexHeight/2, hexRadius/2],
+                    [0, hexRadius],
+                    [-hexHeight/2, hexRadius/2],
+                    [-hexHeight/2, -hexRadius/2]
+                ].map(p => p.join(',')).join(' ');
+
+                hexGroup.append("polygon")
+                    .attr("points", hexPoints)
+                    .attr("fill", "#000000")
+                    .attr("stroke", "#DD5500")
+                    .attr("stroke-width", 3)
+                    .attr("class", "block-hexagon");
+
+                hexGroup.append("text")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "28px")
                     .attr("font-weight", "bold")
+                    .attr("font-family", "'Helvetica Neue', Helvetica, Arial, sans-serif")
+                    .attr("fill", "#DD5500")
                     .attr("dominant-baseline", "middle")
-                    .text(`${getTierLabel(blockNum)}:`);
+                    .attr("transform", "rotate(-90)")
+                    .text(getTierLabel(blockNum));
 
-                // Right side - Total credits
-                svg.append("text")
-                    .attr("x", creditXOffset)
-                    .attr("y", y)
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "24px")
-                    .attr("dominant-baseline", "middle")
-                    .text(blockCredits.toString());
+                // Skip credit display for extracurricular (block 6)
+                if (blockNum !== 6) {
+                    // Right side - Total credits (with animation)
+                    const triangleSize = 90;
 
-                // Right side - Cumulative credits
-                svg.append("text")
-                    .attr("x", creditXOffset + 200)
-                    .attr("y", y)
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "24px")
-                    .attr("dominant-baseline", "middle")
-                    .text(cumCredits.toString());
+                    // Outer triangle outline (20px away - double the space)
+                    const outerTriangleSize = triangleSize + 40;
+                    const outerTrianglePoints = [
+                        [dynamicCreditXOffset + 60, y - outerTriangleSize/2],
+                        [dynamicCreditXOffset + 60 - outerTriangleSize/2, y + outerTriangleSize/2],
+                        [dynamicCreditXOffset + 60 + outerTriangleSize/2, y + outerTriangleSize/2]
+                    ].map(p => p.join(',')).join(' ');
+
+                    backgroundGroup.append("polygon")
+                        .attr("points", outerTrianglePoints)
+                        .attr("fill", "none")
+                        .attr("stroke", "#72D69F")
+                        .attr("stroke-width", 1);
+
+                    // Inner solid triangle for total credits (pointing up)
+                    const trianglePoints1 = [
+                        [dynamicCreditXOffset + 60, y - triangleSize/2],
+                        [dynamicCreditXOffset + 60 - triangleSize/2, y + triangleSize/2],
+                        [dynamicCreditXOffset + 60 + triangleSize/2, y + triangleSize/2]
+                    ].map(p => p.join(',')).join(' ');
+
+                    backgroundGroup.append("polygon")
+                        .attr("points", trianglePoints1)
+                        .attr("fill", "#72D69F")
+                        .attr("stroke", "#72D69F")
+                        .attr("stroke-width", 2);
+
+                    const totalCreditsText = backgroundGroup.append("text")
+                        .attr("x", dynamicCreditXOffset + 60)
+                        .attr("y", y + 8)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "32px")
+                        .attr("font-family", "'Courier New', monospace")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "#000000")
+                        .attr("dominant-baseline", "middle")
+                        .text(prevBlockCredits.toString());
+
+                    // Animate to new value
+                    if (prevBlockCredits !== blockCredits) {
+                        animateNumber(totalCreditsText, prevBlockCredits, blockCredits);
+                    }
+                }
             });
 
             // Add course nodes and track positions by ID
@@ -611,8 +2976,11 @@
                 const isPlaceholder = course._isPlaceholder;
                 const isInExtracurricular = course._inExtracurricular;
 
-                const blockStart = isInExtracurricular ? 6 : parseInt(course.block_start);
-                const blockEnd = isInExtracurricular ? 6 : parseInt(course.block_end);
+                // Create unique key for this course instance
+                const courseKey = `${course.id}_${isInExtracurricular ? 'extra' : 'regular'}`;
+
+                const blockStart = isInExtracurricular ? 6 : parseBlockNumber(course.block_start);
+                const blockEnd = isInExtracurricular ? 6 : parseBlockNumber(course.block_end);
 
                 // Calculate position
                 const yStart = blockToY[blockStart];
@@ -623,19 +2991,43 @@
                     return;
                 }
 
-                const y = (yStart + yEnd) / 2; // Center vertically
+                // Get row assignment for this course
+                const row = courseRowAssignments[index] || 0;
 
-                // Calculate height based on block span
+                // Calculate height and position based on block span
                 const blockSpan = blockEnd - blockStart + 1;
-                const height = (blockSpan * nodeHeight) + ((blockSpan - 1) * (ySpacing - nodeHeight));
+                let height, y, x;
 
-                // Position based on column assignment
-                const column = originalCourseColumns[index];
-                const totalWidth = (numColumns - 1) * xSpacing;
-                const x = (column * xSpacing) - (totalWidth / 2);
+                if (blockSpan > 1) {
+                    // Course spans multiple blocks - calculate total height
+                    // Need to account for heights of all blocks it spans
+                    let totalHeight = 0;
+                    for (let b = blockStart; b <= blockEnd; b++) {
+                        totalHeight += blockHeights[b] || ySpacing;
+                    }
+                    height = totalHeight - 20; // Subtract padding
+
+                    // Center vertically across the span
+                    y = yStart + (totalHeight / 2);
+
+                    // Position multi-block courses in column 1 (first column on left)
+                    x = -400; // First column position
+                } else {
+                    // Single block - use row assignment
+                    height = nodeHeight;
+                    y = yStart + (row * ySpacing) + (ySpacing / 2); // Position in specific row
+
+                    // Position based on column assignment within the row, shifted one column to the right
+                    // to make room for multi-block courses in column 1
+                    const columnInRow = courseColumnsInRow[index] || 0;
+                    x = -400 + ((columnInRow + 1) * xSpacing); // +1 to shift everything right
+                }
 
                 // Store position by ID for dependency drawing
                 coursePositions[course.id] = { x, y, width: nodeWidth, height };
+
+                // Store position for animation next time
+                previousCoursePositions[courseKey] = { x, y, wasPlaceholder: isPlaceholder };
 
                 // Check course properties
                 const isQF = course.qf === 'true';
@@ -645,101 +3037,320 @@
                 const isCore = course.core === 'true';
                 const isExtracurricular = course.extracurricular === 'true';
 
-                // Background color: green for core, blue for non-core, light yellow for extracurricular
+                // Background color: Evangelion theme - black for core with orange text, red for specialization, yellow for extracurricular
                 let bgColor, strokeColor, strokeWidth, fillOpacity;
                 if (isPlaceholder) {
-                    // Grey outline for placeholder
-                    bgColor = '#ffffff'; // White background
-                    strokeColor = '#999'; // Grey border
+                    // Dark outline for placeholder
+                    bgColor = '#1a1a1a'; // Dark background
+                    strokeColor = '#FFFFFF'; // White border
                     strokeWidth = 2;
-                    fillOpacity = 0; // Transparent fill
+                    fillOpacity = 1; // Fully opaque
                 } else if (isInExtracurricular) {
-                    bgColor = '#fffacd'; // Light yellow for extracurricular
-                    strokeColor = '#333';
-                    strokeWidth = 1;
+                    bgColor = '#202810'; // Dark olive for extracurricular
+                    strokeColor = '#83D802'; // Bright green border
+                    strokeWidth = 3;
                     fillOpacity = 1;
                 } else if (isCore) {
-                    bgColor = '#90ee90'; // Green for core
-                    strokeColor = '#333';
-                    strokeWidth = 1;
+                    bgColor = '#000000'; // Black background for core
+                    strokeColor = '#FFFFFF'; // White border
+                    strokeWidth = 3;
                     fillOpacity = 1;
                 } else {
-                    bgColor = '#ADD8E6'; // Blue for specialization
-                    strokeColor = '#333';
-                    strokeWidth = 1;
+                    bgColor = '#A020F0'; // Purple for specialization
+                    strokeColor = '#FFFFFF'; // White border
+                    strokeWidth = 3;
                     fillOpacity = 1;
                 }
 
-                // Create group for the course node
-                const nodeGroup = svg.append("g")
-                    .attr("class", "course-node")
-                    .attr("transform", `translate(${x}, ${y})`);
+                // Check if we have a previous position for animation
+                const prevPos = previousCoursePositions[courseKey];
+                const startX = prevPos ? prevPos.x : x;
+                const startY = prevPos ? prevPos.y : y;
 
-                // Add main rectangle
-                nodeGroup.append("rect")
-                    .attr("x", -nodeWidth / 2)
-                    .attr("y", -height / 2)
-                    .attr("width", nodeWidth)
-                    .attr("height", height)
+                // Create group for the course node
+                const nodeGroup = nodesGroup.append("g")
+                    .attr("class", "course-node")
+                    .attr("data-course-id", course.id)
+                    .attr("data-is-extra", isInExtracurricular)
+                    .attr("data-is-placeholder", isPlaceholder)
+                    .attr("transform", `translate(${startX}, ${startY})`)
+                    .style("cursor", "pointer")
+                    .on("click", function() {
+                        // Open course URL from JSON data
+                        if (course.url) {
+                            window.open(course.url, '_blank');
+                        } else {
+                            console.warn(`No URL available for course ${course.id}`);
+                        }
+                    })
+                    .on("mouseenter", function() {
+                        const currentNode = d3.select(this);
+                        const courseId = currentNode.attr("data-course-id");
+
+                        // Dim and blur all nodes and edges
+                        d3.selectAll(".course-node").style("opacity", 0.2).style("filter", "blur(3px)");
+                        d3.selectAll(".dependency-edge").style("opacity", 0.1).style("filter", "blur(2px)");
+
+                        // Highlight current node (no blur)
+                        currentNode.style("opacity", 1).style("filter", "none");
+
+                        // Find and highlight all edges connected to this node
+                        d3.selectAll(".dependency-edge").each(function() {
+                            const edge = d3.select(this);
+                            const sourceId = edge.attr("data-source-id");
+                            const targetId = edge.attr("data-target-id");
+
+                            // If this edge is connected to the current node
+                            if (sourceId === courseId || targetId === courseId) {
+                                // Highlight the edge (no blur)
+                                edge.style("opacity", 1)
+                                    .style("filter", "drop-shadow(0 0 20px #00FF00) drop-shadow(0 0 35px #00FF00)")
+                                    .attr("stroke", "#00FF00")
+                                    .attr("stroke-width", 6)
+                                    .attr("marker-end", "url(#arrowhead-purple)");
+
+                                // Highlight the connected node (no blur)
+                                const connectedId = sourceId === courseId ? targetId : sourceId;
+                                d3.selectAll(".course-node").each(function() {
+                                    const node = d3.select(this);
+                                    if (node.attr("data-course-id") === connectedId) {
+                                        node.style("opacity", 1).style("filter", "none");
+                                    }
+                                });
+                            }
+                        });
+                    })
+                    .on("mouseleave", function() {
+                        // Reset all nodes and edges to normal state
+                        d3.selectAll(".course-node").style("opacity", 1).style("filter", "none");
+                        d3.selectAll(".dependency-edge")
+                            .style("opacity", 0.8)
+                            .style("filter", "drop-shadow(0 0 15px #DD5500) drop-shadow(0 0 25px #DD5500)")
+                            .attr("stroke", "#DD5500")
+                            .attr("stroke-width", 4)
+                            .attr("marker-end", "url(#arrowhead)");
+                    });
+
+                // Animate to new position if it changed
+                if (prevPos && (prevPos.x !== x || prevPos.y !== y)) {
+                    console.log(`Animating ${course.id} from (${prevPos.x}, ${prevPos.y}) to (${x}, ${y})`);
+                    nodeGroup.transition()
+                        .duration(800)
+                        .ease(d3.easeCubicInOut)
+                        .attr("transform", `translate(${x}, ${y})`);
+                } else if (!prevPos) {
+                    // First render - fade in
+                    nodeGroup.style("opacity", 0)
+                        .transition()
+                        .duration(400)
+                        .style("opacity", 1);
+                }
+
+                // Add main shape with triangular corners
+                const cornerSize = 15; // Size of the triangular cut
+                const left = -nodeWidth / 2;
+                const right = nodeWidth / 2;
+                const top = -height / 2;
+                const bottom = height / 2;
+
+                // Create path with cut corners (triangular)
+                const pathData = `
+                    M ${left + cornerSize} ${top}
+                    L ${right - cornerSize} ${top}
+                    L ${right} ${top + cornerSize}
+                    L ${right} ${bottom - cornerSize}
+                    L ${right - cornerSize} ${bottom}
+                    L ${left + cornerSize} ${bottom}
+                    L ${left} ${bottom - cornerSize}
+                    L ${left} ${top + cornerSize}
+                    Z
+                `;
+
+                const rect = nodeGroup.append("path")
+                    .attr("d", pathData)
                     .attr("fill", bgColor)
                     .attr("fill-opacity", fillOpacity)
                     .attr("stroke", strokeColor)
                     .attr("stroke-width", strokeWidth);
 
-                // Add purple right border if QF (not for placeholders)
+                // Add dashed border for placeholder nodes
+                if (isPlaceholder) {
+                    rect.attr("stroke-dasharray", "5,5");
+                }
+
+                // Animate placeholder state changes
+                const prevWasPlaceholder = prevPos ? prevPos.wasPlaceholder : false;
+                if (prevPos && prevWasPlaceholder !== isPlaceholder) {
+                    // State changed - animate the transition
+                    if (isPlaceholder) {
+                        // Becoming a placeholder - fade out colors
+                        rect.attr("fill-opacity", fillOpacity === 0 ? 0 : 1)
+                            .transition()
+                            .duration(400)
+                            .attr("fill-opacity", fillOpacity);
+                    } else {
+                        // Becoming filled - fade in colors
+                        rect.attr("fill-opacity", 0)
+                            .transition()
+                            .duration(400)
+                            .attr("fill-opacity", fillOpacity);
+                    }
+                }
+
+                // Add neon green right border if QF (not for placeholders)
                 if (isQF && !isPlaceholder) {
+                    const useShortBorder = !isCore; // Shortened border for non-core courses
+                    const borderHeight = useShortBorder ? (height - 2 * cornerSize) : height;
+                    const startY = useShortBorder ? (-height / 2 + cornerSize) : (-height / 2);
+                    const endY = useShortBorder ? (height / 2 - cornerSize) : (height / 2);
                     nodeGroup.append("line")
                         .attr("x1", nodeWidth / 2)
                         .attr("x2", nodeWidth / 2)
-                        .attr("y1", -height / 2)
-                        .attr("y2", height / 2)
-                        .attr("stroke", "#8b008b")
-                        .attr("stroke-width", 6)
+                        .attr("y1", startY)
+                        .attr("y2", endY)
+                        .attr("stroke", "#00FF00")
+                        .attr("stroke-width", 8)
                         .attr("stroke-linecap", "square");
                 }
 
                 // Add red top border if OR (not for placeholders)
                 if (isOR && !isPlaceholder) {
+                    const useShortBorder = !isCore; // Shortened border for non-core courses
+                    const borderWidth = useShortBorder ? (nodeWidth - 2 * cornerSize) : nodeWidth;
+                    const startX = useShortBorder ? (-nodeWidth / 2 + cornerSize) : (-nodeWidth / 2);
+                    const endX = useShortBorder ? (nodeWidth / 2 - cornerSize) : (nodeWidth / 2);
                     nodeGroup.append("line")
-                        .attr("x1", -nodeWidth / 2)
-                        .attr("x2", nodeWidth / 2)
+                        .attr("x1", startX)
+                        .attr("x2", endX)
                         .attr("y1", -height / 2)
                         .attr("y2", -height / 2)
-                        .attr("stroke", "#ff0000")
-                        .attr("stroke-width", 6)
+                        .attr("stroke", "#FF0000")
+                        .attr("stroke-width", 8)
                         .attr("stroke-linecap", "square");
                 }
 
                 // Add green left border if Econ (not for placeholders)
                 if (isEcon && !isPlaceholder) {
+                    const useShortBorder = !isCore; // Shortened border for non-core courses
+                    const borderHeight = useShortBorder ? (height - 2 * cornerSize) : height;
+                    const startY = useShortBorder ? (-height / 2 + cornerSize) : (-height / 2);
+                    const endY = useShortBorder ? (height / 2 - cornerSize) : (height / 2);
                     nodeGroup.append("line")
                         .attr("x1", -nodeWidth / 2)
                         .attr("x2", -nodeWidth / 2)
-                        .attr("y1", -height / 2)
-                        .attr("y2", height / 2)
-                        .attr("stroke", "#228b22")
-                        .attr("stroke-width", 6)
+                        .attr("y1", startY)
+                        .attr("y2", endY)
+                        .attr("stroke", "#00FF00")
+                        .attr("stroke-width", 8)
                         .attr("stroke-linecap", "square");
                 }
 
-                // Add orange bottom border if Marketing (not for placeholders)
+                // Add bright blue bottom border if Marketing (not for placeholders)
                 if (isMarketing && !isPlaceholder) {
+                    const useShortBorder = !isCore; // Shortened border for non-core courses
+                    const borderWidth = useShortBorder ? (nodeWidth - 2 * cornerSize) : nodeWidth;
+                    const startX = useShortBorder ? (-nodeWidth / 2 + cornerSize) : (-nodeWidth / 2);
+                    const endX = useShortBorder ? (nodeWidth / 2 - cornerSize) : (nodeWidth / 2);
                     nodeGroup.append("line")
-                        .attr("x1", -nodeWidth / 2)
-                        .attr("x2", nodeWidth / 2)
+                        .attr("x1", startX)
+                        .attr("x2", endX)
                         .attr("y1", height / 2)
                         .attr("y2", height / 2)
-                        .attr("stroke", "#ff8c00")
+                        .attr("stroke", "#00FFFF")
                         .attr("stroke-width", 6)
                         .attr("stroke-linecap", "square");
                 }
 
                 // Add circular +/- buttons based on course state
-                const buttonRadius = 12;
-                const buttonX = -nodeWidth / 2 + buttonRadius + 5;
-                const buttonY = -height / 2 + buttonRadius + 5;
+                const buttonRadius = 24;
+                const buttonX = -nodeWidth / 2 + buttonRadius - 12;
+                const buttonY = -height / 2 + buttonRadius - 11;
 
-                if (isPlaceholder && course._isExtracurricularPlaceholder) {
+                if (course._isAlternative && isPlaceholder) {
+                    // Alternative placeholder - show + button to add it
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            // Add this alternative to the Set
+                            const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                            const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                            if (isQfAlt && selectedSpec === 'qf') {
+                                qfAddedCourses.add(course.id);
+                            }
+                            if (isOrAlt && selectedSpec === 'or') {
+                                orAddedCourses.add(course.id);
+                            }
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "36px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "#000000")
+                        .text("+");
+                } else if (course._isAlternative && !isPlaceholder && !isInExtracurricular) {
+                    // Alternative that's added in its original position - show - button to remove it
+                    // But only if we have more than 1 course added (must keep at least 1)
+                    const currentSet = selectedSpec === 'qf' ? qfAddedCourses : orAddedCourses;
+                    const alternativeCourseId = selectedSpec === 'qf' ? course.qf_alternative : course.or_alternative;
+
+                    // Check how many alternatives are currently added
+                    const alternativeIds = alternativeCourseId ? alternativeCourseId.split(';').map(id => id.trim()) : [];
+                    const allAlternativeIds = [course.id, ...alternativeIds];
+                    const numAdded = allAlternativeIds.filter(id => currentSet.has(id)).length;
+
+                    // Only show - button if we have more than 1 added (can't go to 0)
+                    if (numAdded > 1) {
+                        const btnGroup = nodeGroup.append("g")
+                            .attr("cursor", "pointer")
+                            .on("click", function(event) {
+                                event.stopPropagation();
+                                // Remove this alternative from the Set
+                                const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                                const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                                if (isQfAlt && selectedSpec === 'qf') {
+                                    qfAddedCourses.delete(course.id);
+                                }
+                                if (isOrAlt && selectedSpec === 'or') {
+                                    orAddedCourses.delete(course.id);
+                                }
+                                buildVisualization(allCoursesData);
+                            });
+
+                        btnGroup.append("circle")
+                            .attr("cx", buttonX)
+                            .attr("cy", buttonY)
+                            .attr("r", buttonRadius)
+                            .attr("fill", "#FF0000")
+                            .attr("stroke", "#FFFF00")
+                            .attr("stroke-width", 3);
+
+                        btnGroup.append("text")
+                            .attr("x", buttonX)
+                            .attr("y", buttonY)
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("font-size", "36px")
+                            .attr("font-weight", "bold")
+                            .attr("fill", "#000000")
+                            .text("−");
+                    }
+                } else if (isPlaceholder && course._isExtracurricularPlaceholder) {
                     // Placeholder for extracurricular course (like SPOC) - show + button
                     const btnGroup = nodeGroup.append("g")
                         .attr("cursor", "pointer")
@@ -753,18 +3364,18 @@
                         .attr("cx", buttonX)
                         .attr("cy", buttonY)
                         .attr("r", buttonRadius)
-                        .attr("fill", "#4CAF50")
-                        .attr("stroke", "#388E3C")
-                        .attr("stroke-width", 1);
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
 
                     btnGroup.append("text")
                         .attr("x", buttonX)
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
-                        .attr("fill", "white")
+                        .attr("fill", "#000000")
                         .text("+");
                 } else if (isPlaceholder && !course._isExtracurricularPlaceholder) {
                     // Placeholder for regular course that was moved to extracurricular - show + button
@@ -780,18 +3391,54 @@
                         .attr("cx", buttonX)
                         .attr("cy", buttonY)
                         .attr("r", buttonRadius)
-                        .attr("fill", "#4CAF50")
-                        .attr("stroke", "#388E3C")
-                        .attr("stroke-width", 1);
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
 
                     btnGroup.append("text")
                         .attr("x", buttonX)
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
-                        .attr("fill", "white")
+                        .attr("fill", "#000000")
+                        .text("+");
+                } else if (isInExtracurricular && course._isAlternative) {
+                    // Alternative course in optional row - show + button to add it
+                    const btnGroup = nodeGroup.append("g")
+                        .attr("cursor", "pointer")
+                        .on("click", function(event) {
+                            event.stopPropagation();
+                            // Add this alternative to the Set
+                            const isQfAlt = course.qf_alternative && course.qf_alternative.trim() !== '';
+                            const isOrAlt = course.or_alternative && course.or_alternative.trim() !== '';
+
+                            if (isQfAlt && selectedSpec === 'qf') {
+                                qfAddedCourses.add(course.id);
+                            }
+                            if (isOrAlt && selectedSpec === 'or') {
+                                orAddedCourses.add(course.id);
+                            }
+                            buildVisualization(allCoursesData);
+                        });
+
+                    btnGroup.append("circle")
+                        .attr("cx", buttonX)
+                        .attr("cy", buttonY)
+                        .attr("r", buttonRadius)
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
+
+                    btnGroup.append("text")
+                        .attr("x", buttonX)
+                        .attr("y", buttonY)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "36px")
+                        .attr("font-weight", "bold")
+                        .attr("fill", "#000000")
                         .text("+");
                 } else if (isInExtracurricular && isExtracurricular) {
                     // Extracurricular course in extracurricular area - show + button
@@ -807,18 +3454,18 @@
                         .attr("cx", buttonX)
                         .attr("cy", buttonY)
                         .attr("r", buttonRadius)
-                        .attr("fill", "#4CAF50")
-                        .attr("stroke", "#388E3C")
-                        .attr("stroke-width", 1);
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
 
                     btnGroup.append("text")
                         .attr("x", buttonX)
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
-                        .attr("fill", "white")
+                        .attr("fill", "#000000")
                         .text("+");
                 } else if (isInExtracurricular && movedToExtracurricular.has(course.id)) {
                     // Regular course moved to extracurricular - show + button
@@ -834,18 +3481,18 @@
                         .attr("cx", buttonX)
                         .attr("cy", buttonY)
                         .attr("r", buttonRadius)
-                        .attr("fill", "#4CAF50")
-                        .attr("stroke", "#388E3C")
-                        .attr("stroke-width", 1);
+                        .attr("fill", "#DD5500")
+                        .attr("stroke", "#FFFF00")
+                        .attr("stroke-width", 3);
 
                     btnGroup.append("text")
                         .attr("x", buttonX)
                         .attr("y", buttonY)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
-                        .attr("font-size", "18px")
+                        .attr("font-size", "36px")
                         .attr("font-weight", "bold")
-                        .attr("fill", "white")
+                        .attr("fill", "#000000")
                         .text("+");
                 } else if (!isInExtracurricular && !isPlaceholder && isExtracurricular && extracurricularAddedToRegular.has(course.id)) {
                     // Extracurricular course that has been added to regular position - show - button
@@ -893,31 +3540,46 @@
                             .attr("cx", buttonX)
                             .attr("cy", buttonY)
                             .attr("r", buttonRadius)
-                            .attr("fill", "#f44336")
-                            .attr("stroke", "#d32f2f")
-                            .attr("stroke-width", 1);
+                            .attr("fill", "#FF0000")
+                            .attr("stroke", "#FFFF00")
+                            .attr("stroke-width", 3);
 
                         btnGroup.append("text")
                             .attr("x", buttonX)
                             .attr("y", buttonY)
                             .attr("text-anchor", "middle")
                             .attr("dominant-baseline", "middle")
-                            .attr("font-size", "18px")
+                            .attr("font-size", "36px")
                             .attr("font-weight", "bold")
-                            .attr("fill", "white")
+                            .attr("fill", "#000000")
                             .text("−");
                     }
                 }
 
                 // Add text label (greyed out for placeholders)
+                // Determine text color based on background
+                let textColor = "#FFFFFF"; // White text for all course types
+                if (isPlaceholder) {
+                    textColor = "#FFFFFF"; // White text for placeholder
+                } else if (isCore) {
+                    textColor = "#FFFFFF"; // White text for core courses (black background)
+                } else if (!isInExtracurricular) {
+                    textColor = "#FFFFFF"; // White text for specialization courses (purple background)
+                } else {
+                    textColor = "#83D802"; // Bright green text for optional courses (dark olive background)
+                }
+
                 nodeGroup.append("text")
                     .attr("x", 0)
                     .attr("y", 0)
                     .attr("text-anchor", "middle")
                     .attr("dominant-baseline", "middle")
-                    .attr("font-size", "21px")
-                    .attr("fill", isPlaceholder ? "#999" : "#000")
+                    .attr("font-size", "20px")
+                    .attr("font-family", "'Consolas', 'Monaco', 'Lucida Console', monospace")
+                    .attr("font-weight", "bold")
+                    .attr("fill", textColor)
                     .attr("opacity", isPlaceholder ? 0.5 : 1)
+                    .attr("letter-spacing", "0.5px")
                     .text(course.course)
                     .call(wrap, nodeWidth - 20); // Wrap text if too long
 
@@ -945,41 +3607,201 @@
                 return !(maxX < rx || minX > rx + rw || maxY < ry || minY > ry + rh);
             }
 
-            // Draw dependency edges - direct lines from top-right to bottom-right
-            // HIDDEN FOR NOW
-            // courses.forEach((course) => {
-            //     if (course.dependencies && course.dependencies.trim() !== '') {
-            //         const deps = course.dependencies.split(',').map(d => d.trim());
+            // Draw dependency edges - direct lines from course to its dependencies
+            // Only draw if "Show as graph" checkbox is checked
+            const showGraphCheckbox = document.getElementById('show-graph');
+            if (showGraphCheckbox && showGraphCheckbox.checked) {
+                coursesToRender.forEach((course) => {
+                    // Skip placeholders - don't draw edges to/from placeholders
+                    if (course._isPlaceholder) return;
 
-            //         deps.forEach(depId => {
-            //             if (!coursePositions[depId] || !coursePositions[course.id]) {
-            //                 console.warn('Missing position for dependency:', depId, 'or course:', course.id);
-            //                 return;
-            //             }
+                    if (course.dependencies && course.dependencies.trim() !== '') {
+                        const deps = course.dependencies.split(';').map(d => d.trim());
 
-            //             const from = coursePositions[depId];
-            //             const to = coursePositions[course.id];
+                        deps.forEach(depId => {
+                            if (!coursePositions[depId] || !coursePositions[course.id]) {
+                                console.warn('Missing position for dependency:', depId, 'or course:', course.id);
+                                return;
+                            }
 
-            //             // Start from top-right corner of source
-            //             const startX = from.x + from.width / 2;
-            //             const startY = from.y - from.height / 2;
+                            const from = coursePositions[depId];
+                            const to = coursePositions[course.id];
 
-            //             // End at bottom-right corner of target
-            //             const endX = to.x + to.width / 2;
-            //             const endY = to.y + to.height / 2;
+                            // Start from top right corner of source (10px inward)
+                            const startX = from.x + from.width / 2 - 10;
+                            const startY = from.y - from.height / 2 + 10;
 
-            //             // Draw direct line
-            //             const path = `M ${startX} ${startY} L ${endX} ${endY}`;
+                            // End at bottom right corner of target (10px inward)
+                            const endX = to.x + to.width / 2 - 10;
+                            const endY = to.y + to.height / 2 - 10;
 
-            //             svg.append("path")
-            //                 .attr("d", path)
-            //                 .attr("fill", "none")
-            //                 .attr("stroke", "#666")
-            //                 .attr("stroke-width", 2)
-            //                 .attr("marker-end", "url(#arrowhead)");
-            //         });
-            //     }
-            // });
+                            // Calculate control point for quadratic Bezier curve
+                            // Place it at the midpoint horizontally, and offset vertically for a nice arc
+                            const midX = (startX + endX) / 2;
+                            const midY = (startY + endY) / 2;
+
+                            // Offset the control point perpendicular to the line
+                            const dx = endX - startX;
+                            const dy = endY - startY;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            const offsetRatio = Math.min(distance / 400, 0.5); // Scale arc based on distance
+
+                            // Control point offset perpendicular to the line direction
+                            const controlX = midX - dy * offsetRatio * 0.3;
+                            const controlY = midY + dx * offsetRatio * 0.3;
+
+                            // Draw curved path using quadratic Bezier curve
+                            const path = `M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`;
+
+                            edgesGroup.append("path")
+                                .attr("d", path)
+                                .attr("fill", "none")
+                                .attr("stroke", "#DD5500")
+                                .attr("stroke-width", 4)
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("opacity", 0.8)
+                                .attr("cursor", "pointer")
+                                .attr("data-source-id", depId)
+                                .attr("data-target-id", course.id)
+                                .attr("class", "dependency-edge")
+                                .style("filter", "drop-shadow(0 0 15px #DD5500) drop-shadow(0 0 25px #DD5500)")
+                                .on("mouseenter", function() {
+                                    d3.select(this)
+                                        .attr("stroke", "#00FF00")
+                                        .attr("stroke-width", 6)
+                                        .attr("opacity", 1)
+                                        .attr("marker-end", "url(#arrowhead-purple)")
+                                        .style("filter", "drop-shadow(0 0 20px #00FF00) drop-shadow(0 0 35px #00FF00)");
+                                })
+                                .on("mouseleave", function() {
+                                    d3.select(this)
+                                        .attr("stroke", "#DD5500")
+                                        .attr("stroke-width", 4)
+                                        .attr("opacity", 0.8)
+                                        .attr("marker-end", "url(#arrowhead)")
+                                        .style("filter", "drop-shadow(0 0 15px #DD5500) drop-shadow(0 0 25px #DD5500)");
+                                });
+                        });
+                    }
+                });
+            }
+
+            // Draw ruler on the right side with cumulative credits
+            const rulerGroup = svg.append("g").attr("class", "ruler");
+            // rulerX already defined above for horizontal lines
+
+            // Main vertical line
+            rulerGroup.append("line")
+                .attr("x1", rulerX)
+                .attr("x2", rulerX)
+                .attr("y1", 0)
+                .attr("y2", totalHeight)
+                .attr("stroke", "#B84604")
+                .attr("stroke-width", 2);
+
+            // Add vertical "CUMULATIVE CREDITS" label
+            const creditLabel = rulerGroup.append("text")
+                .attr("x", rulerX + 25)
+                .attr("y", totalHeight / 2)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "28px")
+                .attr("font-family", "'Helvetica Neue', Helvetica, Arial, sans-serif")
+                .attr("font-weight", "bold")
+                .attr("fill", "#FFFFFF")
+                .attr("letter-spacing", "4px")
+                .attr("transform", `rotate(90, ${rulerX + 25}, ${totalHeight / 2})`)
+                .attr("xml:space", "preserve");
+
+            creditLabel.append("tspan")
+                .text("+++");
+            creditLabel.append("tspan")
+                .attr("dx", "100")
+                .text("Σ CUMULATIVE CREDITS");
+            creditLabel.append("tspan")
+                .attr("dx", "100")
+                .text("+++");
+
+            // Add tick marks at each block position showing cumulative credits
+            const tickWidth = 30;
+
+            tierOrder.forEach((blockNum) => {
+                // Skip extracurricular block (6)
+                if (blockNum === 6) return;
+
+                const yStart = blockToY[blockNum];
+                const numRows = blockRows[blockNum] || 1;
+                const height = (numRows * ySpacing);
+                const y = yStart + (height / 2); // Center of the block
+
+                const cumCredits = cumulativeCredits[blockNum] || 0;
+                const prevCumCredits = previousCumulativeCredits[blockNum] || 0;
+
+                // Draw tick mark
+                rulerGroup.append("line")
+                    .attr("x1", rulerX)
+                    .attr("x2", rulerX - tickWidth)
+                    .attr("y1", y)
+                    .attr("y2", y)
+                    .attr("stroke", "#FFFFFF")
+                    .attr("stroke-width", 2);
+
+                // Add circle at datapoint on the ruler line
+                rulerGroup.append("circle")
+                    .attr("cx", rulerX)
+                    .attr("cy", y)
+                    .attr("r", 8)
+                    .attr("fill", "#B84604")
+                    .attr("stroke", "#000000")
+                    .attr("stroke-width", 1);
+
+                // Add cumulative credit label with animation
+                const rulerCreditText = rulerGroup.append("text")
+                    .attr("x", rulerX - tickWidth - 10)
+                    .attr("y", y + 10)
+                    .attr("text-anchor", "end")
+                    .attr("font-size", "40px")
+                    .attr("font-family", "'Courier New', monospace")
+                    .attr("font-weight", "bold")
+                    .attr("fill", "#B84604")
+                    .text(prevCumCredits.toString());
+
+                // Animate to new value with longer duration for larger numbers
+                if (prevCumCredits !== cumCredits) {
+                    animateNumber(rulerCreditText, prevCumCredits, cumCredits, 800);
+                }
+            });
+
+            // Add smaller tick marks between main datapoints
+            const smallTickWidth = 12;
+            const numSmallTicks = 8;
+            const validBlocks = tierOrder.filter(b => b !== 6); // Exclude extracurricular
+
+            for (let i = 0; i < validBlocks.length - 1; i++) {
+                const currentBlock = validBlocks[i];
+                const nextBlock = validBlocks[i + 1];
+
+                const currentY = blockToY[currentBlock] + ((blockRows[currentBlock] || 1) * ySpacing) / 2;
+                const nextY = blockToY[nextBlock] + ((blockRows[nextBlock] || 1) * ySpacing) / 2;
+
+                // Draw small ticks between the two main ticks
+                for (let j = 1; j <= numSmallTicks; j++) {
+                    const fraction = j / (numSmallTicks + 1);
+                    const y = currentY + (nextY - currentY) * fraction;
+
+                    rulerGroup.append("line")
+                        .attr("x1", rulerX)
+                        .attr("x2", rulerX - smallTickWidth)
+                        .attr("y1", y)
+                        .attr("y2", y)
+                        .attr("stroke", "#FFFFFF")
+                        .attr("stroke-width", 1)
+                        .attr("opacity", 0.5);
+                }
+            }
+
+            // Store current values for next render (after all animations are set up)
+            previousCreditsPerBlock = { ...creditsPerBlock };
+            previousCumulativeCredits = { ...cumulativeCredits };
 
             // Draw alternative edges - undirected lines between alternative courses
             // HIDDEN FOR NOW
@@ -1025,6 +3847,250 @@
             //     }
             // });
 
+            // Add MAGI system visualization
+            const magiGroup = svg.append("g")
+                .attr("class", "magi-system")
+                .attr("transform", `translate(900, ${totalHeight - 180})`);
+
+            // MAGI configuration
+            function generateHex() {
+                return Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase().padStart(6, '0');
+            }
+
+            const magiSystems = [
+                { name: generateHex(), color: "#0066FF", angle: -90 },
+                { name: generateHex(), color: "#FF6600", angle: 30 },
+                { name: generateHex(), color: "#FFCC00", angle: 150 }
+            ];
+
+            const centerX = 0;
+            const centerY = 0;
+            const radius = 60;
+            const distance = 80;
+
+            // Draw three overlapping circles
+            magiSystems.forEach((system, i) => {
+                const angleRad = (system.angle * Math.PI) / 180;
+                const cx = centerX + Math.cos(angleRad) * distance;
+                const cy = centerY + Math.sin(angleRad) * distance;
+
+                // Create circle with pulsing animation
+                const circle = magiGroup.append("circle")
+                    .attr("cx", cx)
+                    .attr("cy", cy)
+                    .attr("r", radius)
+                    .attr("fill", "none")
+                    .attr("stroke", system.color)
+                    .attr("stroke-width", 2)
+                    .attr("opacity", 0.3);
+
+                // Add label
+                magiGroup.append("text")
+                    .attr("x", cx)
+                    .attr("y", cy - radius - 10)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .attr("font-family", "'Courier New', monospace")
+                    .attr("font-weight", "bold")
+                    .attr("fill", system.color)
+                    .attr("opacity", 0.5)
+                    .attr("letter-spacing", "1px")
+                    .text(system.name);
+
+                // Pulse animation
+                function pulse() {
+                    circle
+                        .transition()
+                        .duration(1000 + i * 200)
+                        .ease(d3.easeSinInOut)
+                        .attr("opacity", 0.5)
+                        .attr("stroke-width", 3)
+                        .transition()
+                        .duration(1000 + i * 200)
+                        .ease(d3.easeSinInOut)
+                        .attr("opacity", 0.2)
+                        .attr("stroke-width", 2)
+                        .on("end", pulse);
+                }
+                pulse();
+            });
+
+            // Add spinning 3D globe in center
+            const globeGroup = magiGroup.append("g")
+                .attr("class", "globe")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            const globeRadius = 45;
+
+            // Outer circle
+            globeGroup.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", globeRadius)
+                .attr("fill", "none")
+                .attr("stroke", "#00FF00")
+                .attr("stroke-width", 1)
+                .attr("opacity", 0.4);
+
+            // Horizontal ellipses (latitude lines)
+            for (let i = -30; i <= 30; i += 30) {
+                globeGroup.append("ellipse")
+                    .attr("cx", 0)
+                    .attr("cy", i)
+                    .attr("rx", globeRadius * 0.95)
+                    .attr("ry", globeRadius * 0.3)
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 0.5)
+                    .attr("opacity", 0.3);
+            }
+
+            // Vertical rotating ellipses (longitude lines)
+            const longitudeLines = [];
+            for (let i = 0; i < 3; i++) {
+                const line = globeGroup.append("ellipse")
+                    .attr("cx", 0)
+                    .attr("cy", 0)
+                    .attr("rx", globeRadius * 0.3)
+                    .attr("ry", globeRadius)
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 0.5)
+                    .attr("opacity", 0.3)
+                    .attr("transform", `rotate(${i * 60}, 0, 0)`);
+                longitudeLines.push(line);
+            }
+
+            // Animate globe rotation
+            let globeRotation = 0;
+            function rotateGlobe() {
+                globeRotation += 0.5;
+                longitudeLines.forEach((line, i) => {
+                    line.attr("transform", `rotate(${i * 60 + globeRotation}, 0, 0)`);
+                });
+                requestAnimationFrame(rotateGlobe);
+            }
+            rotateGlobe();
+
+            // Add pulsating octagon radar to the bottom left
+            const radarBottomGroup = backgroundGroup.append("g")
+                .attr("class", "octagon-radar")
+                .attr("transform", `translate(-440, ${totalHeight - 130})`);
+
+            // Radar octagon rings
+            const radarOctRings = [40, 70, 100];
+            radarOctRings.forEach((radius, i) => {
+                // Create octagon points
+                const octagonPoints = [];
+                for (let j = 0; j < 8; j++) {
+                    const angle = (j * Math.PI / 4) - (Math.PI / 8);
+                    const x = radius * Math.cos(angle);
+                    const y = radius * Math.sin(angle);
+                    octagonPoints.push(`${x},${y}`);
+                }
+
+                radarBottomGroup.append("polygon")
+                    .attr("points", octagonPoints.join(" "))
+                    .attr("fill", "none")
+                    .attr("stroke", "#00FF00")
+                    .attr("stroke-width", 1)
+                    .attr("class", "radar-ring")
+                    .style("opacity", 0.15 + (i * 0.05))
+                    .style("animation-delay", `${i * 0.3}s`);
+            });
+
+            // Radar sweep spinner - simple line
+            const maxOctRadius = radarOctRings[radarOctRings.length - 1];
+            const bottomSweepLine = radarBottomGroup.append("line")
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", 0)
+                .attr("y2", -maxOctRadius)
+                .attr("stroke", "#00FF00")
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.7);
+
+            // Animate the sweep rotation
+            let bottomSweepAngle = 0;
+            function animateBottomSweep() {
+                bottomSweepAngle += 2; // degrees per frame
+                bottomSweepLine.attr("transform", `rotate(${bottomSweepAngle})`);
+                requestAnimationFrame(animateBottomSweep);
+            }
+            animateBottomSweep();
+
+            // Radar center dot
+            radarBottomGroup.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", 4)
+                .attr("fill", "#00FF00")
+                .attr("opacity", 0.9);
+
+            // Add center text
+            magiGroup.append("text")
+                .attr("x", centerX)
+                .attr("y", centerY + 5)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "14px")
+                .attr("font-family", "'Courier New', monospace")
+                .attr("font-weight", "bold")
+                .attr("fill", "#00FF00")
+                .attr("opacity", 0.5)
+                .attr("letter-spacing", "1px")
+                .text(generateHex());
+
+            // Matrix-style falling Japanese characters
+            const japaneseChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
+            const matrixGroup = backgroundGroup.append("g").attr("class", "matrix-effect");
+
+            // Align with purple grid background (100px spacing - every other grid line)
+            const gridSpacing = 100;
+            const viewBoxStart = -800;
+            const viewBoxEnd = viewBoxWidth - 800;
+            const startColumn = Math.ceil(viewBoxStart / gridSpacing);
+            const endColumn = Math.floor(viewBoxEnd / gridSpacing);
+            const matrixColumns = endColumn - startColumn + 1;
+
+            // Create columns of falling characters aligned with purple grid lines
+            for (let col = 0; col < matrixColumns; col++) {
+                const xPos = (startColumn + col) * gridSpacing; // Align with 100px spacing
+                const numChars = Math.floor(Math.random() * 10) + 5; // 5-15 characters per column
+                const startY = Math.random() * totalHeight;
+                const speed = Math.random() * 2 + 1; // Random speed
+
+                for (let i = 0; i < numChars; i++) {
+                    const char = japaneseChars[Math.floor(Math.random() * japaneseChars.length)];
+                    const opacity = (numChars - i) / numChars; // Fade out as we go up
+
+                    const text = matrixGroup.append("text")
+                        .attr("x", xPos)
+                        .attr("y", startY - (i * 20))
+                        .attr("font-size", "14px")
+                        .attr("font-family", "'Courier New', monospace")
+                        .attr("fill", "#00FF00")
+                        .attr("opacity", opacity * 0.4)
+                        .text(char);
+
+                    // Animate falling
+                    (function(textEl, column, speed) {
+                        function fall() {
+                            let currentY = parseFloat(textEl.attr("y"));
+                            currentY += speed;
+
+                            if (currentY > totalHeight) {
+                                currentY = -20;
+                                textEl.text(japaneseChars[Math.floor(Math.random() * japaneseChars.length)]);
+                            }
+
+                            textEl.attr("y", currentY);
+                            requestAnimationFrame(fall);
+                        }
+                        fall();
+                    })(text, col, speed);
+                }
+            }
+
             console.log('D3 visualization complete');
         }
 
@@ -1063,6 +4129,114 @@
 
         // Load data when page loads
         loadAndVisualize();
+
+        // Conway's Game of Life (in left sidenav)
+        const canvas = document.getElementById('sidenav-canvas');
+        if (canvas) {
+            const container = document.querySelector('.sidenav');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            const ctx = canvas.getContext('2d');
+            const cellSize = 5;
+            const cols = Math.floor(canvas.width / cellSize);
+            const rows = Math.floor(canvas.height / cellSize);
+
+            let grid = createGrid();
+            let generation = 0;
+
+            function createGrid() {
+                const grid = new Array(cols);
+                for (let i = 0; i < cols; i++) {
+                    grid[i] = new Array(rows);
+                    for (let j = 0; j < rows; j++) {
+                        grid[i][j] = Math.random() > 0.7 ? 1 : 0;
+                    }
+                }
+                return grid;
+            }
+
+            function countNeighbors(grid, x, y) {
+                let sum = 0;
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue;
+                        const col = (x + i + cols) % cols;
+                        const row = (y + j + rows) % rows;
+                        sum += grid[col][row];
+                    }
+                }
+                return sum;
+            }
+
+            function nextGeneration() {
+                const next = createGrid();
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        next[i][j] = 0;
+                    }
+                }
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        const state = grid[i][j];
+                        const neighbors = countNeighbors(grid, i, j);
+
+                        if (state === 0 && neighbors === 3) {
+                            next[i][j] = 1;
+                        } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+                            next[i][j] = 0;
+                        } else {
+                            next[i][j] = state;
+                        }
+                    }
+                }
+
+                grid = next;
+                generation++;
+
+                // Reset if all cells are dead or after many generations
+                if (generation > 500 || isGridEmpty()) {
+                    grid = createGrid();
+                    generation = 0;
+                }
+            }
+
+            function isGridEmpty() {
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        if (grid[i][j] === 1) return false;
+                    }
+                }
+                return true;
+            }
+
+            function draw() {
+                // Clear canvas
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw cells
+                ctx.fillStyle = 'rgba(91, 235, 157, 0.3)';
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        if (grid[i][j] === 1) {
+                            ctx.fillRect(i * cellSize, j * cellSize, cellSize - 1, cellSize - 1);
+                        }
+                    }
+                }
+            }
+
+            function update() {
+                nextGeneration();
+                draw();
+            }
+
+            // Run at 10 FPS
+            setInterval(update, 100);
+            draw();
+        }
     </script>
 </body>
 </html>

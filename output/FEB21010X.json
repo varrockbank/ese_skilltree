@@ -1,0 +1,14 @@
+{
+  "id": "FEB21010X",
+  "name": "Mathematical Methods",
+  "credits": 4,
+  "blockStart": "BLOK5",
+  "blockEnd": "BLOK5",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21010X&collegejaar=2025",
+  "dependencies": [
+    "FEB21017X",
+    "FEB21018X",
+    "FEB21020X"
+  ],
+  "premaster": false
+}

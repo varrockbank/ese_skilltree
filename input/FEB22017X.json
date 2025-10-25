@@ -1,0 +1,442 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB22017X&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB22017X_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Bachelor 2"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB22017X"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Finance (econometrics)"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Finance (econometrics)"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22017X&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB22017X"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Bachelor 2 - International Bachelor Econometrics and Operations Research"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>Via OSIRIS</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Business Economics-Finance, E2-28, 010-4081200, be-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body>- The time-value of money and appropriate discount rate.<br/>- The role of arbitrage in finance<br/>- The value of bonds and stocks<br/>- Market efficiency and financial markets as information processor.<br/>- Risk and return models.<br/>- Portfolio theory.<br/>- Options and futures.<br/><br/>This course uses knowledge of FEB21017X Introduction to Analysis, FEB21020X Micro-economics, FEB22023X Vector Calculus and FEB22003X Introduction to Multivariate Statistics, and is required for FEB23006 Quantitative Models in Finance.</body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body>- Use the basic principles of finance to take investment decisions.<br/>- Calculate the fundamental value of a number of financial instruments.<br/>- Argue about the implications of efficient markets.<br/>- Compute expected returns using risk-factor models.</body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Required material",
+                            "velden": [
+                                {
+                                    "materiaal": "Book",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "Investments, 12th Edition By Zvi Bodie and Alex Kane and Alan Marcus, \nISBN13: 9781260013832\nOR:\nInvestments, 13th Edition By Zvi Bodie and Alex Kane and Alan Marcus, \nISBN13: 9781264412662"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>International Bachelor Econometrics and Operations Research</li><li>International Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Exercise",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK3",
+                            "id_cursus_inschrijving": 152727,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-inschrijven",
+                                    "titel": "Enrolment period",
+                                    "waarde": "1 December 2025 until 2 January 2026 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-uitschrijven",
+                                    "titel": "Unenrolment",
+                                    "waarde": " until 20 January 2026 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "29 december 2025 until 28 februari 2026"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "D Karpati",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "D Karpati",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "D Karpati",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "dr. FC Core",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "dr. LAP Swinkels",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "A Soebhag, MSc",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "M Dubbelt",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "ML van Puffelen",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "T Stuij",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "20"
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "80"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toets-inschrijven",
+            "titel": "Test enrolment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toets-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK3",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK3",
+                                    "velden": []
+                                },
+                                {
+                                    "blok": "Block BLOK-HER",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 12
+}

@@ -1,0 +1,13 @@
+{
+  "id": "FEB22006X",
+  "name": "Non-linear Optimisation",
+  "credits": 4,
+  "blockStart": "BLOK2",
+  "blockEnd": "BLOK2",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22006X&collegejaar=2025",
+  "dependencies": [
+    "FEB21023X",
+    "FEB21011X"
+  ],
+  "premaster": false
+}

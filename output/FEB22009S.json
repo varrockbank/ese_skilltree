@@ -1,0 +1,15 @@
+{
+  "id": "FEB22009S",
+  "name": "Intro Seminar Econometrics (pre-master)",
+  "credits": 4,
+  "blockStart": "BLOK4",
+  "blockEnd": "BLOK5",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22009S&collegejaar=2025",
+  "dependencies": [
+    "FEB22002X",
+    "FEB22006X",
+    "FEB22005X",
+    "FEB22015X"
+  ],
+  "premaster": true
+}

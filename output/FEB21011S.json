@@ -1,0 +1,10 @@
+{
+  "id": "FEB21011S",
+  "name": "Introduction to Programming (pre-master)",
+  "credits": 4,
+  "blockStart": "BLOK1",
+  "blockEnd": "BLOK1",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21011S&collegejaar=2025",
+  "dependencies": [],
+  "premaster": true
+}

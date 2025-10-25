@@ -1,0 +1,12 @@
+{
+  "id": "FEB22008X",
+  "name": "Markov Processes",
+  "credits": 4,
+  "blockStart": "BLOK2",
+  "blockEnd": "BLOK2",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22008X&collegejaar=2025",
+  "dependencies": [
+    "FEB21005X"
+  ],
+  "premaster": false
+}

@@ -1,0 +1,13 @@
+{
+  "id": "FEB21009X",
+  "name": "Linear Optimisation",
+  "credits": 4,
+  "blockStart": "BLOK5",
+  "blockEnd": "BLOK5",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21009X&collegejaar=2025",
+  "dependencies": [
+    "FEB21023X",
+    "FEB21010X"
+  ],
+  "premaster": false
+}

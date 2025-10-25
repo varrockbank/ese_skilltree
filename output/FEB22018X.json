@@ -1,0 +1,14 @@
+{
+  "id": "FEB22018X",
+  "name": "Marketing (econometrics)",
+  "credits": 4,
+  "blockStart": "BLOK4",
+  "blockEnd": "BLOK4",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB22018X&collegejaar=2025",
+  "dependencies": [
+    "FEB21020X",
+    "FEB22003X",
+    "FEB22005X"
+  ],
+  "premaster": false
+}

@@ -1,0 +1,13 @@
+{
+  "id": "FEB23001X",
+  "name": "Time Series Analysis",
+  "credits": 4,
+  "blockStart": "BLOK5",
+  "blockEnd": "BLOK5",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB23001X&collegejaar=2025",
+  "dependencies": [
+    "FEB22008X",
+    "FEB22005X"
+  ],
+  "premaster": false
+}

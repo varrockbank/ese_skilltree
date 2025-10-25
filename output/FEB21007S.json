@@ -1,0 +1,12 @@
+{
+  "id": "FEB21007S",
+  "name": "Statistics (pre-master)",
+  "credits": 4,
+  "blockStart": "BLOK1",
+  "blockEnd": "BLOK1",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21007S&collegejaar=2025",
+  "dependencies": [
+    "FEB21005S"
+  ],
+  "premaster": true
+}

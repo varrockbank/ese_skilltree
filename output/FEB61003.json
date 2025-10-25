@@ -1,0 +1,12 @@
+{
+  "id": "FEB61003",
+  "name": "Programming (SPOC)",
+  "credits": 4,
+  "blockStart": "BLOK2",
+  "blockEnd": "BLOK2",
+  "url": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB61003&collegejaar=2025",
+  "dependencies": [
+    "FEB21011S"
+  ],
+  "premaster": false
+}

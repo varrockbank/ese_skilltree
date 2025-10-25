@@ -1,0 +1,463 @@
+{
+    "items": [
+        {
+            "rubriek": "rubriek-links",
+            "velden": [
+                {
+                    "veld": "item-links",
+                    "waarde": [
+                        {
+                            "velden": [
+                                {
+                                    "titel": "Timetable",
+                                    "url": "https://timetables.eur.nl/link?timetables.0.key=FEB21011S&timetables.0.type=module&timetables.0.source=2025&timetables.1.key=FEB21011S_2025&timetables.1.type=timeedit_course&timetables.1.source=TimeEdit&ignoreEmpty=true&ignoreNotFound=true&view=list"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-zoek",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "item-faculteit-zoek",
+                    "titel": "Faculty",
+                    "waarde": "Erasmus School of Economics"
+                },
+                {
+                    "veld": "item-punten-zoek",
+                    "titel": "Study points",
+                    "waarde": "4 EC"
+                },
+                {
+                    "veld": "item-categorie-zoek",
+                    "titel": "Category",
+                    "waarde": "Master 1"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-kop",
+            "titel": "",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "cursus",
+                    "waarde": "FEB21011S"
+                },
+                {
+                    "veld": "collegejaar",
+                    "waarde": 2025
+                },
+                {
+                    "veld": "cursus_korte_naam",
+                    "waarde": "Introduction to Programming (pre-master)"
+                },
+                {
+                    "veld": "cursus_lange_naam",
+                    "waarde": "Introduction to Programming (pre-master)"
+                },
+                {
+                    "veld": "id_cursus_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_blok_cursusins",
+                    "waarde": null
+                },
+                {
+                    "veld": "id_cursus_toetsins",
+                    "waarde": null
+                },
+                {
+                    "veld": "zowel_cursus_als_toetsins",
+                    "waarde": "N"
+                },
+                {
+                    "veld": "deeplink_detailscherm_extern",
+                    "waarde": "https://eur.osiris-student.nl/onderwijscatalogus/extern/cursus?cursuscode=FEB21011S&collegejaar=2025"
+                },
+                {
+                    "veld": "item-url-plaatje",
+                    "titel": "",
+                    "gegevenstype": "",
+                    "waarde": ""
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-praktische-info",
+            "titel": "Practical information",
+            "weergave": "UIT",
+            "velden": [
+                {
+                    "veld": "regio-links",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "item-code",
+                                "titel": "Course ID",
+                                "waarde": "FEB21011S"
+                            },
+                            {
+                                "veld": "item-punten",
+                                "titel": "Credits",
+                                "waarde": "4 EC"
+                            },
+                            {
+                                "veld": "item-voertaal",
+                                "titel": "Instruction language",
+                                "waarde": "Dutch, English"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "veld": "regio-rechts",
+                    "titel": "",
+                    "waarde": {
+                        "velden": [
+                            {
+                                "veld": "tabel-themas",
+                                "titel": "Themes",
+                                "waarde": [
+                                    {
+                                        "omschrijving": "Computer Science"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (EN)"
+                                    },
+                                    {
+                                        "omschrijving": "Premaster Econometrics and Management Science (NL)"
+                                    }
+                                ]
+                            },
+                            {
+                                "veld": "item-vrij-veld-7",
+                                "titel": "Registration procedure",
+                                "waarde": "<p>Via OSIRIS</p>",
+                                "gegevenstype": "TEKST"
+                            },
+                            {
+                                "veld": "item-vrij-veld-8",
+                                "titel": "Secretariat",
+                                "waarde": "ESE-Secretariat Econometrics, ET-18, 010-4081264, eb-secr@ese.eur.nl",
+                                "gegevenstype": "TEKST"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inhoud",
+            "titel": "Course description",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-inhoud-1",
+                    "titel": "Content",
+                    "waarde": "<html><body><p><strong>The importance of programming</strong><br />\nThe goal of this course is to teach you the basic principles of programming. Mastering these principles is important because programming is one of the core skills of our time.</p>\n\n<p>Programming is not only essential for full-time programmers or software developers but also for almost any job that comes from a degree in econometrics. In many of these jobs, you will spend a significant portion of your time programming. Even if you do not program yourself, it is useful to be able to communicate with programmers and understand what they are working on. And even if you have no programmers around you, the algorithmic thinking you develop through programming remains a valuable skill. As we will see during this course, programming is mainly about formally modeling and breaking down practical problems and translating them into concrete tasks. This is not just relevant for tasks that you let a computer execute for you.</p>\n\n<p><strong>Importance within the Econometrics program</strong><br />\nProgramming also plays a key role in the econometrics curriculum. For example, in Operations Research, where algorithms are developed to find good solutions to modeled problems. To use these algorithms, they need to be implemented on a computer. Programming is also an essential skill in econometrics, data science, machine learning, and statistics. This applies to tasks such as collecting, processing, and visualizing data, performing statistical inference, and applying or implementing machine learning algorithms.</p>\n\n<p>This course is a strict prerequisite for the follow-up course&nbsp;<em>Programming (FEB22012)</em>, which goes deeper into programming. However, programming is expected in many other courses in the program and will appear in homework assignments. In a bachelor&#39;s thesis, master&#39;s thesis, case study, or seminar, the average student may spend half of their time programming.</p>\n\n<p><strong>What we will do</strong><br />\nThe topics covered in this course are described under the learning goals. The course focuses on three main programming paradigms: imperative, procedural, and object-oriented programming. The goal is to teach you how to program in each of these styles and to develop some practical programming skills.</p>\n\n<p>To facilitate learning, we focus on a specific programming language: <strong>Java</strong>. Java is one of the most widely used programming languages in the world and includes all the concepts you will also encounter in more specialized languages. Although we will be programming in Java, the course aims to teach the general principles of programming. After completing this course, you should be able to quickly pick up another programming language, such as R or Python.</p>\n\n<p>During the course, you are expected to roll up your sleeves and gain hands-on experience programming in Java. To support this, we have three challenging homework assignments designed to help you develop practical programming skills (10% of the final grade). The course concludes with a demanding two-hour programming exam, where you must demonstrate that you have truly mastered programming (90% of the final grade). The exam consists of several open-ended theoretical questions followed by one practical programming question for each of the main topics.</p>\n\n<p><strong>How we facilitate this</strong><br />\nThe course follows a weekly recurring structure: at the start of the week, there is a lecture, during the week you can go through the material online via the course website (<em>feb21011.ese.eur.nl</em>), in the middle of the week there is a tutorial, and at the end of the week a Q&amp;A session. Each of the three main topics (imperative, procedural, and object-oriented programming) is covered over two weeks. Each two-week period concludes with the deadline for the corresponding homework assignment.</p>\n\n<p>You can submit the homework assignment as many times as you want, and it will be automatically graded through CodeGrade. The final version you submit before the deadline will be graded. After the deadline, additional tests will be conducted, and we will provide manual feedback on your programming style.</p>\n\n<p>Support is available during tutorials, Q&amp;A sessions, and on the discussion board. If you get stuck and need quick help, we also recommend using AI tools (such as ChatGPT), as they have extensive knowledge of programming.</p>\n\n<p><strong>ChatGPT and Other AI Tools</strong><br />\nAs you will quickly discover, AI tools like ChatGPT can solve all homework assignments and exam questions almost flawlessly. When ChatGPT was introduced, it was unclear whether learning to program would still be relevant at all.</p>\n\n<p>It has since become evident that AI is a very useful assistant but still far from capable of replacing programmers. You have probably already noticed that AI-generated text is not always exactly what you want, requiring you to make adjustments or rephrase your request. The same applies to AI-generated code: you must at least be able to verify whether it does what you intended and understand what might be wrong so that you can either fix it yourself or instruct the AI to make the necessary changes. Basic programming skills are indispensable for this.</p>\n\n<p>While a homework assignment provides a fully specified task on paper, this is often not the case when programming in practice. When you start programming, it is usually unclear what the final specifications of the product should be&mdash;you develop this understanding as you go. This makes it impossible to fully outsource the task to AI, as you do not yet know exactly what you want. And even if you could express it precisely, for complex tasks, it is sometimes much harder to explain the requirements in words than to simply program them yourself. In the near future, programming with AI will remain an interactive process in which you, as a programmer, delegate certain tasks to AI but must still oversee the process and understand the code.</p>\n\n<p>Since mastering basic programming skills remains essential, the primary objective of this course remains unchanged, and AI tools will not be allowed during the exam. For homework assignments, AI tools are not explicitly forbidden, but we strongly advise caution. It is highly unwise to let AI solve parts of the assignments for you, as this would prevent you from learning and likely result in failing the exam. More importantly, gaining hands-on programming experience is crucial, as it is a vital skill for the rest of your studies and most career paths. However, AI can be very helpful for explaining concepts you do not understand and for strengthening your overall comprehension&mdash;so feel free to use it for that purpose!</p></body></html>"
+                },
+                {
+                    "veld": "item-inhoud-2",
+                    "titel": "Learning goals",
+                    "waarde": "<html><body><p>By the end of the course, students will:</p>\n\n<ul>\n\t<li>Be able to apply the basic principles of imperative programming.</li>\n\t<li>Be able to apply the basic principles of procedural programming.</li>\n\t<li>Be able to apply the basic principles of object-oriented programming.</li>\n\t<li>Be able to write programs in Java to solve simple problems.</li>\n\t<li>Be able to use an Integrated Development Environment for writing and debugging Java programs.</li>\n\t<li>Be able to verify whether a program&rsquo;s functionality meets all requirements.</li>\n\t<li>Be able to apply basic programming style principles to write readable code.</li>\n\t<li>Be able to use AI-assisted programming tools.</li>\n</ul></body></html>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-materialen",
+            "titel": "Study materials",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-materialen",
+                    "titel": "",
+                    "waarde": [
+                        {
+                            "omschrijving": "Recommended material",
+                            "velden": [
+                                {
+                                    "materiaal": "Internetsite",
+                                    "velden": [
+                                        {
+                                            "veld": "item-materiaal-omschrijving",
+                                            "titel": "",
+                                            "waarde": "<a href=\"https://feb21011.ese.eur.nl\">https://feb21011.ese.eur.nl</a>"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-ingang",
+            "titel": "Entrance requirements",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "regio-ingang-cursus",
+                    "titel": "Entrance requirements course enrolment",
+                    "waarde": "<small>You must meet the following requirements</small><ul><li>Enrolled for one of the following degree programmes<ul><li>ECON-DIV</li><li>International Premaster Econometrics and Management Science</li><li>Premaster Econometrics and Management Science</li></ul></li></ul>"
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-werkvormen",
+            "titel": "Instructional modes",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-werkvormen",
+                    "titel": "Instructional modes",
+                    "waarde": [
+                        {
+                            "omschrijving": "Lecture",
+                            "velden": []
+                        },
+                        {
+                            "omschrijving": "Tutorial",
+                            "velden": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-inschrijven",
+            "titel": "Period",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Block BLOK1",
+                            "id_cursus_inschrijving": 152702,
+                            "velden": [
+                                {
+                                    "veld": "item-inschrijfperiode-inschrijven",
+                                    "titel": "Enrolment period",
+                                    "waarde": "11 August 2025 until 12 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-uitschrijven",
+                                    "titel": "Unenrolment",
+                                    "waarde": " until 12 September 2025 23:59"
+                                },
+                                {
+                                    "veld": "item-inschrijfperiode-onderwijs",
+                                    "titel": "Period of education",
+                                    "waarde": "1 september 2025 until 26 oktober 2025"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-docenten",
+            "titel": "Lecturers",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-docenten",
+                    "titel": "Lecturers",
+                    "waarde": [
+                        {
+                            "omschrijving": "Contactperson for the course",
+                            "velden": [
+                                {
+                                    "docent": "dr. NW Koning",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Coordinator",
+                            "velden": [
+                                {
+                                    "docent": "dr. NW Koning",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Lecturer",
+                            "velden": [
+                                {
+                                    "docent": "dr. NW Koning",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Practicumdocent",
+                            "velden": [
+                                {
+                                    "docent": "A Chetwani",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "BP Widawski",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "EJ van der Bij",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "L Bujna",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                },
+                                {
+                                    "docent": "L Calvo la Rosa",
+                                    "url_medewerker": "",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toetsen",
+            "titel": "Assessment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "item-vrij-veld-15",
+                    "titel": "Assessment materials",
+                    "gegevenstype": "TEKST",
+                    "waarde": "<ul><li>Topics covered</li></ul>"
+                },
+                {
+                    "veld": "tabel-toetsen",
+                    "titel": "Assessments (result in OSIRIS)",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "10"
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "samengestelde-toets": "",
+                            "is_onderliggend_toets": "N",
+                            "is_bovenliggende_toets": "N",
+                            "velden": [
+                                {
+                                    "veld": "item-toets-toetsvorm",
+                                    "titel": "",
+                                    "waarde": ""
+                                },
+                                {
+                                    "veld": "item-toets-weging",
+                                    "titel": "Test weight",
+                                    "waarde": "90"
+                                },
+                                {
+                                    "veld": "item-toets-beoordeling",
+                                    "titel": "Assessment",
+                                    "waarde": "Resit opportunity"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rubriek": "rubriek-toets-inschrijven",
+            "titel": "Test enrolment",
+            "weergave": "IN",
+            "velden": [
+                {
+                    "veld": "tabel-toets-inschrijfperiodes",
+                    "titel": "Enrolment periods",
+                    "waarde": [
+                        {
+                            "omschrijving": "Individual assignment 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": []
+                                }
+                            ]
+                        },
+                        {
+                            "omschrijving": "Written exam 1",
+                            "blokken": [
+                                {
+                                    "blok": "Block BLOK1",
+                                    "velden": [
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-inschrijven",
+                                            "titel": "Enrolment period",
+                                            "waarde": "15 September 2025 until 14 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-na-inschrijven",
+                                            "titel": "Late enrolment",
+                                            "waarde": "15 October 2025 until 21 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-uitschrijven",
+                                            "titel": "Unenrolment",
+                                            "waarde": "2 September 2025 until 19 October 2025 23:59"
+                                        },
+                                        {
+                                            "veld": "item-toets-inschrijfperiode-toetsdatum",
+                                            "titel": "Test date",
+                                            "waarde": "21 October 2025"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "blok": "Block BLOK-HER",
+                                    "velden": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "hasMore": false,
+    "limit": 0,
+    "offset": 0,
+    "count": 12
+}
