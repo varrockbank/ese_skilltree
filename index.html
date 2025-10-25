@@ -1176,9 +1176,85 @@
         .csv-table tr:hover {
             background-color: rgba(160, 33, 240, 0.3);
         }
+
+        /* Scene animation styles */
+        #scenes {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100000;
+            pointer-events: none;
+            display: none;
+        }
+
+        #scenes.active {
+            display: block;
+        }
+
+        .scene {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene .description {
+            display: none;
+        }
+
+        .scene1 {
+            background-color: transparent;
+        }
+
+        .scene1 .dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0.2em;
+            height: 0.2em;
+            background-color: #97f4ff;
+            box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 0 black, 0 0 0 0 #298df4;
+            opacity: 0;
+            animation: dot-anim linear 1.834s infinite;
+            border-radius: 20%;
+        }
+
+        @keyframes dot-anim {
+            45% {
+                opacity: 1;
+            }
+            46% {
+                box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 0 black, 0 0 5px 10px #298df4;
+            }
+            50% {
+                box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 101px black, 0 0 0 173px #298df4;
+            }
+            52% {
+                box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 245px black, 0 0 0 255px #298df4;
+            }
+            55% {
+                opacity: 1;
+                box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 317px black, 0 0 0 320px #298df4;
+            }
+            81% {
+                opacity: 0;
+                box-shadow: 0 0 .2em .13em #52a8e8, 0 0 0 549px black, 0 0 0 549px #298df4;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Scene Animation -->
+    <div id="scenes">
+        <div class="scene scene1">
+            <div class="description">Giant Robots!</div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
     <!-- SVG Noise Filter for Radar Effect -->
     <svg viewBox="0 0 20 20" style="position: fixed; width: 0; height: 0; pointer-events: none;">
         <defs>
@@ -1362,6 +1438,12 @@
         </div>
     </div>
 
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="assets/decisive.m4a#t=20" type="audio/mp4">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- Course Data Tab -->
     <div id="course-data" class="tab-content">
         <div class="course-data-container">
@@ -1421,6 +1503,58 @@
     </div>
 
     <script type="text/javascript">
+        // Scene animation function
+        const scenes = document.getElementById('scenes');
+
+        function playSceneAnimation() {
+            // Show scene animation
+            scenes.classList.add('active');
+
+            // Hide scene after one animation cycle (1.834 seconds)
+            setTimeout(() => {
+                scenes.classList.remove('active');
+            }, 1834);
+        }
+
+        // Play animation on page load
+        playSceneAnimation();
+
+        // Audio autoplay on first user interaction
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        function startAudio() {
+            if (!isPlaying) {
+                bgMusic.currentTime = 10; // Start at 10 seconds
+                bgMusic.volume = 0; // Start with volume at 0
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    // Fade in over 3 seconds
+                    const fadeInDuration = 3000;
+                    const fadeInSteps = 60;
+                    const volumeIncrement = 1 / fadeInSteps;
+                    const stepInterval = fadeInDuration / fadeInSteps;
+
+                    let currentStep = 0;
+                    const fadeInterval = setInterval(() => {
+                        currentStep++;
+                        bgMusic.volume = Math.min(currentStep * volumeIncrement, 1);
+                        if (currentStep >= fadeInSteps) {
+                            clearInterval(fadeInterval);
+                            bgMusic.volume = 1;
+                        }
+                    }, stepInterval);
+                }).catch(err => {
+                    console.log('Autoplay prevented:', err);
+                });
+            }
+        }
+
+        // Try to autoplay on any user interaction
+        ['click', 'touchstart', 'keydown'].forEach(event => {
+            document.addEventListener(event, startAudio, { once: true });
+        });
+
         // Tab switching functionality
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {
@@ -1432,6 +1566,11 @@
                 button.classList.add('active');
                 const tabId = button.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
+
+                // Play animation when switching to Schedule tab
+                if (tabId === 'course-page') {
+                    playSceneAnimation();
+                }
             });
         });
 
@@ -2677,6 +2816,66 @@
             const backgroundGroup = svg.append("g").attr("class", "background");
             const nodesGroup = svg.append("g").attr("class", "nodes");
             const edgesGroup = svg.append("g").attr("class", "edges");
+
+            // Add Tron retrowave mesh landscape background (rotated 90 degrees, vertical)
+            const meshGroup = backgroundGroup.append("g").attr("class", "tron-mesh").attr("opacity", 0.3);
+
+            // Position 50px right of the blocks
+            const meshX = labelXOffset + 90 + 50;
+
+            // Perspective parameters (rotated 90 degrees - vanishing point at top)
+            const vanishingY = 0; // Vanishing point at top
+            const gridDepth = 13; // Number of vertical lines
+            const gridHeight = 13; // Number of horizontal grid lines
+
+            // Draw vertical grid lines (receding into distance toward top)
+            for (let i = 0; i < gridDepth; i++) {
+                const progress = i / gridDepth;
+                const x = meshX + i * 30; // Spacing between vertical lines
+                const perspectiveScale = 1 - progress * 0.7;
+                const lineHeight = totalHeight * perspectiveScale;
+                const yStart = vanishingY;
+                const yEnd = totalHeight;
+
+                // Add sine wave to create terrain contours
+                const waveAmplitude = 30 * (1 - progress * 0.5);
+                const waveFrequency = 2 + progress * 3;
+                const numPoints = 50;
+                const points = [];
+
+                for (let j = 0; j <= numPoints; j++) {
+                    const t = j / numPoints;
+                    const y = yStart + (yEnd - yStart) * t;
+                    const wave = Math.sin(t * Math.PI * waveFrequency + i * 0.5) * waveAmplitude * Math.pow(1 - progress, 2);
+                    points.push([x + wave, y]);
+                }
+
+                const lineGenerator = d3.line()
+                    .x(d => d[0])
+                    .y(d => d[1])
+                    .curve(d3.curveCardinal);
+
+                meshGroup.append("path")
+                    .attr("d", lineGenerator(points))
+                    .attr("fill", "none")
+                    .attr("stroke", i % 3 === 0 ? "#FF99FF" : "#99FFFF")
+                    .attr("stroke-width", i % 5 === 0 ? 2 : 1)
+                    .attr("opacity", 0.4 + progress * 0.3);
+            }
+
+            // Draw horizontal grid lines (parallel, running across)
+            for (let i = 0; i < gridHeight; i++) {
+                const y = (totalHeight / gridHeight) * i;
+
+                meshGroup.append("line")
+                    .attr("x1", meshX)
+                    .attr("y1", y)
+                    .attr("x2", meshX + gridDepth * 30)
+                    .attr("y2", y)
+                    .attr("stroke", "#CC99FF")
+                    .attr("stroke-width", i % 5 === 0 ? 2 : 1)
+                    .attr("opacity", 0.3);
+            }
 
             // Define arrowhead markers and filters
             const defs = svg.append("defs");
