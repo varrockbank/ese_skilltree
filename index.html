@@ -1503,6 +1503,9 @@
     </div>
 
     <script type="text/javascript">
+        // Track if visualization needs re-render (when initially loaded on a different tab)
+        let visualizationNeedsRerender = window.location.hash && window.location.hash !== '#course-page';
+
         // Scene animation function
         const scenes = document.getElementById('scenes');
 
@@ -1578,6 +1581,11 @@
             // Play animation when switching to Schedule tab
             if (tabId === 'course-page') {
                 playSceneAnimation();
+                // Re-render visualization if it was initially loaded while hidden
+                if (visualizationNeedsRerender) {
+                    visualizationNeedsRerender = false;
+                    loadAndVisualize();
+                }
             }
         }
 
