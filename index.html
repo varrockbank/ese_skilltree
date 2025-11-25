@@ -1455,7 +1455,7 @@
     </div>
 
     <!-- Background Music -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="assets/decisive.m4a#t=20" type="audio/mp4">
         Your browser does not support the audio element.
     </audio>
@@ -1569,10 +1569,13 @@
             }
         }
 
-        // Try to autoplay on any user interaction
-        ['click', 'touchstart', 'keydown'].forEach(event => {
-            document.addEventListener(event, startAudio, { once: true });
-        });
+        // Only start audio on course-page tab
+        // If starting on course-page, use interaction-based trigger
+        if (!window.location.hash || window.location.hash === '#course-page') {
+            ['click', 'touchstart', 'keydown'].forEach(event => {
+                document.addEventListener(event, startAudio, { once: true });
+            });
+        }
 
         // Tab switching functionality
         function switchToTab(tabId, updateHash = true) {
@@ -1594,9 +1597,10 @@
                 history.pushState(null, '', '#' + tabId);
             }
 
-            // Play animation when switching to Schedule tab
+            // Play animation and start audio when switching to Schedule tab
             if (tabId === 'course-page') {
                 playSceneAnimation();
+                startAudio();
                 // Re-render visualization if it was initially loaded while hidden
                 if (visualizationNeedsRerender) {
                     visualizationNeedsRerender = false;
