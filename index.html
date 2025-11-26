@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Graph Visualization</title>
+    <title>ESE Skiltree</title>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
@@ -942,7 +942,7 @@
         }
 
         /* Course Data Tab - Full Width */
-        #course-data {
+        #course {
             position: fixed;
             top: 50px;
             left: 0;
@@ -954,7 +954,7 @@
         }
 
         /* Programme Data Tab - Full Width */
-        #programme-data {
+        #program {
             position: fixed;
             top: 50px;
             left: 0;
@@ -966,7 +966,7 @@
         }
 
         /* Collated Data Tab */
-        #program-data {
+        #collated {
             position: fixed;
             top: 50px;
             left: 0;
@@ -1296,10 +1296,10 @@
 
     <!-- Tab Navigation -->
     <ul class="tab-nav">
-        <li><button class="tab-button active" data-tab="course-page">Schedule</button></li>
-        <li><button class="tab-button" data-tab="course-data">Course Data</button></li>
-        <li><button class="tab-button" data-tab="programme-data">Programme Data</button></li>
-        <li><button class="tab-button" data-tab="program-data">Collated Data</button></li>
+        <li><button class="tab-button active" data-tab="schedule">Schedule</button></li>
+        <li><button class="tab-button" data-tab="course">Course Data</button></li>
+        <li><button class="tab-button" data-tab="program">Programme Data</button></li>
+        <li><button class="tab-button" data-tab="collated">Collated Data</button></li>
 
         <div class="dna-container">
             <svg class="dna-helix" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
@@ -1352,7 +1352,7 @@
     </ul>
 
     <!-- Course Page Tab -->
-    <div id="course-page" class="tab-content active">
+    <div id="schedule" class="tab-content active">
         <div class="sidenav">
         <canvas id="sidenav-canvas" class="sidenav-canvas"></canvas>
         <div class="specialization-section">
@@ -1461,7 +1461,7 @@
     </audio>
 
     <!-- Course Data Tab -->
-    <div id="course-data" class="tab-content">
+    <div id="course" class="tab-content">
         <div class="course-data-container">
             <!-- Left Sidebar: Course List -->
             <div class="course-data-sidebar">
@@ -1491,7 +1491,7 @@
     </div>
 
     <!-- Program Data Tab -->
-    <div id="program-data" class="tab-content">
+    <div id="collated" class="tab-content">
         <div style="padding: 20px; height: calc(100vh - 50px); overflow: auto;">
             <div id="csv-table-container">
                 <p>Loading...</p>
@@ -1500,7 +1500,7 @@
     </div>
 
     <!-- Programme Data Tab -->
-    <div id="programme-data" class="tab-content">
+    <div id="program" class="tab-content">
         <div class="course-data-container">
             <!-- Left Sidebar: Category Files List -->
             <div class="course-data-sidebar">
@@ -1520,7 +1520,7 @@
 
     <script type="text/javascript">
         // Track if visualization needs re-render (when initially loaded on a different tab)
-        let visualizationNeedsRerender = window.location.hash && window.location.hash !== '#course-page';
+        let visualizationNeedsRerender = window.location.hash && window.location.hash !== '#schedule';
 
         // Scene animation function
         const scenes = document.getElementById('scenes');
@@ -1569,9 +1569,9 @@
             }
         }
 
-        // Only start audio on course-page tab
-        // If starting on course-page, use interaction-based trigger
-        if (!window.location.hash || window.location.hash === '#course-page') {
+        // Only start audio on schedule tab
+        // If starting on schedule, use interaction-based trigger
+        if (!window.location.hash || window.location.hash === '#schedule') {
             ['click', 'touchstart', 'keydown'].forEach(event => {
                 document.addEventListener(event, startAudio, { once: true });
             });
@@ -1598,7 +1598,7 @@
             }
 
             // Play animation and start audio when switching to Schedule tab
-            if (tabId === 'course-page') {
+            if (tabId === 'schedule') {
                 playSceneAnimation();
                 startAudio();
                 // Re-render visualization if it was initially loaded while hidden
