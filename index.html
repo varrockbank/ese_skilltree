@@ -1109,8 +1109,9 @@
         .course-data-content {
             flex: 1;
             padding: 20px;
-            overflow: auto;
+            overflow: hidden;
             position: relative;
+            box-sizing: border-box;
         }
 
         .sub-content {
@@ -1125,8 +1126,8 @@
         .json-textarea {
             width: 100%;
             height: 100%;
-            min-height: calc(100vh - 200px);
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            max-height: calc(100vh - 180px);
+            font-family: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
             font-size: 13px;
             padding: 15px;
             border: 2px solid #DD5500;
@@ -1134,6 +1135,8 @@
             background-color: #000000;
             color: #72D69F;
             resize: none;
+            box-sizing: border-box;
+            overflow: scroll;
         }
 
         .placeholder-text {
@@ -1611,6 +1614,51 @@
         // Track if visualization needs re-render (when initially loaded on a different tab)
         let visualizationNeedsRerender = window.location.hash && window.location.hash !== '#schedule';
 
+        // Sound effect for switching tabs
+        const tabSwitchSound = new Audio('assets/triple-triad-convert.ogg');
+        tabSwitchSound.volume = 1.0;
+
+        function playTabSwitchSound() {
+            tabSwitchSound.currentTime = 0;
+            tabSwitchSound.play().catch(() => {});
+        }
+
+        // Sound effect for switching specialization
+        const victorySound = new Audio('assets/victory.mp3');
+        victorySound.volume = 1.0;
+
+        function playVictorySound() {
+            victorySound.currentTime = 0;
+            victorySound.play().catch(() => {});
+        }
+
+        // Sound effect for toggling dependencies
+        const levelUpSound = new Audio('assets/level-up.ogg');
+        levelUpSound.volume = 1.0;
+
+        function playLevelUpSound() {
+            levelUpSound.currentTime = 0;
+            levelUpSound.play().catch(() => {});
+        }
+
+        // Sound effect for menu item clicks
+        const saveSound = new Audio('assets/save.ogg');
+        saveSound.volume = 1.0;
+
+        function playSaveSound() {
+            saveSound.currentTime = 0;
+            saveSound.play().catch(() => {});
+        }
+
+        // Sound effect for switching raw/processed data
+        const seedLevelSound = new Audio('assets/seed-level.ogg');
+        seedLevelSound.volume = 1.0;
+
+        function playSeedLevelSound() {
+            seedLevelSound.currentTime = 0;
+            seedLevelSound.play().catch(() => {});
+        }
+
         // Scene animation function
         const scenes = document.getElementById('scenes');
 
@@ -1640,16 +1688,16 @@
                     // Fade in over 3 seconds
                     const fadeInDuration = 3000;
                     const fadeInSteps = 60;
-                    const volumeIncrement = 1 / fadeInSteps;
+                    const volumeIncrement = 0.3 / fadeInSteps;
                     const stepInterval = fadeInDuration / fadeInSteps;
 
                     let currentStep = 0;
                     const fadeInterval = setInterval(() => {
                         currentStep++;
-                        bgMusic.volume = Math.min(currentStep * volumeIncrement, 1);
+                        bgMusic.volume = Math.min(currentStep * volumeIncrement, 0.3);
                         if (currentStep >= fadeInSteps) {
                             clearInterval(fadeInterval);
-                            bgMusic.volume = 1;
+                            bgMusic.volume = 0.3;
                         }
                     }, stepInterval);
                 }).catch(err => {
@@ -1672,6 +1720,8 @@
             const tabButton = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
 
             if (!tabContent || !tabButton) return;
+
+            playTabSwitchSound();
 
             // Remove active class from all buttons and content
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
@@ -1729,6 +1779,7 @@
                 button.classList.add('active');
                 const subTabId = button.getAttribute('data-sub-tab');
                 document.getElementById(subTabId).classList.add('active');
+                playSeedLevelSound();
             });
         });
 
@@ -1754,6 +1805,7 @@
         function updateSpecialization(index) {
             currentSpecIndex = (index + specializations.length) % specializations.length;
             const spec = specializations[currentSpecIndex];
+            playVictorySound();
             document.getElementById('specialization-value').value = spec.value;
             document.getElementById('spec-character').src = spec.image;
 
@@ -2116,6 +2168,7 @@
 
                     // Add active class to clicked item
                     listItem.classList.add('active');
+                    playSaveSound();
 
                     // Load the course JSON
                     loadCourseJSON(courseCode);
@@ -2192,6 +2245,15 @@
         hoverSound.volume = 1.0;
         let lastHoveredRow = null;
 
+        // Sound effect for adding/removing optional courses
+        const junctionSound = new Audio('assets/junction.ogg');
+        junctionSound.volume = 1.0;
+
+        function playJunctionSound() {
+            junctionSound.currentTime = 0;
+            junctionSound.play().catch(() => {});
+        }
+
         function addTableHoverSound() {
             const tableRows = document.querySelectorAll('.csv-table tbody tr');
             tableRows.forEach(row => {
@@ -2264,6 +2326,7 @@
 
                     // Add active class to clicked item
                     listItem.classList.add('active');
+                    playSaveSound();
 
                     // Load the category JSON
                     loadCategoryJSON(category.filename, category.name);
@@ -2437,6 +2500,7 @@
                 if (showGraphCheckbox) {
                     showGraphCheckbox.addEventListener('change', function() {
                         console.log('Show graph checkbox:', this.checked);
+                        playLevelUpSound();
                         buildVisualization(allCoursesData);
                     });
                 }
@@ -3645,6 +3709,7 @@
                             if (isOrAlt && selectedSpec === 'or') {
                                 orAddedCourses.add(course.id);
                             }
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3692,6 +3757,7 @@
                                 if (isOrAlt && selectedSpec === 'or') {
                                     orAddedCourses.delete(course.id);
                                 }
+                                playJunctionSound();
                                 buildVisualization(allCoursesData);
                             });
 
@@ -3720,6 +3786,7 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             extracurricularAddedToRegular.add(course.id);
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3747,6 +3814,7 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             movedToExtracurricular.delete(course.id);
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3783,6 +3851,7 @@
                             if (isOrAlt && selectedSpec === 'or') {
                                 orAddedCourses.add(course.id);
                             }
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3810,6 +3879,7 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             extracurricularAddedToRegular.add(course.id);
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3837,6 +3907,7 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             movedToExtracurricular.delete(course.id);
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3864,6 +3935,7 @@
                         .on("click", function(event) {
                             event.stopPropagation();
                             extracurricularAddedToRegular.delete(course.id);
+                            playJunctionSound();
                             buildVisualization(allCoursesData);
                         });
 
@@ -3896,6 +3968,7 @@
                             .on("click", function(event) {
                                 event.stopPropagation();
                                 movedToExtracurricular.add(course.id);
+                                playJunctionSound();
                                 buildVisualization(allCoursesData);
                             });
 
