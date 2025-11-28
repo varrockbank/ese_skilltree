@@ -63,8 +63,38 @@
             height: calc(100vh - 50px);
             background-color: #000000;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 15px;
+        }
+
+        .dependencies-toggle {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            color: #FEA800;
+            font-size: 12px;
+            text-transform: uppercase;
+            width: 100%;
+            padding-right: 45px;
+            box-sizing: border-box;
+            justify-content: flex-start;
+        }
+
+        .dependencies-toggle label {
+            cursor: pointer;
+            color: #FEA800 !important;
+            text-align: right;
+            background: transparent;
+        }
+
+        .dependencies-toggle .rect-toggle {
+            margin-right: 0;
+            margin-left: 0;
+            overflow: visible !important;
         }
 
         /* Spirograph animation */
@@ -160,8 +190,8 @@
         .legend-container {
             position: relative;
             padding: 20px 15px 25px 35px;
-            margin-top: 20px;
-            margin-bottom: 100px;
+            margin-top: 0;
+            margin-bottom: 0;
             margin-left: 10px;
             z-index: 1;
             opacity: 0.8;
@@ -213,7 +243,7 @@
         }
 
         .specialization-section {
-            margin-bottom: 20px;
+            margin-bottom: 0;
             margin-left: 10px;
             transform: translateY(-10px);
             display: flex;
@@ -1796,16 +1826,6 @@
             </div>
         </div>
 
-        <div class="specialization-section">
-            <div class="radio-option">
-                <label class="rect-toggle">
-                    <input type="checkbox" id="show-graph" name="show-graph" checked>
-                    <span class="rect-slider"></span>
-                </label>
-                <label for="show-graph">Show dependencies</label>
-            </div>
-        </div>
-
         <div class="legend-container" data-augmented-ui="tl-clip tr-clip bl-clip br-clip border inlay">
             <div class="stage-label">Legend:</div>
             <div class="legend-item">
@@ -1846,6 +1866,13 @@
 
         <!-- Right Panel with Video and GIFs -->
         <div class="right-panel">
+            <div class="dependencies-toggle">
+                <label class="rect-toggle">
+                    <input type="checkbox" id="show-graph" name="show-graph" checked>
+                    <span class="rect-slider"></span>
+                </label>
+                <label for="show-graph">Show dependencies</label>
+            </div>
             <div class="spirograph-container">
                 <img src="assets/at.gif" class="at-gif" alt="At animation">
                 <img src="assets/sigmoid.gif" class="sigmoid-gif" alt="Sigmoid animation">
@@ -2223,6 +2250,10 @@
             });
         }
 
+        // Conway's Game of Life state (declared here, initialized later)
+        let conwayInitialized = false;
+        let conwayInterval = null;
+
         // Tab switching functionality
         function switchToTab(tabId, updateHash = true) {
             const tabContent = document.getElementById(tabId);
@@ -2253,6 +2284,10 @@
                 if (visualizationNeedsRerender) {
                     visualizationNeedsRerender = false;
                     loadAndVisualize();
+                }
+                // Re-initialize Conway's Game of Life if not yet initialized
+                if (!conwayInitialized) {
+                    initConwayGameOfLife();
                 }
             }
 
@@ -5212,9 +5247,18 @@
         loadAndVisualize();
 
         // Conway's Game of Life (in left sidenav)
-        const canvas = document.getElementById('sidenav-canvas');
-        if (canvas) {
+        function initConwayGameOfLife() {
+            const canvas = document.getElementById('sidenav-canvas');
+            if (!canvas) return;
+
             const container = document.querySelector('.sidenav');
+            if (!container || container.clientWidth === 0 || container.clientHeight === 0) return;
+
+            // Clear any existing interval
+            if (conwayInterval) {
+                clearInterval(conwayInterval);
+            }
+
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
 
@@ -5222,6 +5266,8 @@
             const cellSize = 5;
             const cols = Math.floor(canvas.width / cellSize);
             const rows = Math.floor(canvas.height / cellSize);
+
+            if (cols === 0 || rows === 0) return;
 
             let grid = createGrid();
             let generation = 0;
@@ -5315,9 +5361,13 @@
             }
 
             // Run at 10 FPS
-            setInterval(update, 100);
+            conwayInterval = setInterval(update, 100);
             draw();
+            conwayInitialized = true;
         }
+
+        // Initialize Conway's Game of Life
+        initConwayGameOfLife();
     </script>
 </body>
 </html>
